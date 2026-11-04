@@ -61,7 +61,7 @@
         android:textDirection="locale"
         android:textFontWeight="500"
         app:layout_constraintStart_toEndOf="@id/icon"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/favorite"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/status"
         app:layout_constraintVertical_chainStyle="packed" />
@@ -84,7 +84,7 @@
         android:marqueeRepeatLimit = "marquee_forever"
         android:textDirection="locale"
         app:layout_constraintStart_toEndOf="@id/icon"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/favorite"
         app:layout_constraintTop_toBottomOf="@id/title"
         app:layout_constraintBottom_toTopOf="@id/subtitle" />
 
@@ -115,9 +115,12 @@
         />
     <!-- 副標題原為 constraintTop_toTopOf="@id/favorite"，改為接在狀態下方 -->
 
+    <!-- 勾選框（僅新增 / 排序頁顯示，ControlAdapter 會設為 VISIBLE）：
+         固定在按鈕內靠右、上下置中；原本 start 接在副標題後面，副標題隱藏時會跑到文字旁邊。
+         電源選單中改為 GONE（原 invisible），文字的 end 約束接在它上面時會退回到按鈕右緣，不會白白少 25dp 寬度。 -->
     <CheckBox
         android:id="@+id/favorite"
-        android:visibility="invisible"
+        android:visibility="gone"
         android:layout_width="@dimen/controls_management_checkbox_size"
         android:layout_height="@dimen/controls_management_checkbox_size"
         android:minHeight="0dp"
@@ -127,7 +130,7 @@
         android:clickable="false"
         android:selectable="false"
         android:importantForAccessibility="no"
-        app:layout_constraintStart_toEndOf="@id/subtitle"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 

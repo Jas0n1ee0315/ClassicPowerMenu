@@ -257,6 +257,11 @@ internal class ControlHolder(
         } else {
             ""
         }
+        // 按鈕高度縮到 69dp 後，空白的狀態列 / 副標題仍會佔掉一行高度，
+        // 讓「裝置名稱 → 狀態 → 副標題」垂直鏈超出按鈕而上下被裁切。
+        // 空白時改為 GONE：新增頁只剩名稱 + 副標題（一起置中），排序頁只剩名稱（單獨置中）。
+        removed.visibility = if (wrapper.removed) View.VISIBLE else View.GONE
+        subtitle.visibility = if (wrapper.subtitle.isNullOrBlank()) View.GONE else View.VISIBLE
         itemView.setOnClickListener {
             updateFavorite(!favorite.isChecked)
             favoriteCallback(wrapper.controlId, favorite.isChecked)
