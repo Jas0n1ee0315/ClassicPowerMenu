@@ -75,13 +75,19 @@ class PowerMenuFragment :
             getItems(),
             this::dismissGlobalActionsMenu,
             null,
+            null,
             null
         )
     }
 
+    /** 內容順序：信用卡匣 → 會員卡匣 → 裝置控制（電源選項在上方的 AppBar） */
     private fun getItems(): List<PowerMenuContentItem> {
         return ArrayList<PowerMenuContentItem>().apply {
-            if(viewModel.showQuickAccessWallet) add(PowerMenuContentItem.Cards)
+            if(viewModel.showQuickAccessWallet) {
+                add(PowerMenuContentItem.PaymentCards)
+                // 會員卡功能關閉或沒有可顯示的會員卡時，會員卡匣會自行隱藏
+                add(PowerMenuContentItem.LoyaltyCards)
+            }
             if(viewModel.showControls) add(PowerMenuContentItem.Controls)
         }
     }
@@ -180,7 +186,11 @@ class PowerMenuFragment :
     }
 
     private fun setupContentRecyclerView() = with(binding.powerMenuContentRecyclerview) {
-        layoutManager = LinearLayoutManager(requireContext())
+        layoutManager = LinearLayoutManager(requireContext()).apply {
+            // 卡匣可展開 / 收起，項目高度會在綁定後改變；關閉量測快取，每次排版都重新量測項目
+            // （只有 3 個項目，成本可忽略），避免沿用舊高度造成卡匣與下方區塊重疊
+            isMeasurementCacheEnabled = false
+        }
         adapter = contentAdapter
         val bottomPadding = resources.getDimension(R.dimen.margin_16)
         ViewCompat.setOnApplyWindowInsetsListener(this){ view, insets ->
@@ -237,15 +247,30 @@ class PowerMenuFragment :
     private fun setupWallet(service: IClassicPowerMenu) {
         val quickAccessWalletClient =
             CPMQuickAccessWalletClientImpl(requireActivity().baseContext, service)
-        contentAdapter.walletViewController = WalletPanelViewController(
+        val isDeviceLocked = keyguardManager.isDeviceLocked
+        val loyaltyCallback = WalletLoyaltyCardCallback(viewModel::addLoyaltyCardsToWallet)
+        // 信用卡匣：向 Quick Access Wallet 服務取付款卡，不接會員卡
+        contentAdapter.paymentWalletController = WalletPanelViewController(
             requireContext(),
             requireContext(),
             quickAccessWalletClient,
             this,
-            keyguardManager.isDeviceLocked,
-            WalletLoyaltyCardCallback(viewModel::addLoyaltyCardsToWallet)
+            isDeviceLocked,
+            loyaltyCallback,
+            WalletPanelViewController.MODE_PAYMENT_ONLY
         )
-        contentAdapter.notifyItemChangeOfType(PowerMenuContentItem.Cards)
+        // 會員卡匣：只透過 callback 取會員卡，不呼叫付款服務
+        contentAdapter.loyaltyWalletController = WalletPanelViewController(
+            requireContext(),
+            requireContext(),
+            quickAccessWalletClient,
+            this,
+            isDeviceLocked,
+            loyaltyCallback,
+            WalletPanelViewController.MODE_LOYALTY_ONLY
+        )
+        contentAdapter.notifyItemChangeOfType(PowerMenuContentItem.PaymentCards)
+        contentAdapter.notifyItemChangeOfType(PowerMenuContentItem.LoyaltyCards)
     }
 
     private fun setupControls() {

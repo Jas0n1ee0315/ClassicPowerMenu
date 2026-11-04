@@ -11,4 +11,8 @@
     <dimen name="wallet_menu_horizontal_offset">12dp</dimen>
     <dimen name="wallet_menu_padding_vertical">48dp</dimen>
     <dimen name="wallet_card_border_width">1dp</dimen>
+    <!-- 卡匣拆分：會員卡匣上方間距（信用卡匣底部 → 會員卡匣標題）。
+         卡片底到下一個標題文字 ≈ 輪播下方留白 5 + 8 + 標題列上半 12 ≈ 25dp；
+         收起時兩個標題文字之間 ≈ 12 + 8 + 12 = 32dp -->
+    <dimen name="wallet_split_section_top_margin">8dp</dimen>
 </resources>

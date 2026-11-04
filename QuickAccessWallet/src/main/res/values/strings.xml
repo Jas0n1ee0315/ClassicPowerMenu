@@ -8,4 +8,10 @@
     <string name="error_generic">There was a problem getting your cards, please try again later</string>
     <!-- Overflow menu option directing user to System Settings [CHAR LIMIT=15]-->
     <string name="settings">Settings</string>
+    <!-- 卡匣拆分：收起時的標題（固定繁中，不隨系統語言切換，與電源選單其他文字一致） -->
+    <string name="wallet_collapsed_title_payment">信用卡匣</string>
+    <string name="wallet_collapsed_title_loyalty">會員卡匣</string>
+    <!-- 展開 / 收起箭頭的無障礙描述 -->
+    <string name="wallet_expand">展開</string>
+    <string name="wallet_collapse">收起</string>
 </resources>

@@ -7,7 +7,7 @@
     <dimen name="controls_header_bottom_margin">0dp</dimen>
     <dimen name="controls_header_app_icon_size">24dp</dimen>
     <!-- 卡片與裝置控制的間距：原 48dp，縮小為 28dp -->
-    <dimen name="controls_top_margin">28dp</dimen>
+    <dimen name="controls_top_margin">8dp</dimen> <!-- 原 28dp：配合卡匣拆分縮小，與會員卡匣上方間距一致 -->
     <dimen name="control_header_text_size">20sp</dimen>
     <dimen name="control_item_text_size">16sp</dimen>
     <dimen name="control_menu_item_text_size">16sp</dimen>

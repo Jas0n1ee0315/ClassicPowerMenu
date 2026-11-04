@@ -99,6 +99,12 @@ class GoogleWalletRepositoryImpl(
         ResourcesCompat.getFont(context, R.font.google_sans_text_medium)!!
     }
 
+    /** 目前是否鎖定（需要解鎖才能使用） */
+    private fun isDeviceLocked(): Boolean {
+        val keyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as android.app.KeyguardManager
+        return keyguardManager.isDeviceLocked
+    }
+
     init {
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
@@ -110,7 +116,17 @@ class GoogleWalletRepositoryImpl(
 
     override suspend fun getLoyaltyCards(onCardClicked: (LoyaltyCard) -> Boolean, ignoreSetting: Boolean): List<WalletCardViewInfo>? {
         if((!settings.quickAccessWalletShowLoyaltyCards && !ignoreSetting) || !isGooglePayInstalled) return null
-        return getValuables().first().map { WalletLoyaltyCardViewInfo(context, it, googleSansMedium, onCardClicked) }
+        // 實驗性「直接顯示條碼」：每次開啟電源選單建立卡片時讀取設定與鎖定狀態。
+        // 鎖定中且不允許鎖定時存取 → 仍顯示原本的 logo 卡面，避免繞過「需先解鎖」的保護。
+        val showCodeDirectly = settings.quickAccessWalletShowCodeDirectly &&
+            (settings.quickAccessWalletAccessWhileLocked || !isDeviceLocked())
+        return getValuables().first().map {
+            WalletLoyaltyCardViewInfo(
+                context, it, googleSansMedium, onCardClicked,
+                showCodeDirectly = showCodeDirectly,
+                useDummyCode = settings.developerContentCreatorMode
+            )
+        }
     }
 
     override fun getValuables(): Flow<List<LoyaltyCard>> {

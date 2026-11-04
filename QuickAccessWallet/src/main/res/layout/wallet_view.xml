@@ -42,7 +42,24 @@
                 android:layout_gravity="center"
                 android:importantForAccessibility="no"
                 android:drawablePadding="8dp"
+                android:layout_marginHorizontal="@dimen/wallet_menu_btn_size"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:textAlignment="center" />
+            <!-- 標題左右各留一個按鈕寬（48dp），長卡名以「…」截斷，不會壓到右側的箭頭 / ⋮ 按鈕 -->
+
+            <!-- 卡匣展開 / 收起箭頭：只在拆分模式（信用卡匣 / 會員卡匣）由 WalletView.setupCollapsible 顯示 -->
+            <ImageView
+                android:id="@+id/expand_btn"
+                android:src="@drawable/ic_wallet_expand"
+                android:layout_gravity="center|end"
+                android:layout_width="@dimen/wallet_menu_btn_size"
+                android:layout_height="@dimen/wallet_menu_btn_size"
+                android:padding="12dp"
+                android:visibility="gone"
+                app:tint="@android:color/white"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:theme="@style/Wallet.Theme" />
 
             <ImageView
                 android:id="@+id/menu_btn"

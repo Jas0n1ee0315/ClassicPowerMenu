@@ -64,6 +64,23 @@ class WalletView extends FrameLayout implements WalletCardCarousel.OnCardScrollL
     private final float mAnimationTranslationX;
     private CharSequence mCenterCardText;
 
+    // ---- 展開 / 收起（卡匣拆分模式才啟用） ----
+    /** 收合狀態變更（動畫結束後）通知，用來記錄狀態與高度 */
+    interface OnCollapseChangedListener {
+        void onCollapseChanged(boolean collapsed);
+    }
+
+    private static final int COLLAPSE_ANIMATION_DURATION = 250;
+    /** 收起時的標題字級（與會員卡標題一致） */
+    private static final float COLLAPSED_TITLE_TEXT_SIZE_SP = 18f;
+    private final ImageView mExpandButton;
+    private boolean mCollapsible;
+    private boolean mCollapsed;
+    private CharSequence mCollapsedTitle;
+    private OnCollapseChangedListener mCollapseListener;
+    /** 最後一次置中的卡片：展開時用來還原標題 */
+    @Nullable private WalletCardViewInfo mLastCenterCard;
+
     public WalletView(Context context) {
         this(context, null);
     }
@@ -86,6 +103,121 @@ class WalletView extends FrameLayout implements WalletCardCarousel.OnCardScrollL
         mOutInterpolator =
                 AnimationUtils.loadInterpolator(context, android.R.interpolator.accelerate_cubic);
         mAnimationTranslationX = mCardCarousel.getCardWidthPx() / 4f;
+        mExpandButton = requireViewById(R.id.expand_btn);
+    }
+
+    /**
+     * 啟用展開 / 收起：標題列右側顯示箭頭，點箭頭或標題切換。
+     * 收起時隱藏卡片輪播、標題顯示 collapsedTitle；展開時標題回到目前置中卡片的文字。
+     *
+     * @param collapsedTitle 收起時的標題（例如「信用卡匣」）
+     * @param collapsed      初始是否收起（上次的狀態）
+     */
+    void setupCollapsible(CharSequence collapsedTitle, boolean collapsed,
+            OnCollapseChangedListener listener) {
+        mCollapsible = true;
+        mCollapsedTitle = collapsedTitle;
+        mCollapseListener = listener;
+        mExpandButton.setVisibility(VISIBLE);
+        OnClickListener toggle = v -> setCollapsed(!mCollapsed, true);
+        mExpandButton.setOnClickListener(toggle);
+        mCardLabel.setOnClickListener(toggle);
+        setCollapsed(collapsed, false);
+    }
+
+    private void setCollapsed(boolean collapsed, boolean animate) {
+        // 取消上一次的淡入，避免快速連點時透明度停在半途
+        mCardCarousel.animate().cancel();
+        mCardCarousel.setAlpha(1f);
+        mCollapsed = collapsed;
+        // 箭頭：收起時朝下（可展開），展開時朝上（可收起）
+        float rotation = collapsed ? 0f : 180f;
+        mExpandButton.setContentDescription(getResources().getText(
+                collapsed ? R.string.wallet_expand : R.string.wallet_collapse));
+        if (animate) {
+            mExpandButton.animate().rotation(rotation).setDuration(COLLAPSE_ANIMATION_DURATION).start();
+        } else {
+            mExpandButton.setRotation(rotation);
+        }
+        updateLabelForCollapseState();
+
+        // 第三版做法：不在卡匣內部自己做高度動畫。
+        // 卡匣放在電源選單的 RecyclerView（wrap_content，位於 CoordinatorLayout 中）裡，
+        // 從項目內部改高度時，RecyclerView 不一定會重新量測該項目 → 展開後高度沒長、卡片疊到下方區塊。
+        // 改成：直接切換輪播的顯示 / 隱藏，再透過 listener 通知外層 adapter 呼叫
+        // notifyItemChanged(position, payload)；這是 RecyclerView 標準的「項目大小改變」流程，
+        // 一定會重新量測，並由 ItemAnimator 讓下方區塊平滑移動。
+        mCardCarousel.setVisibility(collapsed ? GONE : VISIBLE);
+        if (!animate) {
+            return;
+        }
+        if (!collapsed) {
+            // 展開：卡片淡入（下方區塊的移動由 RecyclerView 的 ItemAnimator 處理）
+            mCardCarousel.setAlpha(0f);
+            mCardCarousel.animate().alpha(1f).setDuration(COLLAPSE_ANIMATION_DURATION).start();
+        }
+        forceRelayoutUpTree();
+        if (mCollapseListener != null) mCollapseListener.onCollapseChanged(collapsed);
+    }
+
+    /**
+     * 修正「收起後再展開，卡匣與下方區塊重疊」：
+     * 卡匣放在電源選單的 RecyclerView 裡，RecyclerView 重新排版時只會重新量測「有標記需要排版」的項目，
+     * 否則沿用舊的量測高度（量測快取）。高度動畫期間標記沒有可靠地傳到項目根 View，
+     * 項目高度停在收起時的值，而卡片因 clipChildren=false 仍畫在外面 → 疊到下一個區塊上。
+     * 這裡把自己到最上層的每一層都 forceLayout()，確保 RecyclerView 重新量測此項目。
+     *
+     * 注意：不能只在自己身上 requestLayout()——requestLayout 往上傳遞時，遇到「已標記需要排版」的父層就會停止，
+     * 而上面的迴圈已經把每一層都標記了，結果 ViewRootImpl 收不到通知、根本不會排版（第一版修正失敗的原因）。
+     * 所以改由最上層的 root view 呼叫 requestLayout()，它的父層是 ViewRootImpl，一定會排程下一次排版。
+     */
+    private void forceRelayoutUpTree() {
+        View view = this;
+        View root = this;
+        while (view != null) {
+            view.forceLayout();
+            root = view;
+            android.view.ViewParent parent = view.getParent();
+            view = parent instanceof View ? (View) parent : null;
+        }
+        root.requestLayout();
+    }
+
+    /** 設定卡匣上方的間距（卡片輪播容器的 marginTop），用於調整卡匣與上一個區塊的距離 */
+    void setTopMarginPx(int topMarginPx) {
+        ViewGroup.MarginLayoutParams lp =
+                (ViewGroup.MarginLayoutParams) mCardCarouselContainer.getLayoutParams();
+        lp.topMargin = topMarginPx;
+        mCardCarouselContainer.setLayoutParams(lp);
+    }
+
+    /** 依收合狀態更新標題：收起 → 卡匣名稱；展開 → 目前置中卡片的文字 */
+    private void updateLabelForCollapseState() {
+        mCardLabel.setAlpha(1f);
+        if (mCollapsible && mCollapsed) {
+            mCenterCardText = null; // 展開後讓 onCardScroll 重新套用卡片標題
+            mCardLabel.setText(mCollapsedTitle);
+            mCardLabel.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, COLLAPSED_TITLE_TEXT_SIZE_SP);
+            mCardLabel.setCompoundDrawablesRelative(null, null, null, null);
+        } else if (mLastCenterCard != null) {
+            mCenterCardText = null;
+            applyCenterCardLabel(mLastCenterCard);
+        }
+    }
+
+    /** 把卡片的標題文字、字級、小圖示套用到標題列 */
+    private void applyCenterCardLabel(WalletCardViewInfo centerCard) {
+        CharSequence centerCardText = centerCard.getText();
+        if (TextUtils.equals(mCenterCardText, centerCardText)) return;
+        mCenterCardText = centerCardText;
+        mCardLabel.setText(centerCardText);
+        // 依卡片類型套用標題字級（會員卡 / 信用卡匣較大）
+        mCardLabel.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, centerCard.getTextSizeSp());
+        Drawable icon = centerCard.getIcon();
+        if (icon != null) {
+            icon.setBounds(0, 0, mIconSizePx, mIconSizePx);
+        }
+        mCardLabel.setCompoundDrawablesRelative(icon, null, null, null);
     }
 
     @Override
@@ -97,18 +229,11 @@ class WalletView extends FrameLayout implements WalletCardCarousel.OnCardScrollL
     @Override
     public void onCardScroll(WalletCardViewInfo centerCard, WalletCardViewInfo nextCard,
             float percentDistanceFromCenter) {
+        mLastCenterCard = centerCard;
+        // 收起時標題固定為卡匣名稱，不跟著卡片變動
+        if (mCollapsible && mCollapsed) return;
         CharSequence centerCardText = centerCard.getText();
-        if (!TextUtils.equals(mCenterCardText, centerCardText)) {
-            mCenterCardText = centerCardText;
-            mCardLabel.setText(centerCardText);
-            // 依卡片類型套用標題字級（會員卡較大）
-            mCardLabel.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, centerCard.getTextSizeSp());
-            Drawable icon = centerCard.getIcon();
-            if (icon != null) {
-                icon.setBounds(0, 0, mIconSizePx, mIconSizePx);
-            }
-            mCardLabel.setCompoundDrawablesRelative(icon, null, null, null);
-        }
+        applyCenterCardLabel(centerCard);
         if (TextUtils.equals(centerCardText, nextCard.getText())) {
             mCardLabel.setAlpha(1f);
         } else {
@@ -140,7 +265,8 @@ class WalletView extends FrameLayout implements WalletCardCarousel.OnCardScrollL
                         .start();
             }
 
-            mCardLabel.setAlpha(0f);
+            // 收起狀態下標題已是卡匣名稱，不做淡入（也避免停在半透明）
+            if (!(mCollapsible && mCollapsed)) mCardLabel.setAlpha(0f);
             mCardLabel.animate().alpha(1f)
                     .setStartDelay(CARD_LABEL_ANIM_DELAY + emptyStateAnimDelay)
                     .setDuration(CARD_ANIM_ALPHA_DURATION)

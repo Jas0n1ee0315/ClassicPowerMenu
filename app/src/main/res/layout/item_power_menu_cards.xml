@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 卡匣容器：paddingBottom 原為 margin_8，改為 0（區塊間距統一由下一個區塊的上方間距控制，收起時不留空） -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:paddingBottom="@dimen/margin_8"
+    android:paddingBottom="0dp"
     android:id="@+id/item_power_menu_cards_container"/>

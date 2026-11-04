@@ -30,6 +30,8 @@ abstract class Settings {
     abstract val quickAccessWalletShowLoyaltyCardsFlow: Flow<Boolean>
     abstract var quickAccessWalletShowPreview: Boolean
     abstract var quickAccessWalletAccessWhileLocked: Boolean
+    /** 實驗性：電源選單的會員卡卡面直接顯示條碼（不顯示 logo 卡面） */
+    abstract var quickAccessWalletShowCodeDirectly: Boolean
     abstract var quickAccessWalletHideCardNumberWhenLocked: Boolean
     abstract var quickAccessWalletAutoSwitchService: Boolean
     abstract val quickAccessWalletAutoSwitchServiceFlow: Flow<Boolean>
@@ -93,6 +95,9 @@ class SettingsImpl(context: Context): Settings() {
         private const val KEY_QUICK_ACCESS_WALLET_ACCESS_WHILE_LOCKED = "quick_access_wallet_access_while_locked"
         private const val DEFAULT_QUICK_ACCESS_WALLET_ACCESS_WHILE_LOCKED = true
 
+        private const val KEY_QUICK_ACCESS_WALLET_SHOW_CODE_DIRECTLY = "quick_access_wallet_show_code_directly"
+        private const val DEFAULT_QUICK_ACCESS_WALLET_SHOW_CODE_DIRECTLY = false
+
         private const val KEY_QUICK_ACCESS_WALLET_HIDE_CARD_NUMBER_WHEN_LOCKED = "quick_access_wallet_hide_card_number_when_locked"
         private const val DEFAULT_QUICK_ACCESS_WALLET_HIDE_CARD_NUMBER_WHEN_LOCKED = false
 
@@ -144,6 +149,7 @@ class SettingsImpl(context: Context): Settings() {
     override var quickAccessWalletShowLoyaltyCards by shared(KEY_QUICK_ACCESS_WALLET_SHOW_LOYALTY_CARDS, DEFAULT_QUICK_ACCESS_WALLET_SHOW_LOYALTY_CARDS)
     override var quickAccessWalletShowPreview by shared(KEY_QUICK_ACCESS_WALLET_SHOW_PREVIEW, DEFAULT_QUICK_ACCESS_SHOW_PREVIEW)
     override var quickAccessWalletAccessWhileLocked by shared(KEY_QUICK_ACCESS_WALLET_ACCESS_WHILE_LOCKED, DEFAULT_QUICK_ACCESS_WALLET_ACCESS_WHILE_LOCKED)
+    override var quickAccessWalletShowCodeDirectly by shared(KEY_QUICK_ACCESS_WALLET_SHOW_CODE_DIRECTLY, DEFAULT_QUICK_ACCESS_WALLET_SHOW_CODE_DIRECTLY)
     override var quickAccessWalletHideCardNumberWhenLocked by shared(KEY_QUICK_ACCESS_WALLET_HIDE_CARD_NUMBER_WHEN_LOCKED, DEFAULT_QUICK_ACCESS_WALLET_HIDE_CARD_NUMBER_WHEN_LOCKED)
     override var quickAccessWalletAutoSwitchService by shared(KEY_QUICK_ACCESS_WALLET_AUTO_SWITCH_SERVICE, DEFAULT_QUICK_ACCESS_WALLET_AUTO_SWITCH_SERVICE)
     override var quickAccessWalletSelectedAutoSwitchService by shared(KEY_QUICK_ACCESS_WALLET_SELECTED_AUTO_SWITCH_SERVICE, DEFAULT_QUICK_ACCESS_WALLET_SELECTED_AUTO_SWITCH_SERVICE)

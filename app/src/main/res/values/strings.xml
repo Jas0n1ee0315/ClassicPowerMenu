@@ -100,6 +100,8 @@
 
     <string name="settings_quick_access_wallet_show_preview">Show Loyalty Card Preview</string>
     <string name="settings_quick_access_wallet_show_preview_desc">Show a preview of the Loyalty Card to be scanned or viewed in store without opening Google Wallet</string>
+    <string name="settings_quick_access_wallet_show_code_directly">Display Card Code Directly</string>
+    <string name="settings_quick_access_wallet_show_code_directly_desc">(Experimental) Show the Loyalty Card\'s barcode or QR code directly on the card in the Power Menu instead of its logo, without changing screen brightness. Tapping the card still opens the preview or Google Wallet. If access while locked is disabled, the normal card is shown while locked</string>
     <string name="settings_quick_access_wallet_access_while_locked">Allow Loyalty Card access while locked</string>
     <string name="settings_quick_access_wallet_hide_card_number_when_locked_desc">Applies a blur to your Payment Card when the Quick Access Wallet is open and the device is locked. <b>Note: This may not work for all cards or Wallet providers.</b></string>
     <string name="settings_quick_access_wallet_loyalty_cards_not_supported">Loyalty Cards not Supported</string>

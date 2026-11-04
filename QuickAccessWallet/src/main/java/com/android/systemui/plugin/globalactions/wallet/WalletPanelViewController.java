@@ -89,6 +89,19 @@ public class WalletPanelViewController implements
     private String mSelectedCardId;
     private final WalletLoyaltyCardCallback mWalletLoyaltyCardCallback;
 
+    // ---- 卡匣拆分模式 ----
+    /** 原本行為：付款卡 + 會員卡放在同一個輪播 */
+    public static final int MODE_COMBINED = 0;
+    /** 只放付款卡（信用卡匣）：標題顯示卡片名稱，可展開 / 收起 */
+    public static final int MODE_PAYMENT_ONLY = 1;
+    /** 只放會員卡（會員卡匣）：不向 Quick Access Wallet 服務取卡，可展開 / 收起 */
+    public static final int MODE_LOYALTY_ONLY = 2;
+    /** 收合狀態（依模式分開記錄，下次開電源選單沿用） */
+    private static final String PREFS_COLLAPSED = "collapsed";
+    /** 付款卡標題字級：與會員卡標題一致 */
+    private static final float SPLIT_PAYMENT_TEXT_SIZE_SP = 18f;
+    private final int mMode;
+
     private final WalletActivityStarter activityStarter = WalletActivityStarterProvider.INSTANCE.getActivityStarter();
 
     public WalletPanelViewController(
@@ -98,6 +111,22 @@ public class WalletPanelViewController implements
             GlobalActionsPanelPlugin.Callbacks pluginCallbacks,
             boolean isDeviceLocked,
             WalletLoyaltyCardCallback walletLoyaltyCardCallback) {
+        this(sysuiContext, pluginContext, walletClient, pluginCallbacks, isDeviceLocked,
+                walletLoyaltyCardCallback, MODE_COMBINED);
+    }
+
+    /**
+     * @param mode {@link #MODE_COMBINED} / {@link #MODE_PAYMENT_ONLY} / {@link #MODE_LOYALTY_ONLY}
+     */
+    public WalletPanelViewController(
+            Context sysuiContext,
+            Context pluginContext,
+            QuickAccessWalletClient walletClient,
+            GlobalActionsPanelPlugin.Callbacks pluginCallbacks,
+            boolean isDeviceLocked,
+            WalletLoyaltyCardCallback walletLoyaltyCardCallback,
+            int mode) {
+        mMode = mode;
         mSysuiContext = sysuiContext;
         mPluginContext = pluginContext;
         mWalletClient = walletClient;
@@ -116,11 +145,71 @@ public class WalletPanelViewController implements
         mWalletCardCarousel.setSelectionListener(this);
         mHandler = new Handler(Looper.myLooper());
         mExecutor = Executors.newSingleThreadExecutor();
-        if (!mPrefs.getBoolean(PREFS_HAS_CARDS, false)) {
+        if (isSplitMode()) {
+            // 拆分模式：沒有卡片時整個區塊隱藏，不預先顯示空狀態；
+            // 標題列右側加上展開 / 收起箭頭，收合狀態記在 prefs
+            boolean collapsed = mPrefs.getBoolean(prefKey(PREFS_COLLAPSED), false);
+            CharSequence collapsedTitle = mPluginContext.getText(mMode == MODE_PAYMENT_ONLY
+                    ? R.string.wallet_collapsed_title_payment
+                    : R.string.wallet_collapsed_title_loyalty);
+            if (mMode == MODE_LOYALTY_ONLY) {
+                // 會員卡匣接在信用卡匣下方：上方間距縮小（信用卡匣維持原本 28dp，與電源按鈕保持距離）
+                mWalletView.setTopMarginPx(mPluginContext.getResources()
+                        .getDimensionPixelSize(R.dimen.wallet_split_section_top_margin));
+            }
+            mWalletView.setupCollapsible(collapsedTitle, collapsed, isCollapsed -> {
+                mPrefs.edit().putBoolean(prefKey(PREFS_COLLAPSED), isCollapsed).apply();
+                // 高度改變了，重新記錄，下次開啟時預留的高度才正確（避免下方區塊跳動）
+                recordHeightOnNextLayout();
+                // 通知外層 RecyclerView：這個卡匣的高度變了（由 adapter 呼叫 notifyItemChanged）
+                if (mOnSectionSizeChangedListener != null) mOnSectionSizeChangedListener.run();
+            });
+        } else if (!mPrefs.getBoolean(PREFS_HAS_CARDS, false)) {
             // The empty state view is shown preemptively when cards were not returned last time
             // to decrease perceived latency.
             showEmptyStateView();
         }
+    }
+
+    /** 卡匣展開 / 收起造成高度改變時呼叫（由電源選單的 adapter 設定，用來 notifyItemChanged） */
+    private Runnable mOnSectionSizeChangedListener;
+
+    public void setOnSectionSizeChangedListener(Runnable listener) {
+        mOnSectionSizeChangedListener = listener;
+    }
+
+    /** 發卡組織名稱（只在後面接著卡號時才會被截掉，避免誤砍卡名中剛好含有的字） */
+    private static final String CARD_NETWORKS =
+            // 銀聯 = 銀聯（用 Unicode 跳脫，避免原始碼編碼問題）
+            "visa|master\\s?card|jcb|american express|amex|union\\s?pay|\\u9280\\u806F|discover|diners club|maestro";
+    /** 「(發卡組織) ••1234 …」：圓點（• · ● ∙ *）+ 末 2~4 碼，發卡組織可有可無 */
+    private static final java.util.regex.Pattern CARD_SUFFIX_WITH_DOTS = java.util.regex.Pattern.compile(
+            "(?i)\\s*(?:(?:" + CARD_NETWORKS + ")\\s*)?[\\u2022\\u00B7\\u25CF\\u2219*]+\\s*\\d{2,4}.*$");
+    /** 「發卡組織 1234 …」：沒有圓點時，必須有發卡組織才截，避免把卡名中的數字（如 2.0）當成卡號 */
+    private static final java.util.regex.Pattern CARD_SUFFIX_NETWORK_DIGITS = java.util.regex.Pattern.compile(
+            "(?i)\\s*(?:" + CARD_NETWORKS + ")\\s+\\d{4}\\b.*$");
+
+    /**
+     * 從 Google 錢包的卡片描述取出卡名。
+     * 描述範例：「Pay with 永豐 Sport Mastercard ••4952」
+     *   1. 去掉開頭的「Pay with」
+     *   2. 去掉結尾的「發卡組織 + 虛擬卡末碼」（Mastercard ••4952）及之後的文字
+     * → 「永豐 Sport」。若截完是空字串，退回只去掉「Pay with」的結果。
+     */
+    static String extractCardName(String description) {
+        String withoutPrefix = description.replaceFirst("(?i)^\\s*pay with\\s+", "").trim();
+        String name = CARD_SUFFIX_WITH_DOTS.matcher(withoutPrefix).replaceFirst("");
+        name = CARD_SUFFIX_NETWORK_DIGITS.matcher(name).replaceFirst("").trim();
+        return name.isEmpty() ? withoutPrefix : name;
+    }
+
+    private boolean isSplitMode() {
+        return mMode != MODE_COMBINED;
+    }
+
+    /** 拆分模式的 prefs key 加上模式後綴，兩個卡匣各自記錄高度 / 收合狀態 */
+    private String prefKey(String base) {
+        return mMode == MODE_COMBINED ? base : base + "_" + mMode;
     }
 
     /**
@@ -144,8 +233,11 @@ public class WalletPanelViewController implements
         mIsDismissed = true;
         mSelectedCardId = null;
         mHandler.removeCallbacks(mSelectionRunnable);
-        mWalletClient.notifyWalletDismissed();
-        mWalletClient.removeWalletServiceEventListener(this);
+        // 會員卡匣沒有連接 Quick Access Wallet 服務，不需通知
+        if (mMode != MODE_LOYALTY_ONLY) {
+            mWalletClient.notifyWalletDismissed();
+            mWalletClient.removeWalletServiceEventListener(this);
+        }
         mWalletView.animateDismissal();
     }
 
@@ -172,6 +264,10 @@ public class WalletPanelViewController implements
         if (mIsDismissed) {
             return;
         }
+        if (mMode == MODE_LOYALTY_ONLY) {
+            queryLoyaltyCardsOnly();
+            return;
+        }
         if (!mHasRegisteredListener) {
             // Listener is registered even when device is locked. Should only be registered once.
             mWalletClient.addWalletServiceEventListener(this);
@@ -189,6 +285,20 @@ public class WalletPanelViewController implements
         GetWalletCardsRequest request =
                 new GetWalletCardsRequest(cardWidthPx, cardHeightPx, iconSizePx, MAX_CARDS);
         mWalletClient.getWalletCards(mExecutor, request, this);
+    }
+
+    /**
+     * 會員卡匣：不向 Quick Access Wallet 服務取付款卡，直接透過會員卡 callback 取得會員卡。
+     * 會員卡鎖定時能否開啟由卡片本身的 onClick（Access While Locked 設定）處理，這裡不隱藏。
+     */
+    private void queryLoyaltyCardsOnly() {
+        mWalletView.show();
+        mWalletView.hideErrorMessage();
+        ArrayList<WalletCardViewInfo> data = new ArrayList<>();
+        mWalletLoyaltyCardCallback.getMethod().invoke(data, () -> {
+            // 不檢查 isAttachedToWindow：setupWalletView 內用 post，未附加時會等附加後才執行
+            setupWalletView(data, 0);
+        });
     }
 
     /**
@@ -243,6 +353,12 @@ public class WalletPanelViewController implements
             mDefaultCardId = data.get(selectedIndex).getCardId();
         }
 
+        if (mMode == MODE_PAYMENT_ONLY) {
+            // 信用卡匣：不接上會員卡；沒有付款卡時 setupWalletView 會隱藏整個區塊
+            setupWalletView(data, finalSelectedIndex);
+            return;
+        }
+
         mWalletLoyaltyCardCallback.getMethod().invoke(data, () -> {
             if(data.isEmpty()) return;
             //Make sure we're still attached
@@ -259,12 +375,20 @@ public class WalletPanelViewController implements
                 return;
             }
             if (data.isEmpty()) {
+                if (isSplitMode()) {
+                    // 拆分模式：沒有卡片就整個卡匣不顯示（含標題列）
+                    mWalletView.hide();
+                    mWalletView.setMinimumHeight(0);
+                    mPrefs.edit().putInt(prefKey(PREFS_WALLET_VIEW_HEIGHT), 0).apply();
+                    return;
+                }
                 showEmptyStateView();
             } else {
+                if (isSplitMode()) mWalletView.show();
                 mWalletView.showCardCarousel(data, selectedIndex, getOverflowItems());
             }
             // The empty state view will not be shown preemptively next time if cards were returned
-            mPrefs.edit().putBoolean(PREFS_HAS_CARDS, !data.isEmpty()).apply();
+            mPrefs.edit().putBoolean(prefKey(PREFS_HAS_CARDS), !data.isEmpty()).apply();
             removeMinHeightAndRecordHeightOnLayout();
         });
     }
@@ -324,6 +448,10 @@ public class WalletPanelViewController implements
         if (mIsDismissed || selectedCardId == null) {
             return;
         }
+        // 會員卡匣：滑動會員卡不影響預設付款卡，也沒有連接服務
+        if (mMode == MODE_LOYALTY_ONLY) {
+            return;
+        }
         //Don't send a selection event for a loyalty card
         if(!mSelectedCardId.startsWith("LOY")) {
             mWalletClient.selectWalletCard(new SelectWalletCardRequest(selectedCardId));
@@ -353,6 +481,10 @@ public class WalletPanelViewController implements
     }
 
     private OverflowItem[] getOverflowItems() {
+        // 拆分模式：標題列右側改放展開 / 收起箭頭，不顯示「⋮」選單
+        if (isSplitMode()) {
+            return new OverflowItem[]{};
+        }
         CharSequence walletLabel = mWalletClient.getShortcutShortLabel();
         Intent walletIntent = mWalletClient.createWalletIntent();
         CharSequence settingsLabel = mPluginContext.getString(R.string.settings);
@@ -405,7 +537,7 @@ public class WalletPanelViewController implements
      * loaded, causing the home controls to jump down when card data arrives.
      */
     private int getExpectedMinHeight() {
-        int expectedHeight = mPrefs.getInt(PREFS_WALLET_VIEW_HEIGHT, -1);
+        int expectedHeight = mPrefs.getInt(prefKey(PREFS_WALLET_VIEW_HEIGHT), -1);
         if (expectedHeight == -1) {
             Resources res = mPluginContext.getResources();
             expectedHeight = res.getDimensionPixelSize(R.dimen.min_wallet_empty_height);
@@ -415,14 +547,20 @@ public class WalletPanelViewController implements
 
     private void removeMinHeightAndRecordHeightOnLayout() {
         mWalletView.setMinimumHeight(0);
+        recordHeightOnNextLayout();
+    }
+
+    /** 下一次版面配置完成時記錄卡匣高度（拆分模式依模式分開記錄） */
+    private void recordHeightOnNextLayout() {
         mWalletView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom,
                     int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 mWalletView.removeOnLayoutChangeListener(this);
-                mPrefs.edit().putInt(PREFS_WALLET_VIEW_HEIGHT, bottom - top).apply();
+                mPrefs.edit().putInt(prefKey(PREFS_WALLET_VIEW_HEIGHT), bottom - top).apply();
             }
         });
+        mWalletView.requestLayout();
     }
 
     private class QAWalletCardViewInfo implements WalletCardViewInfo {
@@ -463,12 +601,28 @@ public class WalletPanelViewController implements
 
         @Override
         public Drawable getIcon() {
+            // 信用卡匣標題只顯示卡名（與會員卡一致，不顯示前方小圖示）
+            if (mMode == MODE_PAYMENT_ONLY) return null;
             return mIconDrawable;
         }
 
         @Override
         public CharSequence getText() {
+            // 信用卡匣：標題顯示卡片名稱（Google 錢包提供的卡片描述），取代「Hold to reader」；
+            // 描述為空時退回原本的 cardLabel
+            if (mMode == MODE_PAYMENT_ONLY) {
+                CharSequence name = mWalletCard.getContentDescription();
+                if (!TextUtils.isEmpty(name)) {
+                    String cardName = extractCardName(name.toString());
+                    if (!cardName.isEmpty()) return cardName;
+                }
+            }
             return mWalletCard.getCardLabel();
+        }
+
+        @Override
+        public float getTextSizeSp() {
+            return mMode == MODE_PAYMENT_ONLY ? SPLIT_PAYMENT_TEXT_SIZE_SP : 14f;
         }
 
         @Override

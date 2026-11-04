@@ -142,6 +142,14 @@ class SettingsQuickAccessWalletFragment: SettingsSwitchedFragment(), BackAvailab
                 getString(R.string.settings_quick_access_wallet_show_preview_desc),
                 viewModel::showPreview,
                 enabled = { viewModel.showLoyaltyCards }
+            ),
+            // 實驗性：電源選單的會員卡直接顯示條碼（白底卡面），不調整螢幕亮度
+            SettingsItem.SwitchSetting(
+                R.drawable.ic_card_type_barcode,
+                getString(R.string.settings_quick_access_wallet_show_code_directly),
+                getString(R.string.settings_quick_access_wallet_show_code_directly_desc),
+                viewModel::showCodeDirectly,
+                enabled = { viewModel.showLoyaltyCards }
             )
         )
     }
