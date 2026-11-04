@@ -18,18 +18,20 @@
     <dimen name="control_spinner_padding_horizontal">20dp</dimen>
     <dimen name="control_text_size">14sp</dimen>
     <!-- 原 24dp，縮小為 22dp -->
-    <dimen name="control_icon_size">22dp</dimen>
+    <dimen name="control_icon_size">23.1dp</dimen> <!-- 原 22dp，依需求放大 5% -->
     <dimen name="control_spacing">4dp</dimen>
     <dimen name="control_list_divider">1dp</dimen>
     <dimen name="control_corner_radius">12dp</dimen>
     <!-- 裝置控制按鈕高度：原 106dp，縮小為 74dp（內容上下置中） -->
-    <dimen name="control_height">74dp</dimen>
+    <dimen name="control_height">69dp</dimen> <!-- 原 74dp，依需求再降 5 -->
     <dimen name="control_padding">12dp</dimen>
+    <!-- 按鈕上下內距：內容高約 50dp，(69 - 50) / 2 = 9.5dp，讓內容上下等距且不被裁切 -->
+    <dimen name="control_padding_vertical">9.5dp</dimen>
     <dimen name="control_padding_adjustment">4dp</dimen>
     <dimen name="control_status_normal">14sp</dimen>
     <dimen name="control_status_expanded">18sp</dimen>
     <dimen name="control_base_item_margin">2dp</dimen>
-    <dimen name="control_status_padding">3dp</dimen>
+    <dimen name="control_status_padding">6dp</dimen> <!-- 圖示與右方文字的間隔，原 3dp，依需求加 3 -->
     <fraction name="controls_toggle_bg_intensity">5%</fraction>
     <fraction name="controls_dimmed_alpha">40%</fraction>
     <dimen name="controls_setup_top_margin">16dp</dimen>
