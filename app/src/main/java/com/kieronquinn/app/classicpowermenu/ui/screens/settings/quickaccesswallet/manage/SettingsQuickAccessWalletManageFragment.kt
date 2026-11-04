@@ -24,9 +24,61 @@ import java.util.Collections
 class SettingsQuickAccessWalletManageFragment: BoundFragment<FragmentSettingsQuickAccessWalletManageBinding>(FragmentSettingsQuickAccessWalletManageBinding::inflate), StandaloneFragment {
 
     private val adapter by lazy {
-        SettingsQuickAccessWalletManageAdapter(requireContext(), emptyList(), viewModel::onCardVisibilityClicked){
+        SettingsQuickAccessWalletManageAdapter(requireContext(), emptyList(), viewModel::onCardVisibilityClicked, ::showEditDialog){
             itemTouchHelper.startDrag(it)
         }
+    }
+
+    /**
+     *  編輯會員卡主標題（issuerName）/ 副標題（title）的對話框。
+     *  欄位留空 = 恢復 Google 原本的文字（提示文字顯示原始值）。
+     */
+    private fun showEditDialog(item: SettingsQuickAccessWalletManageViewModel.RearrangeLoyaltyCard) {
+        val card = item.info.getLoyaltyCard()
+        val dialogBinding = com.kieronquinn.app.classicpowermenu.databinding.DialogLoyaltyCardEditBinding.inflate(layoutInflater)
+        with(dialogBinding) {
+            loyaltyCardEditIssuerNameLayout.placeholderText = card.originalIssuerName
+            loyaltyCardEditTitleLayout.placeholderText = card.originalTitle
+            loyaltyCardEditIssuerNameLayout.helperText = getString(R.string.settings_quick_access_wallet_manage_edit_original, card.originalIssuerName)
+            loyaltyCardEditTitleLayout.helperText = getString(R.string.settings_quick_access_wallet_manage_edit_original, card.originalTitle)
+            // 只有自訂過的欄位才預先填入，未自訂的保持空白（= 使用原始文字）
+            loyaltyCardEditIssuerName.setText(card.issuerName.takeIf { it != card.originalIssuerName })
+            loyaltyCardEditTitle.setText(card.title.takeIf { it != card.originalTitle })
+            // App 主題的 colorPrimary 在深色模式下太暗，欄位標籤 / 外框改用 Monet 強調色與主要文字色
+            val accent = ColorStateList.valueOf(monet.getAccentColor(requireContext()))
+            val textPrimary = ColorStateList.valueOf(
+                com.google.android.material.color.MaterialColors.getColor(root, android.R.attr.textColorPrimary)
+            )
+            listOf(loyaltyCardEditIssuerNameLayout, loyaltyCardEditTitleLayout).forEach {
+                it.defaultHintTextColor = textPrimary
+                it.hintTextColor = accent
+                it.setBoxStrokeColorStateList(accent)
+            }
+        }
+        com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.settings_quick_access_wallet_manage_edit)
+            .setView(dialogBinding.root)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                viewModel.onCardEdited(
+                    item,
+                    dialogBinding.loyaltyCardEditIssuerName.text?.toString(),
+                    dialogBinding.loyaltyCardEditTitle.text?.toString()
+                )
+            }
+            .setNeutralButton(R.string.settings_quick_access_wallet_manage_edit_reset) { _, _ ->
+                viewModel.onCardEdited(item, null, null)
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+            .apply {
+                // 按鈕文字原本是很暗的 colorPrimary，在深色對話框上幾乎看不見，改用 Monet 強調色
+                val accent = monet.getAccentColor(requireContext())
+                listOf(
+                    android.content.DialogInterface.BUTTON_POSITIVE,
+                    android.content.DialogInterface.BUTTON_NEGATIVE,
+                    android.content.DialogInterface.BUTTON_NEUTRAL
+                ).forEach { getButton(it)?.setTextColor(accent) }
+            }
     }
 
     private val itemTouchHelper by lazy {

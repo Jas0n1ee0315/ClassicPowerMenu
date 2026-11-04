@@ -22,11 +22,8 @@
     <string name="setup_complete_title">Configuración Completa</string>
     <string name="setup_complete_content">Una última cosa: la primera vez que intentes iniciar el menú de encendido clásico después de instalar o reiniciar, es posible que aparezca el menú de encendido normal delante del menú de encendido clásico, o que el menú de encendido clásico no se inicie en absoluto. <b>Esto es normal.</b> Simplemente cierra el menú de encendido normal y mantén presionado el botón de encendido nuevamente, y esta vez el menú de encendido clásico se iniciará normalmente. Esto se debe a restricciones del sistema Android.\n\n¡Disfruta la aplicación!</string>
     <string name="setup_complete_button">Finalizar</string>
-    <string name="power_menu_button_power_off">Apagar</string>
-    <string name="power_menu_button_reboot">Reiniciar</string>
     <string name="power_menu_button_reboot_recovery">Reiniciar en Recuperación</string>
     <string name="power_menu_button_reboot_bootloader">Reiniciar Bootloader</string>
-    <string name="power_menu_button_restart_systemui">Reiniciar SystemUI</string>
     <string name="power_menu_button_emergency">Emergencia</string>
     <string name="power_menu_button_lockdown">Bloqueo de Pantalla</string>
     <string name="power_menu_button_screenshot">Captura de Pantalla</string>
@@ -38,7 +35,6 @@
     <string name="reboot_safemode_confirm">¿Quieres reiniciar en modo seguro?
          Esto deshabilitará todas las aplicaciones de terceros que hayas instalado.
          Se restaurarán cuando reinicies nuevamente.</string>
-    <string name="wallet_code_open_in_pay">Abrir en Google Wallet</string>
     <string name="settings_main_switch">Habilitar el Menú de Energía Clásico</string>
     <string name="settings_header_configuration">Configuración</string>
     <string name="settings_power_options">Opciones de Energía</string>

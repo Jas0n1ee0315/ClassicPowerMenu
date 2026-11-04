@@ -28,18 +28,28 @@ class WalletLoyaltyCardViewInfo(private val context: Context, private val loyalt
     }
 
     private val cachedCardDrawable = createCardDrawable(context)
-    private val cachedCardIcon = getCardIcon(context)
-
-    private val instructions = context.getString(R.string.wallet_loyalty_instructions)
-
     val id = loyaltyCard.valuableId
 
     override fun getCardId(): String {
         return "LOY" + loyaltyCard.valuableId
     }
 
+    /**
+     *  卡片上方標題：「主標題 • 副標題」（原為「主標題 • Tap to show」）。
+     *  副標題空白或與主標題相同時只顯示主標題。
+     */
     override fun getText(): CharSequence {
-        return "${loyaltyCard.issuerName} $instructions"
+        val subtitle = loyaltyCard.title.trim()
+        return if (subtitle.isEmpty() || subtitle == loyaltyCard.issuerName) {
+            loyaltyCard.issuerName
+        } else {
+            "${loyaltyCard.issuerName} • $subtitle"
+        }
+    }
+
+    /** 會員卡標題放大（一般付款卡為 14sp） */
+    override fun getTextSizeSp(): Float {
+        return 18f
     }
 
     override fun getCardDrawable(): Drawable {
@@ -50,8 +60,9 @@ class WalletLoyaltyCardViewInfo(private val context: Context, private val loyalt
         return loyaltyCard.redemptionInfo.contentDescription
     }
 
-    override fun getIcon(): Drawable {
-        return cachedCardIcon
+    /** 不顯示標題前的條碼 / QR 小圖示 */
+    override fun getIcon(): Drawable? {
+        return null
     }
 
     override fun getPendingIntent(): PendingIntent {

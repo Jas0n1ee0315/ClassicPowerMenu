@@ -22,11 +22,8 @@
     <string name="setup_complete_title">Configuration terminée</string>
     <string name="setup_complete_content">Une dernière chose : la première fois que vous essayez de lancer Classic Power Menu après l\'installation ou un redémarrage, le menu d\'alimentation normal peut apparaître devant Classic Power Menu, ou peut ne pas se lancer du tout. &lt;b&gt;C\'est normal.&lt;b&gt; Fermez simplement le menu d\'alimentation et appuyez à nouveau longuement sur le bouton d\'alimentation, et cette fois, Classic Power Menu se lancera normalement. Ceci est dû aux restrictions d\'Android. \n\nProfitez bien de l\'application !</string>
     <string name="setup_complete_button">Terminer</string>
-    <string name="power_menu_button_power_off">Éteindre</string>
-    <string name="power_menu_button_reboot">Redémarrer</string>
     <string name="power_menu_button_reboot_recovery">Redémarrer en mode de récupération</string>
     <string name="power_menu_button_reboot_bootloader">Redémarrer en mode d\'amorçage</string>
-    <string name="power_menu_button_restart_systemui">Redémarrer l’interface système</string>
     <string name="power_menu_button_emergency">Urgence</string>
     <string name="power_menu_button_lockdown">Verrouiller</string>
     <string name="power_menu_button_screenshot">Capture d\'écran</string>
@@ -38,7 +35,6 @@
     <string name="reboot_safemode_confirm">Souhaitez-vous redémarrer en mode sans échec ?
          Toutes les applications tiers installer seront désactiver.
          Elles seront réactivées une fois l\'appareil redémarré.</string>
-    <string name="wallet_code_open_in_pay">Ouvrir dans Google Wallet</string>
     <string name="settings_main_switch">Activer Classic Power Menu</string>
     <string name="settings_header_configuration">Paramètres</string>
     <string name="settings_power_options">Options d\'alimentation</string>

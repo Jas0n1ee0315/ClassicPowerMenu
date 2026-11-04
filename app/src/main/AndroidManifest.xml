@@ -70,6 +70,11 @@
             </intent-filter>
         </service>
 
+        <!-- 自訂付款卡卡面的裁切畫面（Compose，移植自 ZetaCard） -->
+        <activity
+            android:name=".ui.screens.settings.quickaccesswallet.paymentcards.customize.CardArtCropActivity"
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
+            android:exported="false" />
         <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
             android:theme="@style/AppTheme.ThirdPartyLicences" />

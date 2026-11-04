@@ -33,7 +33,8 @@ android {
 }
 
 kotlin {
-    jvmToolchain(11)
+    // 本機沒有 JDK 11，改用目前的 JDK 編譯並輸出 Java 11 bytecode（原為 jvmToolchain(11)）
+    compilerOptions { jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11 }
 }
 
 dependencies {

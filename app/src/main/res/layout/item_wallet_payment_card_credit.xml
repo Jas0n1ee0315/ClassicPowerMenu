@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Customize 頁面底部的 ZetaCard 出處說明（ZetaCard Source License 2.0 第 2、3 條要求） -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/payment_card_credit"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:autoLink="web"
+    android:padding="@dimen/margin_16"
+    android:text="@string/settings_quick_access_wallet_payment_customize_credit"
+    android:textAppearance="@style/TextAppearance.AppCompat.Small.ClassicPowerMenu.Medium" />

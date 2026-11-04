@@ -26,11 +26,8 @@
     <string name="setup_complete_content">На последок: Во время первого запуска Classic Power Menu, после установки и перезагрузки, стандартное меню питания может появится вместе с Classic Power Menu, или появится без Classic Power Menu.<b>Это нормально.</b> Просто закройте стандартное меню питания и вызовите его снова, в этот раз Classic Power Menu запустится нормально. Это связанно с ограничениями Android.\n\nНаслаждайтесь!</string>
     <string name="setup_complete_button">Завершить</string>
 
-    <string name="power_menu_button_power_off">Выключить</string>
-    <string name="power_menu_button_reboot">Перезагрузка</string>
     <string name="power_menu_button_reboot_recovery">Перезагрузка в Recovery</string>
     <string name="power_menu_button_reboot_bootloader">Перезагрузка в Bootloader</string>
-    <string name="power_menu_button_restart_systemui">Перезагрузка интерфейса системы</string>
     <string name="power_menu_button_emergency">Экстренная помощь</string>
     <string name="power_menu_button_lockdown">Заблокировать</string>
     <string name="power_menu_button_screenshot">Снимок экрана</string>
@@ -44,7 +41,6 @@
     <string name="reboot_safemode_confirm">Вы действительно хотите перезагрузиться в безопасный режим?
          Это отключит все сторонние приложения, установленные на устройстве.
          Они будут восстановлены, когда вы перезарузитесь снова.</string>
-    <string name="wallet_code_open_in_pay">Открыть в Google Кошельке</string>
 
     <string name="settings_main_switch">Активировать Classic Power Menu</string>
     <string name="settings_header_configuration">Конфигурация</string>

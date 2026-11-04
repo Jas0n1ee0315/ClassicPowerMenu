@@ -37,6 +37,8 @@ abstract class SettingsQuickAccessWalletViewModel: ViewModel() {
     abstract fun onReorderLoyaltyCardsClicked()
     abstract fun onAutoSwitchServiceClicked()
     abstract fun onLogoutClicked()
+    abstract fun onPaymentCardsCustomizeClicked()
+    abstract fun onPaymentCardsVisibilityClicked()
 }
 
 class SettingsQuickAccessWalletViewModelImpl(context: Context, private val settings: Settings, private val googleApiRepository: GoogleApiRepository, private val encryptedSettings: EncryptedSettings, private val valuablesDatabaseRepository: ValuablesDatabaseRepository, val navigation: AppNavigation, private val containerNavigation: ContainerNavigation): SettingsQuickAccessWalletViewModel() {
@@ -80,6 +82,20 @@ class SettingsQuickAccessWalletViewModelImpl(context: Context, private val setti
     override fun onAutoSwitchServiceClicked() {
         viewModelScope.launch {
             containerNavigation.navigate(SettingsContainerFragmentDirections.actionSettingsContainerFragmentToSettingsQuickAccessWalletAutoSwitchServiceFragment())
+        }
+    }
+
+    /** Payment Cards → Customize */
+    override fun onPaymentCardsCustomizeClicked() {
+        viewModelScope.launch {
+            containerNavigation.navigate(SettingsContainerFragmentDirections.actionSettingsContainerFragmentToSettingsPaymentCardsCustomizeFragment())
+        }
+    }
+
+    /** Payment Cards → Visibility */
+    override fun onPaymentCardsVisibilityClicked() {
+        viewModelScope.launch {
+            containerNavigation.navigate(SettingsContainerFragmentDirections.actionSettingsContainerFragmentToSettingsPaymentCardsVisibilityFragment())
         }
     }
 

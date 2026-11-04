@@ -83,7 +83,8 @@ class GoogleWalletRepositoryImpl(
     private val settings: Settings,
     private val encryptedSettings: EncryptedSettings,
     private val googleApiRepository: GoogleApiRepository,
-    private val valuablesDatabaseRepository: ValuablesDatabaseRepository
+    private val valuablesDatabaseRepository: ValuablesDatabaseRepository,
+    private val loyaltyCardOverridesRepository: LoyaltyCardOverridesRepository
 ): GoogleWalletRepository {
 
     companion object {
@@ -121,19 +122,25 @@ class GoogleWalletRepositoryImpl(
 
         val imageBytes = image?.bytes
         val bitmap = if (imageBytes != null) BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size) else null
+        // Google 伺服器給的原始標題
+        val originalTitle = valuable.loyaltyCard.issuerInfo.title
+        val originalIssuerName = valuable.loyaltyCard.issuerInfo.issuerName
+        // 每次讀取時才套用使用者自訂標題（存在獨立設定檔，同步不會覆蓋）
         val loyaltyCard = LoyaltyCard(
             id,
             bitmap,
             valuable.loyaltyCard.issuerInfo.id,
-            valuable.loyaltyCard.issuerInfo.title,
-            valuable.loyaltyCard.issuerInfo.issuerName,
+            loyaltyCardOverridesRepository.getTitle(id) ?: originalTitle,
+            loyaltyCardOverridesRepository.getIssuerName(id) ?: originalIssuerName,
             valuable.loyaltyCard.groupingInfo.backgroundColor.toColor(),
             LoyaltyCard.RedemptionInfo(
                 valuable.loyaltyCard.redemptionInfo.identifier,
                 valuable.loyaltyCard.redemptionInfo.barcode.typeValue,
                 valuable.loyaltyCard.redemptionInfo.barcode.encodedValue,
                 valuable.loyaltyCard.redemptionInfo.barcode.displayText,
-                valuable.loyaltyCard.redemptionInfo.barcode.displayText))
+                valuable.loyaltyCard.redemptionInfo.barcode.displayText),
+            originalTitle = originalTitle,
+            originalIssuerName = originalIssuerName)
         return loyaltyCard
     }
 

@@ -9,7 +9,7 @@ import com.kieronquinn.app.classicpowermenu.R
 import com.kieronquinn.app.classicpowermenu.databinding.ItemWalletRearrangeCardBinding
 import com.kieronquinn.monetcompat.core.MonetCompat
 
-class SettingsQuickAccessWalletManageAdapter(context: Context, var cards: List<SettingsQuickAccessWalletManageViewModel.RearrangeLoyaltyCard>, val onCardVisibilityToggleClicked: (SettingsQuickAccessWalletManageViewModel.RearrangeLoyaltyCard) -> Unit, val onHandleLongPress: (ViewHolder) -> Unit): RecyclerView.Adapter<SettingsQuickAccessWalletManageAdapter.ViewHolder>() {
+class SettingsQuickAccessWalletManageAdapter(context: Context, var cards: List<SettingsQuickAccessWalletManageViewModel.RearrangeLoyaltyCard>, val onCardVisibilityToggleClicked: (SettingsQuickAccessWalletManageViewModel.RearrangeLoyaltyCard) -> Unit, val onCardEditClicked: (SettingsQuickAccessWalletManageViewModel.RearrangeLoyaltyCard) -> Unit, val onHandleLongPress: (ViewHolder) -> Unit): RecyclerView.Adapter<SettingsQuickAccessWalletManageAdapter.ViewHolder>() {
 
     init {
         setHasStableIds(true)
@@ -50,6 +50,12 @@ class SettingsQuickAccessWalletManageAdapter(context: Context, var cards: List<S
                 item.visible = !item.visible
                 onCardVisibilityToggleClicked(item)
                 notifyItemChanged(position)
+            }
+            // 新增：筆圖示，點擊後編輯主標題 / 副標題
+            walletRearrangeCardEdit.visibility = android.view.View.VISIBLE
+            walletRearrangeCardEdit.imageTintList = ColorStateList.valueOf(monet.getAccentColor(walletRearrangeCardEdit.context))
+            walletRearrangeCardEdit.setOnClickListener {
+                onCardEditClicked(item)
             }
             walletRearrangeCardDragHandle.setOnLongClickListener {
                 onHandleLongPress(holder)

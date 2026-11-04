@@ -22,11 +22,8 @@
     <string name="setup_complete_title">Beállítás kész</string>
     <string name="setup_complete_content">Még egy utolsó dolog: Amikor a telepítés vagy újraindítás után először próbálja elindítani a Klasszikus kikapcsoló menüt, előfordulhat, hogy a Klasszikus kikapcsoló menü előtt a normál bekapcsoló menü jelenik meg, vagy a Klasszikus kikapcsoló menü egyáltalán nem indul el. <b>Ez normális.</b> Egyszerűen zárja be a normál kikapcsoló menüt, és nyomja meg újra hosszan a kikapcsoló gombot, és a Klasszikus kikapcsoló menü a szokásos módon fog elindulni. Ez az Android rendszer korlátozása miatt van így. \n\nJó szórakozást az alkalmazáshoz!</string>
     <string name="setup_complete_button">Befejezés</string>
-    <string name="power_menu_button_power_off">Kikapcsolás</string>
-    <string name="power_menu_button_reboot">Újraindítás</string>
     <string name="power_menu_button_reboot_recovery">Újraindítás: Recovery</string>
     <string name="power_menu_button_reboot_bootloader">Újraindítás: Bootloader</string>
-    <string name="power_menu_button_restart_systemui">Rendszer UI újraindítása</string>
     <string name="power_menu_button_emergency">Segélyhívás</string>
     <string name="power_menu_button_lockdown">Zárolás</string>
     <string name="power_menu_button_screenshot">Képernyőkép</string>
@@ -38,7 +35,6 @@
     <string name="reboot_safemode_confirm">Újraindítás csökkentett módban?
          Ez kikapcsol minden harmadik féltől származó alkalmazást ami telepítve van.
          Vissza leszen állítva egy újabb újraindítás után.</string>
-    <string name="wallet_code_open_in_pay">Megnyitás a Google Wallet-ben</string>
     <string name="settings_main_switch">Klasszikus kikapcsoló menü engedélyezése</string>
     <string name="settings_header_configuration">Konfiguráció</string>
     <string name="settings_power_options">Kikapcsológomb beállításai</string>

@@ -146,6 +146,16 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- 螢幕亮度調整條（Compose，M3 Expressive 風格）；只影響此預覽視窗，關閉後自動恢復系統亮度 -->
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/wallet_code_brightness"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="@id/wallet_code_card"
+        app:layout_constraintStart_toStartOf="@id/wallet_code_card"
+        app:layout_constraintTop_toBottomOf="@id/wallet_code_card" />
+
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/wallet_code_open_in_pay"
         android:layout_width="wrap_content"
@@ -159,7 +169,7 @@
         app:iconTint="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/wallet_code_card"
+        app:layout_constraintTop_toBottomOf="@id/wallet_code_brightness"
         tools:backgroundTint="@android:color/holo_blue_bright" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

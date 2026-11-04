@@ -26,11 +26,11 @@
     <string name="setup_complete_content">One last thing: The first time you attempt to launch Classic Power Menu after installing or a reboot, the normal power menu may appear in front of Classic Power Menu, or Classic Power Menu may not launch at all. <b>This is normal.</b> Simply close the normal power menu and long press power again, and this time Classic Power Menu will launch as normal. This is due to Android System restrictions.\n\nEnjoy the app!</string>
     <string name="setup_complete_button">Finish</string>
 
-    <string name="power_menu_button_power_off">Power off</string>
-    <string name="power_menu_button_reboot">Restart</string>
+    <string name="power_menu_button_power_off">關機</string> <!-- 強制繁中（不隨系統語言切換） -->
+    <string name="power_menu_button_reboot">重啟</string> <!-- 強制繁中（不隨系統語言切換） -->
     <string name="power_menu_button_reboot_recovery">Reboot Recovery</string>
     <string name="power_menu_button_reboot_bootloader">Reboot Bootloader</string>
-    <string name="power_menu_button_restart_systemui">Restart SystemUI</string>
+    <string name="power_menu_button_restart_systemui">重啟SysUI</string> <!-- 強制繁中（不隨系統語言切換） -->
     <string name="power_menu_button_emergency">Emergency</string>
     <string name="power_menu_button_lockdown">Lockdown</string>
     <string name="power_menu_button_screenshot">Screenshot</string>
@@ -44,7 +44,7 @@
     <string name="reboot_safemode_confirm">Do you want to reboot into safe mode?
          This will disable all third party applications you have installed.
          They will be restored when you reboot again.</string>
-    <string name="wallet_code_open_in_pay">Open in Google Wallet</string>
+    <string name="wallet_code_open_in_pay">在錢包中開啟</string> <!-- 強制繁中（不隨系統語言切換） -->
 
     <string name="settings_main_switch">Enable Classic Power Menu</string>
     <string name="settings_header_configuration">Configuration</string>
@@ -119,7 +119,27 @@
     <string name="settings_about_faq">Frequently Asked Questions</string>
     <string name="settings_about_faq_file">faq.md</string>
     <string name="settings_about">Classic Power Menu v%1s</string>
-    <string name="settings_about_desc">Created by Kieron Quinn / Quinny899 @ XDA\nAdditional images by Rohith R Krishnan and Austin Andrews\nLoyalty Card integration &amp; payment method switching by Philip Magyar\n%1s</string>
+    <string name="settings_about_desc">Created by Kieron Quinn / Quinny899 @ XDA\nAdditional images by Rohith R Krishnan and Austin Andrews\nLoyalty Card integration &amp; payment method switching by Philip Magyar\nPayment Card artwork customization based on ZetaCard by hxfuxyy (github.com/hxfuxyy/ZetaCard), modified and not endorsed by hxfuxyy\n%1s</string>
+    <!-- 會員卡標題編輯 -->
+    <string name="settings_quick_access_wallet_manage_edit">Edit card name</string>
+    <string name="settings_quick_access_wallet_manage_edit_issuer_name">Title</string>
+    <string name="settings_quick_access_wallet_manage_edit_title">Subtitle</string>
+    <string name="settings_quick_access_wallet_manage_edit_original">Original: %1$s (leave empty to use it)</string>
+    <string name="settings_quick_access_wallet_manage_edit_reset">Restore</string>
+    <!-- 付款卡自訂（Customize / Visibility） -->
+    <string name="settings_quick_access_wallet_payment_customize">Customize</string>
+    <string name="settings_quick_access_wallet_payment_customize_desc">Replace the artwork of your Payment Cards with your own images</string>
+    <string name="settings_quick_access_wallet_payment_visibility">Visibility</string>
+    <string name="settings_quick_access_wallet_payment_visibility_desc">Show or hide individual Payment Cards in the Quick Access Wallet</string>
+    <string name="settings_quick_access_wallet_payment_loading">Loading Payment Cards…</string>
+    <string name="settings_quick_access_wallet_payment_error_no_cards">No Payment Cards found</string>
+    <string name="settings_quick_access_wallet_payment_error_unavailable">The Quick Access Wallet service is not available. Make sure Google Wallet is set as your default payment app.</string>
+    <string name="settings_quick_access_wallet_payment_error_generic">Error loading Payment Cards</string>
+    <string name="settings_quick_access_wallet_payment_custom_artwork">Custom artwork</string>
+    <string name="settings_quick_access_wallet_payment_original_artwork">Original artwork</string>
+    <string name="settings_quick_access_wallet_payment_customize_choose">Choose image</string>
+    <string name="settings_quick_access_wallet_payment_customize_reset">Restore original artwork</string>
+    <string name="settings_quick_access_wallet_payment_customize_credit">Payment Card artwork customization is based on ZetaCard by hxfuxyy: https://github.com/hxfuxyy/ZetaCard\nThis is a modified, unofficial integration and is not endorsed by hxfuxyy.</string>
     <string name="settings_about_translators">Translators:\nJapanese: C0unt-zero\nItalian: Vladi69\nChinese: wushidi and Ketal\nPolish: Chefski</string>
 
     <string name="chip_donate">Donate</string>

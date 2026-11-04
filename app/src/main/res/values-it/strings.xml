@@ -22,11 +22,8 @@
     <string name="setup_complete_title">Configurazione completata</string>
     <string name="setup_complete_content">Un\'ultima cosa: la prima volta che tenti di avviare Classic Power Menu dopo la configurazione o un riavvio, potrebbe apparire prima di Classic Power Menu il normale menù di avvio, oppure Classic Power Menu potrebbe non avviarsi affatto. <b>È normale.</b> Chiudi semplicemente il menù di avvio normale e premi di nuovo a lungo il pulsante di accensione e questa volta Classic Power Menu si avvierà normalmente. Ciò è dovuto alle limitazioni del sistema Android.\n\nGoditi l\'app!</string>
     <string name="setup_complete_button">Fine</string>
-    <string name="power_menu_button_power_off">Spegni</string>
-    <string name="power_menu_button_reboot">Riavvia</string>
     <string name="power_menu_button_reboot_recovery">Riavvia Recovery</string>
     <string name="power_menu_button_reboot_bootloader">Riavvia Bootloader</string>
-    <string name="power_menu_button_restart_systemui">Riavvia SystemUI</string>
     <string name="power_menu_button_emergency">Emergenza</string>
     <string name="power_menu_button_lockdown">Blocca</string>
     <string name="power_menu_button_screenshot">Screenshot</string>
@@ -38,7 +35,6 @@
     <string name="reboot_safemode_confirm">Vuoi riavviare in modalità provvisoria?
          Disabiliterà tutte le app di terze parti che hai installato.
 	 Verranno ripristinate al riavvio.</string>
-    <string name="wallet_code_open_in_pay">Apri in Google Wallet</string>
     <string name="settings_main_switch">Abilita Classic Power Menu</string>
     <string name="settings_header_configuration">Configurazione</string>
     <string name="settings_power_options">Opzioni avvio</string>

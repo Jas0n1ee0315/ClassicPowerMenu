@@ -23,7 +23,11 @@ data class LoyaltyCard(
     val title: String,
     val issuerName: String,
     @ColorInt val backgroundColor: Int,
-    val redemptionInfo: RedemptionInfo
+    val redemptionInfo: RedemptionInfo,
+    /** Google 原始副標題（未套用自訂前），編輯視窗用來提示 / 恢復 */
+    val originalTitle: String = title,
+    /** Google 原始主標題（未套用自訂前），編輯視窗用來提示 / 恢復 */
+    val originalIssuerName: String = issuerName
 ): Parcelable {
 
     @Parcelize

@@ -22,6 +22,13 @@ import com.android.systemui.globalactions.GlobalActionsComponent
 import com.android.systemui.plugins.ActivityStarter
 import com.android.systemui.plugins.activitystarter.WalletActivityStarter
 import com.android.systemui.plugins.cardblur.WalletCardBlurProvider
+import com.android.systemui.plugins.cardcustomization.WalletCardCustomizationProvider
+import com.kieronquinn.app.classicpowermenu.components.quickaccesswallet.paymentcards.PaymentCardCustomizationRepository
+import com.kieronquinn.app.classicpowermenu.components.quickaccesswallet.loyaltycards.LoyaltyCardOverridesRepository
+import com.kieronquinn.app.classicpowermenu.components.quickaccesswallet.loyaltycards.LoyaltyCardOverridesRepositoryImpl
+import com.kieronquinn.app.classicpowermenu.components.quickaccesswallet.paymentcards.PaymentCardCustomizationRepositoryImpl
+import com.kieronquinn.app.classicpowermenu.ui.screens.settings.quickaccesswallet.paymentcards.SettingsPaymentCardsViewModel
+import com.kieronquinn.app.classicpowermenu.ui.screens.settings.quickaccesswallet.paymentcards.SettingsPaymentCardsViewModelImpl
 import com.android.systemui.statusbar.phone.ShadeController
 import com.android.systemui.statusbar.phone.ShadeControllerImpl
 import com.android.systemui.statusbar.policy.KeyguardStateController
@@ -148,8 +155,13 @@ class ClassicPowerMenu: LifecycleApplication() {
     private val walletModule = module {
         single<WalletActivityStarter> { WalletActivityStarterImpl(get(), get()) }
         single<WalletCardBlurProvider> { WalletCardBlurProviderImpl(get(), get()) }
+        // 付款卡自訂（Customize / Visibility）：同一個實例同時提供給設定頁與 QuickAccessWallet 模組
+        single<PaymentCardCustomizationRepository> { PaymentCardCustomizationRepositoryImpl(get(), get()) }
+        single<WalletCardCustomizationProvider> { get<PaymentCardCustomizationRepository>() }
         single<AutoSwitchServicesRepository> { AutoSwitchServicesRepositoryImpl(get(), get()) }
-        single<GoogleWalletRepository> { GoogleWalletRepositoryImpl(get(), get(), get(), get(), get()) }
+        // 會員卡自訂標題（獨立儲存，同步不覆蓋）
+        single<LoyaltyCardOverridesRepository> { LoyaltyCardOverridesRepositoryImpl(get()) }
+        single<GoogleWalletRepository> { GoogleWalletRepositoryImpl(get(), get(), get(), get(), get(), get()) }
         single<GoogleApiRepository> { GoogleApiRepositoryImpl(get(), get()) }
     }
     
@@ -177,8 +189,9 @@ class ClassicPowerMenu: LifecycleApplication() {
             viewModel<SettingsPowerOptionsRearrangeViewModel> { SettingsPowerOptionsRearrangeViewModelImpl(get(), get()) }
             viewModel<SettingsQuickAccessWalletViewModel> { SettingsQuickAccessWalletViewModelImpl(get(), get(), get(), get(), get(), get(), get()) }
             viewModel<SettingsDeviceControlsViewModel> { SettingsDeviceControlsViewModelImpl(get(), get()) }
-            viewModel<SettingsQuickAccessWalletManageViewModel> { SettingsQuickAccessWalletManageViewModelImpl(get(), get(), get(), get()) }
+            viewModel<SettingsQuickAccessWalletManageViewModel> { SettingsQuickAccessWalletManageViewModelImpl(get(), get(), get(), get(), get()) }
             viewModel<SettingsQuickAccessWalletAutoSwitchServiceViewModel> { SettingsQuickAccessWalletAutoSwitchServiceViewModelImpl(get(), get(), get()) }
+            viewModel<SettingsPaymentCardsViewModel> { SettingsPaymentCardsViewModelImpl(get(), get()) }
             viewModel<SignInWithGoogleViewModel> { SignInWithGoogleViewModelImpl(get(), get(), get()) }
             viewModel<SettingsDeveloperOptionsViewModel> { SettingsDeveloperOptionsViewModelImpl(get()) }
             viewModel<SettingsRootCheckViewModel> { SettingsRootCheckViewModelImpl(get()) }

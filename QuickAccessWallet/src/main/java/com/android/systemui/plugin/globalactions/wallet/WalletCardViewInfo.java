@@ -61,4 +61,11 @@ public interface WalletCardViewInfo {
         return false;
     }
 
+    /**
+     * 卡片上方標題文字大小（sp）。預設 14sp（與 Wallet.TextAppearance 相同），會員卡可覆寫放大。
+     */
+    default float getTextSizeSp(){
+        return 14f;
+    }
+
 }

@@ -35,11 +35,12 @@ import androidx.cardview.widget.CardView;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
-import androidx.recyclerview.widget.PagerSnapHelper;
+import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerViewAccessibilityDelegate;
 
 import com.android.systemui.plugins.cardblur.WalletCardBlur;
+import com.android.systemui.plugins.cardcustomization.WalletCardCustomization;
 
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +52,8 @@ class WalletCardCarousel extends RecyclerView {
 
     // A negative card margin is required because card shrinkage pushes the cards too far apart
     private static final float CARD_MARGIN_RATIO = -.03f;
-    private static final float CARD_SCREEN_WIDTH_RATIO = .69f;
+    // 卡片寬度佔螢幕寬的比例：原為 .69f，縮小 10% → .621f
+    private static final float CARD_SCREEN_WIDTH_RATIO = .621f;
     // Size of the unselected card as a ratio to size of selected card.
     private static final float UNSELECTED_CARD_SCALE = .83f;
     private static final float CORNER_RADIUS_RATIO = 25f / 700f;
@@ -309,10 +311,17 @@ class WalletCardCarousel extends RecyclerView {
         }
     }
 
-    private class CarouselSnapHelper extends PagerSnapHelper {
+    /**
+     * 原為 PagerSnapHelper（一次滑動只能換一張卡）。
+     * 改用 LinearSnapHelper：快速甩動可一次滑過多張卡，停下時仍會對齊到最接近中央的卡片
+     * （維持「中央卡片 = 目前選取卡片」的標題與點擊行為）。
+     */
+    private class CarouselSnapHelper extends LinearSnapHelper {
 
-        private static final float MILLISECONDS_PER_INCH = 200.0F;
-        private static final int MAX_SCROLL_ON_FLING_DURATION = 80; // ms
+        // 滑動速度：原為 200（每英吋 200ms），改為 80 讓動畫更快
+        private static final float MILLISECONDS_PER_INCH = 80.0F;
+        // 線性滑動時間上限；減速動畫約為此值的 3 倍，因此最長約 300ms
+        private static final int MAX_SCROLL_ON_FLING_DURATION = 100; // ms
 
         @Override
         public View findSnapView(LayoutManager layoutManager) {
@@ -351,11 +360,13 @@ class WalletCardCarousel extends RecyclerView {
                     return MILLISECONDS_PER_INCH / displayMetrics.densityDpi;
                 }
 
+                // 限制單次滑動動畫的最長時間，避免一次甩過多張卡時動畫拖太久
                 @Override
                 protected int calculateTimeForScrolling(int dx) {
                     return Math.min(MAX_SCROLL_ON_FLING_DURATION,
                             super.calculateTimeForScrolling(dx));
                 }
+
             };
         }
     }
@@ -403,9 +414,14 @@ class WalletCardCarousel extends RecyclerView {
             WalletCardViewInfo info = mData.get(position);
             viewHolder.info = info;
             String cardType = info.getCardId().substring(0, 1);
-            viewHolder.imageView.setImageDrawable(
-                    WalletCardBlur.INSTANCE.getWalletCardBlurProvider().applyBlurToCardDrawableIfNeeded(info.getCardDrawable(), cardType)
-            );
+            if (WalletCardCustomization.INSTANCE.getProvider().hasCustomCardArt(info.getCardId())) {
+                // 自訂卡面上沒有卡號，不需要套用「鎖定時模糊卡號」（否則會模糊到自訂圖片的固定區塊）
+                viewHolder.imageView.setImageDrawable(info.getCardDrawable());
+            } else {
+                viewHolder.imageView.setImageDrawable(
+                        WalletCardBlur.INSTANCE.getWalletCardBlurProvider().applyBlurToCardDrawableIfNeeded(info.getCardDrawable(), cardType)
+                );
+            }
             viewHolder.cardView.setContentDescription(info.getContentDescription());
             viewHolder.cardView.setOnClickListener(
                     v -> {

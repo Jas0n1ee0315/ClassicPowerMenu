@@ -67,6 +67,23 @@
         android:foreground="@drawable/rounded_ripple_48"
         android:src="@drawable/ic_quick_access_wallet_visibility_visible"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/wallet_rearrange_card_edit"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 編輯會員卡主 / 副標題（只在 Manage Account & Loyalty Cards 顯示，其他頁面預設隱藏） -->
+    <ImageButton
+        android:id="@+id/wallet_rearrange_card_edit"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="@dimen/margin_16"
+        android:background="@null"
+        android:contentDescription="@string/settings_quick_access_wallet_manage_edit"
+        android:foreground="@drawable/rounded_ripple_48"
+        android:padding="@dimen/margin_8"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_quick_access_wallet_edit"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/wallet_rearrange_card_drag_handle"
         app:layout_constraintTop_toTopOf="parent" />
 

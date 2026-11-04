@@ -22,11 +22,8 @@
     <string name="setup_complete_title">Η Ρύθμιση Ολοκληρώθηκε</string>
     <string name="setup_complete_content">Κάτι τελευταίο: Την πρώτη φορά που επιχειρείτε να εκκινήσετε το Κλασικό Μενού Ισχύος μετά την εγκατάσταση ή επανεκκίνηση, το Κλασικό μενού ισχύος μπορεί να εμφανιστεί μπροστά από το Κλασικό Μενού Ισχύος, ή το Κλασικό Μενού Ισχύος μπορεί να μην ξεκινήσει καθόλου. <b>Αυτό είναι φυσιολογικό.</b> Απλά κλείστε ξανά το κανονικό μενού ισχύος και πιέστε παρατεταμένα την κουμπί ισχύος και αυτή τη φορά το Κλασικό Μενού Ισχύος θα ξεκινήσει κανονικά. Αυτό οφείλεται σε περιορισμούς του συστήματος Android.\n\nΑπολαύστε την εφαρμογή!</string>
     <string name="setup_complete_button">Τέλος</string>
-    <string name="power_menu_button_power_off">Απενεργοποίηση</string>
-    <string name="power_menu_button_reboot">Επανεκκίνηση</string>
     <string name="power_menu_button_reboot_recovery">Επανεκκίνηση σε recovery</string>
     <string name="power_menu_button_reboot_bootloader">Επανεκκίνηση σε Bootloader</string>
-    <string name="power_menu_button_restart_systemui">Επανεκκίνηση SystemUI</string>
     <string name="power_menu_button_emergency">Έκτακτη ανάγκη</string>
     <string name="power_menu_button_lockdown">Αυστηρό κλείδωμα</string>
     <string name="power_menu_button_screenshot">Στιγμιότυπο οθόνης</string>
@@ -38,7 +35,6 @@
     <string name="reboot_safemode_confirm">Θέλετε να κάνετε επανεκκίνηση στην ασφαλή λειτουργία;
          Αυτό θα απενεργοποιήσει όλες τις εφαρμογές τρίτων που έχετε εγκαταστήσει. 
          Θα γίνει επαναφορά τους στην επόμενη επανεκκίνηση.</string>
-    <string name="wallet_code_open_in_pay">Άνοιγμα στο Πορτοφόλι Google</string>
     <string name="settings_main_switch">Ενεργοποίηση Κλασικού Μενού Ισχύος</string>
     <string name="settings_header_configuration">Διαμόρφωση</string>
     <string name="settings_power_options">Επιλογές Ισχύος</string>

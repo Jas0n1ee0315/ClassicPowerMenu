@@ -6,12 +6,16 @@ plugins {
     id 'kotlin-parcelize'
     id 'com.google.android.gms.oss-licenses-plugin'
     id 'com.google.devtools.ksp'
+    // 自訂卡面的裁切編輯器（移植自 ZetaCard）使用 Jetpack Compose
+    id 'org.jetbrains.kotlin.plugin.compose'
 }
 
-def version = '1.9.3'
+// 加上 -cardart 後綴，與官方 1.9.3 區分（本版本新增 Payment Cards 的 Customize / Visibility）
+def version = '1.9.3-cardart'
 
 android {
-    compileSdkVersion 36
+    // Compose BOM 2026.09.00 需要 compileSdk 37（原為 36）
+    compileSdkVersion 37
 
     defaultConfig {
         applicationId "com.kieronquinn.app.classicpowermenu"
@@ -35,6 +39,7 @@ android {
         viewBinding true
         aidl true
         buildConfig true
+        compose true
     }
 
     compileOptions {
@@ -45,7 +50,8 @@ android {
 }
 
 kotlin {
-    jvmToolchain(11)
+    // 本機沒有 JDK 11，改用目前的 JDK 編譯並輸出 Java 11 bytecode（原為 jvmToolchain(11)）
+    compilerOptions { jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11 }
 }
 
 protobuf {
@@ -154,6 +160,14 @@ dependencies {
     implementation 'com.jakewharton:process-phoenix:3.0.0'
     implementation 'me.saket:better-link-movement-method:2.2.0'
     implementation "io.noties.markwon:core:4.6.2"
+
+    //Compose（自訂卡面裁切編輯器，版本與 ZetaCardNext 相同）
+    implementation platform('androidx.compose:compose-bom:2026.09.00')
+    implementation 'androidx.activity:activity-compose:1.13.0'
+    implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.foundation:foundation'
+    implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.compose.material:material-icons-extended'
 
     //Test
     testImplementation 'junit:junit:4.13.2'

@@ -43,10 +43,15 @@ class WalletCodeDialogFragment: BaseDialogFragment<FragmentDialogWalletCodeBindi
         navArgs.loyaltyCard
     }
 
+    // 「Open in Google Wallet」按鈕仍使用會員卡底色，文字顏色依底色深淺決定
     private val textColor by lazy {
         if(card.isBackgroundDark()) Color.WHITE
         else Color.BLACK
     }
+
+    // 條碼預覽卡片一律使用純白底色（避免彩色底干擾掃描器），卡片上的文字固定為黑色
+    private val cardBackgroundColor = Color.WHITE
+    private val cardTextColor = Color.BLACK
 
     private val googleSansMedium by lazy {
         ResourcesCompat.getFont(requireContext(), R.font.google_sans_text_medium)
@@ -84,6 +89,31 @@ class WalletCodeDialogFragment: BaseDialogFragment<FragmentDialogWalletCodeBindi
         setupCode()
         setupCardText()
         setupFab()
+        setupBrightness()
+    }
+
+    /**
+     *  亮度調整條：只修改這個預覽視窗的 screenBrightness（視窗層級覆寫），
+     *  不會改到系統亮度設定，視窗關閉後系統自動回到預覽前的亮度。
+     */
+    private fun setupBrightness() = with(binding.walletCodeBrightness) {
+        setViewCompositionStrategy(androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        val accent = androidx.compose.ui.graphics.Color(card.backgroundColor)
+        val onAccent = androidx.compose.ui.graphics.Color(textColor)
+        setContent {
+            BrightnessSlider(
+                accentColor = accent,
+                onAccentColor = onAccent,
+                onBrightnessChanged = ::setWindowBrightness
+            )
+        }
+    }
+
+    private fun setWindowBrightness(brightness: Float) {
+        val window = dialog?.window ?: return
+        window.attributes = window.attributes.apply {
+            screenBrightness = brightness
+        }
     }
 
     private fun setupClose() = with(binding.walletCodeClose) {
@@ -114,7 +144,7 @@ class WalletCodeDialogFragment: BaseDialogFragment<FragmentDialogWalletCodeBindi
     private fun setupTitle() = with(binding.walletCodeTitle) {
         text = card.issuerName
         typeface = googleSansMedium
-        setTextColor(textColor)
+        setTextColor(cardTextColor)
     }
 
     private fun setupLogo() = with(binding.walletCodeLogo) {
@@ -123,29 +153,32 @@ class WalletCodeDialogFragment: BaseDialogFragment<FragmentDialogWalletCodeBindi
         } ?: run {
             setupLogoLetter()
         }
-        (foreground as? GradientDrawable)?.setStroke(resources.getDimension(R.dimen.wallet_code_dialog_logo_outline).toInt(), textColor)
+        (foreground as? GradientDrawable)?.setStroke(resources.getDimension(R.dimen.wallet_code_dialog_logo_outline).toInt(), cardTextColor)
     }
 
     private fun setupLogoLetter() = with(binding.walletCodeLogoLetter) {
         text = card.issuerName.substring(0, 1)
         typeface = googleSansMedium
-        setTextColor(textColor)
+        setTextColor(cardTextColor)
     }
 
     private fun setupLabel() = with(binding.walletCodeLabel) {
         text = card.title
         typeface = googleSansMedium
-        setTextColor(textColor)
+        setTextColor(cardTextColor)
     }
 
     private fun setupCard() = with(binding.walletCodeCard) {
-        backgroundTintList = ColorStateList.valueOf(card.backgroundColor)
+        // 原為 card.backgroundColor：改成純白，條碼周圍不再有彩色底
+        backgroundTintList = ColorStateList.valueOf(cardBackgroundColor)
+        // 分隔線原本是白色，白底上改為黑色（保留 layout 的 0.5 透明度）
+        binding.walletCodeDivider.setBackgroundColor(cardTextColor)
     }
 
     private fun setupCardText() = with(binding.walletCodeCardText) {
         text = getCodeLabel()
         typeface = googleSansMedium
-        setTextColor(textColor)
+        setTextColor(cardTextColor)
     }
 
     private fun setupFab() = with(binding.walletCodeOpenInPay) {

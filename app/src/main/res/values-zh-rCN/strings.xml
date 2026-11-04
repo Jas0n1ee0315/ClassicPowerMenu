@@ -22,11 +22,8 @@
     <string name="setup_complete_title">完成设置</string>
     <string name="setup_complete_content">最后，第一次启动高级电源菜单时，系统的电源菜单可能会先显示，<b>这是由于系统的限制</b>，重新打开即可解决该问题\n\n欢迎使用本应用！</string>
     <string name="setup_complete_button">完成</string>
-    <string name="power_menu_button_power_off">关机</string>
-    <string name="power_menu_button_reboot">重启</string>
     <string name="power_menu_button_reboot_recovery">重启至 Recovery</string>
     <string name="power_menu_button_reboot_bootloader">重启至 Bootloader</string>
-    <string name="power_menu_button_restart_systemui">Restart SystemUI</string>
     <string name="power_menu_button_emergency">急救信息</string>
     <string name="power_menu_button_lockdown">锁定</string>
     <string name="power_menu_button_screenshot">截屏</string>
@@ -38,7 +35,6 @@
     <string name="reboot_safemode_confirm">是否重启至安全模式？
          这将会禁用所有你安装的第三方应用。
          再次重启即可恢复。</string>
-    <string name="wallet_code_open_in_pay">在 Google Wallet 打开</string>
     <string name="settings_main_switch">开启高级电源菜单</string>
     <string name="settings_header_configuration">配置</string>
     <string name="settings_power_options">电源菜单选项</string>

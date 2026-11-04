@@ -151,6 +151,8 @@ class ControlViewHolder(
                 subtitle.setText(it.subtitle)
             }
         }
+        // 副標題空白時隱藏（GONE），不佔高度，按鈕內容才能真正上下置中
+        subtitle.visibility = if (subtitle.text.isNullOrBlank()) View.GONE else View.VISIBLE
 
         cws.control?.let {
             layout.setClickable(true)

@@ -56,6 +56,20 @@ class SettingsQuickAccessWalletFragment: SettingsSwitchedFragment(), BackAvailab
                 getString(R.string.settings_quick_access_wallet_change_settings_in_pay_desc),
                 tapAction = viewModel::onChangeGooglePaySettingsClicked
             ),
+            // 新增：自訂付款卡卡面
+            SettingsItem.Setting(
+                R.drawable.ic_quick_access_wallet_customize,
+                getString(R.string.settings_quick_access_wallet_payment_customize),
+                getString(R.string.settings_quick_access_wallet_payment_customize_desc),
+                tapAction = viewModel::onPaymentCardsCustomizeClicked
+            ),
+            // 新增：個別付款卡的顯示 / 隱藏
+            SettingsItem.Setting(
+                R.drawable.ic_quick_access_wallet_visibility_visible,
+                getString(R.string.settings_quick_access_wallet_payment_visibility),
+                getString(R.string.settings_quick_access_wallet_payment_visibility_desc),
+                tapAction = viewModel::onPaymentCardsVisibilityClicked
+            ),
             SettingsItem.SwitchSetting(
                 R.drawable.ic_quick_access_wallet_hide_card_number,
                 getString(R.string.settings_quick_access_wallet_hide_card_number_when_locked),

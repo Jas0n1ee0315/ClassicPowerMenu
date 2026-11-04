@@ -22,7 +22,25 @@
         <action
             android:id="@+id/action_settingsContainerFragment_to_settingsQuickAccessWalletSignInToGoogle"
             app:destination="@+id/settingsQuickAccessWalletSignInToGoogle" />
+        <action
+            android:id="@+id/action_settingsContainerFragment_to_settingsPaymentCardsCustomizeFragment"
+            app:destination="@id/settingsPaymentCardsCustomizeFragment" />
+        <action
+            android:id="@+id/action_settingsContainerFragment_to_settingsPaymentCardsVisibilityFragment"
+            app:destination="@id/settingsPaymentCardsVisibilityFragment" />
     </fragment>
+    <!-- Payment Cards → Customize（自訂卡面） -->
+    <fragment
+        android:id="@+id/settingsPaymentCardsCustomizeFragment"
+        android:name="com.kieronquinn.app.classicpowermenu.ui.screens.settings.quickaccesswallet.paymentcards.customize.SettingsPaymentCardsCustomizeFragment"
+        android:label="SettingsPaymentCardsCustomizeFragment"
+        tools:layout="@layout/fragment_settings_quick_access_wallet_payment_cards" />
+    <!-- Payment Cards → Visibility（顯示 / 隱藏） -->
+    <fragment
+        android:id="@+id/settingsPaymentCardsVisibilityFragment"
+        android:name="com.kieronquinn.app.classicpowermenu.ui.screens.settings.quickaccesswallet.paymentcards.visibility.SettingsPaymentCardsVisibilityFragment"
+        android:label="SettingsPaymentCardsVisibilityFragment"
+        tools:layout="@layout/fragment_settings_quick_access_wallet_payment_cards" />
     <fragment
         android:id="@+id/settingsPowerOptionsRearrangeFragment"
         android:name="com.kieronquinn.app.classicpowermenu.ui.screens.settings.poweroptions.rearrange.SettingsPowerOptionsRearrangeFragment"

@@ -3,9 +3,11 @@
     <!-- Home Controls -->
     <dimen name="controls_header_side_margin">4dp</dimen>
     <dimen name="controls_header_menu_size">48dp</dimen>
-    <dimen name="controls_header_bottom_margin">24dp</dimen>
+    <!-- 原 24dp；改為 0，讓標題文字與按鈕的間距和會員卡標題與卡片的間距一致 -->
+    <dimen name="controls_header_bottom_margin">0dp</dimen>
     <dimen name="controls_header_app_icon_size">24dp</dimen>
-    <dimen name="controls_top_margin">48dp</dimen>
+    <!-- 卡片與裝置控制的間距：原 48dp，縮小為 28dp -->
+    <dimen name="controls_top_margin">28dp</dimen>
     <dimen name="control_header_text_size">20sp</dimen>
     <dimen name="control_item_text_size">16sp</dimen>
     <dimen name="control_menu_item_text_size">16sp</dimen>
@@ -15,11 +17,13 @@
     <dimen name="control_spinner_padding_vertical">24dp</dimen>
     <dimen name="control_spinner_padding_horizontal">20dp</dimen>
     <dimen name="control_text_size">14sp</dimen>
-    <dimen name="control_icon_size">24dp</dimen>
+    <!-- 原 24dp，縮小為 22dp -->
+    <dimen name="control_icon_size">22dp</dimen>
     <dimen name="control_spacing">4dp</dimen>
     <dimen name="control_list_divider">1dp</dimen>
     <dimen name="control_corner_radius">12dp</dimen>
-    <dimen name="control_height">106dp</dimen>
+    <!-- 裝置控制按鈕高度：原 106dp，縮小為 74dp（內容上下置中） -->
+    <dimen name="control_height">74dp</dimen>
     <dimen name="control_padding">12dp</dimen>
     <dimen name="control_padding_adjustment">4dp</dimen>
     <dimen name="control_status_normal">14sp</dimen>

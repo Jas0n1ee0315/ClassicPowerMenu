@@ -101,6 +101,8 @@ class WalletView extends FrameLayout implements WalletCardCarousel.OnCardScrollL
         if (!TextUtils.equals(mCenterCardText, centerCardText)) {
             mCenterCardText = centerCardText;
             mCardLabel.setText(centerCardText);
+            // 依卡片類型套用標題字級（會員卡較大）
+            mCardLabel.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, centerCard.getTextSizeSp());
             Drawable icon = centerCard.getIcon();
             if (icon != null) {
                 icon.setBounds(0, 0, mIconSizePx, mIconSizePx);

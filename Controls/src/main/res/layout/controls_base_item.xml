@@ -29,23 +29,48 @@
     android:layout_marginRight="@dimen/control_base_item_margin"
     android:background="@drawable/control_background">
 
+    <!-- 排版（依使用者需求調換）：第一列 = 圖示 + 裝置名稱（title）；第二列 = 狀態（status）；
+         第三列 = 副標題（空白時隱藏）。裝置名稱 → 狀態 → 副標題 組成 packed 垂直鏈；圖示依裝置名稱垂直置中。
+         按鈕維持固定高度（control_height），內容於上下 padding 之間置中。 -->
     <ImageView
         android:id="@+id/icon"
         android:layout_width="@dimen/control_icon_size"
         android:layout_height="@dimen/control_icon_size"
-        android:paddingTop="@dimen/control_padding_adjustment"
         android:clickable="false"
         android:focusable="false"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/title"
+        app:layout_constraintBottom_toBottomOf="@id/title" />
 
+    <!-- 裝置名稱：原本在圖示下方，改到圖示右側（原狀態文字的位置），與圖示垂直置中 -->
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Control.Title"
+        android:paddingStart="@dimen/control_status_padding"
+        android:paddingEnd="@dimen/control_padding_adjustment"
+        android:clickable="false"
+        android:focusable="false"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textDirection="locale"
+        android:textFontWeight="500"
+        app:layout_constraintStart_toEndOf="@id/icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/status"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <!-- 狀態：原本在圖示右側，改到圖示下方（原裝置名稱的位置） -->
     <TextView
         android:id="@+id/status"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.Control.Status"
-        android:paddingTop="@dimen/control_padding_adjustment"
-        android:paddingStart="@dimen/control_status_padding"
+        android:paddingLeft="@dimen/control_padding_adjustment"
+        android:paddingRight="@dimen/control_padding_adjustment"
+        android:layout_marginTop="2dp"
         android:screenReaderFocusable="false"
         android:clickable="false"
         android:focusable="false"
@@ -54,26 +79,10 @@
         android:textFontWeight="500"
         android:marqueeRepeatLimit = "marquee_forever"
         android:textDirection="locale"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/icon"
-        app:layout_constraintStart_toEndOf="@+id/icon" />
-
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.Control.Title"
-        android:paddingLeft="@dimen/control_padding_adjustment"
-        android:paddingRight="@dimen/control_padding_adjustment"
-        android:clickable="false"
-        android:focusable="false"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:textDirection="locale"
-        android:textFontWeight="500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/barrier"/>
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintBottom_toTopOf="@id/subtitle" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier"
@@ -97,8 +106,10 @@
         android:textDirection="locale"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/favorite"
-        app:layout_constraintTop_toTopOf="@id/favorite"
+        app:layout_constraintTop_toBottomOf="@id/status"
+        app:layout_constraintBottom_toBottomOf="parent"
         />
+    <!-- 副標題原為 constraintTop_toTopOf="@id/favorite"，改為接在狀態下方 -->
 
     <CheckBox
         android:id="@+id/favorite"

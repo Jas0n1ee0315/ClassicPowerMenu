@@ -53,6 +53,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
+import com.android.systemui.plugins.cardcustomization.WalletCardCustomization;
+import com.android.systemui.plugins.cardcustomization.WalletCardCustomizationProvider;
+
 import kotlin.Unit;
 import kotlin.reflect.KFunction;
 
@@ -197,36 +200,59 @@ public class WalletPanelViewController implements
         if (mIsDismissed) {
             return;
         }
-        List<WalletCard> walletCards = response.getWalletCards();
+        List<WalletCard> walletCards = new ArrayList<>(response.getWalletCards());
+
+        // 先記下 Google Wallet 原本選定（預設）的卡片 ID，過濾後再換算成新的索引
+        String originalSelectedCardId = null;
+        int originalSelectedIndex = response.getSelectedIndex();
+        if (originalSelectedIndex >= 0 && originalSelectedIndex < walletCards.size()) {
+            originalSelectedCardId = walletCards.get(originalSelectedIndex).getCardId();
+        }
+
+        WalletCardCustomizationProvider customization =
+                WalletCardCustomization.INSTANCE.getProvider();
 
         walletCards.removeIf(new Predicate<WalletCard>() {
             @Override
             public boolean test(WalletCard walletCard) {
-                return walletCard.getCardId().length() <= 1;
+                // 原本的過濾：ID 長度 <= 1 的是佔位卡
+                if (walletCard.getCardId().length() <= 1) return true;
+                // 新增：使用者在 Visibility 設定中隱藏的付款卡
+                return customization.isCardHidden(walletCard.getCardId());
             }
         });
 
         ArrayList<WalletCardViewInfo> data = new ArrayList<>(walletCards.size());
         for (WalletCard card : walletCards) {
-            data.add(new QAWalletCardViewInfo(card));
+            data.add(new QAWalletCardViewInfo(card, customization));
         }
+
+        // 換算過濾後的選定索引；原本選定的卡被隱藏時退回第一張
+        int selectedIndex = 0;
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i).getCardId().equals(originalSelectedCardId)) {
+                selectedIndex = i;
+                break;
+            }
+        }
+        final int finalSelectedIndex = selectedIndex;
 
         if(walletCards.isEmpty()){
             mDefaultCardId = null;
         }else {
-            mDefaultCardId = data.get(response.getSelectedIndex()).getCardId();
+            mDefaultCardId = data.get(selectedIndex).getCardId();
         }
 
         mWalletLoyaltyCardCallback.getMethod().invoke(data, () -> {
             if(data.isEmpty()) return;
             //Make sure we're still attached
             if(mWalletView.isAttachedToWindow()) {
-                setupWalletView(data, response);
+                setupWalletView(data, finalSelectedIndex);
             }
         });
     }
 
-    private void setupWalletView(List<WalletCardViewInfo> data, GetWalletCardsResponse response){
+    private void setupWalletView(List<WalletCardViewInfo> data, int selectedIndex){
         // Get on main thread for UI updates
         mWalletView.post(() -> {
             if (mIsDismissed) {
@@ -235,7 +261,7 @@ public class WalletPanelViewController implements
             if (data.isEmpty()) {
                 showEmptyStateView();
             } else {
-                mWalletView.showCardCarousel(data, response.getSelectedIndex(), getOverflowItems());
+                mWalletView.showCardCarousel(data, selectedIndex, getOverflowItems());
             }
             // The empty state view will not be shown preemptively next time if cards were returned
             mPrefs.edit().putBoolean(PREFS_HAS_CARDS, !data.isEmpty()).apply();
@@ -409,9 +435,13 @@ public class WalletPanelViewController implements
          * Constructor is called on background executor, so it is safe to load drawables
          * synchronously.
          */
-        QAWalletCardViewInfo(WalletCard walletCard) {
+        QAWalletCardViewInfo(WalletCard walletCard, WalletCardCustomizationProvider customization) {
             mWalletCard = walletCard;
-            mCardDrawable = mWalletCard.getCardImage().loadDrawable(mPluginContext);
+            // 有自訂卡面就用自訂的，否則使用 Google Wallet 提供的原始卡面
+            Drawable customDrawable = customization.getCustomCardDrawable(walletCard.getCardId());
+            mCardDrawable = customDrawable != null
+                    ? customDrawable
+                    : mWalletCard.getCardImage().loadDrawable(mPluginContext);
             Icon icon = mWalletCard.getCardIcon();
             mIconDrawable = icon == null ? null : icon.loadDrawable(mPluginContext);
         }

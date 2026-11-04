@@ -22,11 +22,8 @@
     <string name="setup_complete_title">設定完了</string>
     <string name="setup_complete_content">最後に: インストールまたは再起動後に初めてClassic Power Menuを起動しようとすると、Classic Power Menuの前に通常の電源メニューが表示されたり、Classic Power Menuがまったく起動しなかったりすることがあります。 <b>それは正常です。</b> 通常の電源メニューを終了し、再度電源を長押しすると、今度はClassic Power Menuが通常通り起動します。 これは、Androidシステムの制限によるものです。\n\nアプリをお楽しみください!</string>
     <string name="setup_complete_button">終了</string>
-    <string name="power_menu_button_power_off">電源を切る</string>
-    <string name="power_menu_button_reboot">再起動</string>
     <string name="power_menu_button_reboot_recovery">リカバリーを起動</string>
     <string name="power_menu_button_reboot_bootloader">ブートローダーを起動</string>
-    <string name="power_menu_button_restart_systemui">システムUIの再起動</string>
     <string name="power_menu_button_emergency">緊急通報</string>
     <string name="power_menu_button_lockdown">ロックダウン</string>
     <string name="power_menu_button_screenshot">画面の保存</string>
@@ -38,7 +35,6 @@
     <string name="reboot_safemode_confirm">再起動してセーフモードにしますか？
          セーフモードでは、インストールしたすべてのサードパーティ製アプリが無効になります。
          これらのアプリはもう一度再起動すると復元されます。</string>
-    <string name="wallet_code_open_in_pay">Google Walletで開く</string>
     <string name="settings_main_switch">Classic Power Menuを有効にする</string>
     <string name="settings_header_configuration">環境設定</string>
     <string name="settings_power_options">電源オプション</string>

@@ -19,6 +19,8 @@ abstract class SettingsQuickAccessWalletManageViewModel: ViewModel() {
 
     abstract fun onCardVisibilityClicked(card: RearrangeLoyaltyCard)
     abstract fun onCardOrderChanged(cards: List<RearrangeLoyaltyCard>)
+    /** 儲存自訂主標題 / 副標題；null 或空白代表恢復原始文字 */
+    abstract fun onCardEdited(card: RearrangeLoyaltyCard, issuerName: String?, title: String?)
     abstract fun onBackPressed()
     abstract fun onSignInClicked()
     abstract fun onPageLoad()
@@ -40,9 +42,17 @@ abstract class SettingsQuickAccessWalletManageViewModel: ViewModel() {
     }
 }
 
-class SettingsQuickAccessWalletManageViewModelImpl(private val walletRepository: GoogleWalletRepository, private val googleApiRepository: GoogleApiRepository, private val settings: Settings, private val containerNavigation: ContainerNavigation): SettingsQuickAccessWalletManageViewModel() {
+class SettingsQuickAccessWalletManageViewModelImpl(private val walletRepository: GoogleWalletRepository, private val googleApiRepository: GoogleApiRepository, private val settings: Settings, private val containerNavigation: ContainerNavigation, private val loyaltyCardOverridesRepository: com.kieronquinn.app.classicpowermenu.components.quickaccesswallet.loyaltycards.LoyaltyCardOverridesRepository): SettingsQuickAccessWalletManageViewModel() {
 
     override val state = MutableStateFlow<State>(State.Loading)
+
+    override fun onCardEdited(card: RearrangeLoyaltyCard, issuerName: String?, title: String?) {
+        viewModelScope.launch {
+            loyaltyCardOverridesRepository.setOverrides(card.id, issuerName, title)
+            // 重新讀取列表，套用新的標題
+            updateLoyaltyCards()
+        }
+    }
 
     override fun syncLoyaltyCards() {
         viewModelScope.launch {

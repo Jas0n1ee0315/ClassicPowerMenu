@@ -22,11 +22,8 @@
     <string name="setup_complete_title">Konfiguracja zakończona</string>
     <string name="setup_complete_content">Przy pierwszej próbie uruchomienia Classic Power Menu po zainstalowaniu lub ponownym uruchomieniu normalne menu zasilania może pojawić się przed Classic Power Menu lub Classic Power Menu może w ogóle się nie uruchomić. <b>To jest normalne.</b> Po prostu zamknij normalne menu zasilania i naciśnij przycisk zasilania, a wtedy wszystko powinno zadziałać jak należy. Wynika to z ograniczeń Androida.\n\nCiesz się aplikacją!</string>
     <string name="setup_complete_button">Gotowe</string>
-    <string name="power_menu_button_power_off">Wyłącz</string>
-    <string name="power_menu_button_reboot">Uruchom ponownie</string>
     <string name="power_menu_button_reboot_recovery">Uruchom ponownie w trybie Recovery</string>
     <string name="power_menu_button_reboot_bootloader">Uruchom ponownie w trybie Bootloadera</string>
-    <string name="power_menu_button_restart_systemui">Zresetuj SystemUI</string>
     <string name="power_menu_button_emergency">Nagły wypadek</string>
     <string name="power_menu_button_lockdown">Zablokuj</string>
     <string name="power_menu_button_screenshot">Zrzut ekranu</string>
@@ -38,7 +35,6 @@
     <string name="reboot_safemode_confirm">Czy chcesz uruchomić urządzenie ponownie w trybie awaryjnym?
          Spowoduje to wyłączenie wszystkich zainstalowanych aplikacji firm trzecich.
          Zostaną one przywrócone po ponownym uruchomieniu.</string>
-    <string name="wallet_code_open_in_pay">Otwórz w Google Wallet</string>
     <string name="settings_main_switch">Włącz Classic Power Menu</string>
     <string name="settings_header_configuration">Konfiguracja</string>
     <string name="settings_power_options">Opcje zasilania</string>
