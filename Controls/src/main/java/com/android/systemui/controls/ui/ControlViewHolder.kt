@@ -151,8 +151,11 @@ class ControlViewHolder(
                 subtitle.setText(it.subtitle)
             }
         }
-        // 副標題空白時隱藏（GONE），不佔高度，按鈕內容才能真正上下置中
-        subtitle.visibility = if (subtitle.text.isNullOrBlank()) View.GONE else View.VISIBLE
+        // 電源選單一律不顯示副標題（Home Assistant 填的是區域，例如「主臥」）。
+        // 69dp 的按鈕放不下第三行，顯示出來會讓名稱與區域上下被裁切；設為 GONE 不佔高度，
+        // 名稱 + 狀態才能上下置中。副標題文字仍保留在 subtitle.text，無障礙描述（contentDescription）照樣會唸出來。
+        // 新增 / 排序裝置的管理頁使用 ControlAdapter，不受影響，仍會顯示區域方便辨識。
+        subtitle.visibility = View.GONE
 
         cws.control?.let {
             layout.setClickable(true)
@@ -286,9 +289,19 @@ class ControlViewHolder(
         if (immediately) {
             status.alpha = STATUS_ALPHA_ENABLED
             status.text = text
+            updateStatusVisibility()
             updateContentDescription()
         }
         nextStatusText = text
+    }
+
+    /**
+     *  狀態文字空白時（例如 Home Assistant 的「場景 / 無狀態按鈕」）把狀態列設為 GONE，
+     *  不佔高度，讓垂直鏈只剩裝置名稱，名稱就會在按鈕中上下置中；有文字時恢復 VISIBLE。
+     *  每次改 status.text 後都要呼叫，因為同一個 ViewHolder 會被回收給其他裝置使用。
+     */
+    private fun updateStatusVisibility() {
+        status.visibility = if (status.text.isNullOrBlank()) View.GONE else View.VISIBLE
     }
 
     private fun animateBackgroundChange(
@@ -403,6 +416,7 @@ class ControlViewHolder(
         setEnabled(enabled)
 
         status.text = text
+        updateStatusVisibility()
         updateContentDescription()
 
         status.setTextColor(color)

@@ -31,7 +31,10 @@
     <dimen name="control_status_normal">14sp</dimen>
     <dimen name="control_status_expanded">18sp</dimen>
     <dimen name="control_base_item_margin">2dp</dimen>
-    <dimen name="control_status_padding">6dp</dimen> <!-- 圖示與右方文字的間隔，原 3dp，依需求加 3 -->
+    <!-- 圖示與右方文字的間隔（原 3dp → 6dp → 10.5dp）。
+         目標：圖示右緣到文字的「視覺」距離 = 按鈕左框到圖示左緣的距離（12dp padding + 圖示內留白 ≈ 13.2dp）。
+         依截圖量測，圖示右側內留白 + 文字字形左側留白約 2.8dp，所以 13.2 - 2.8 ≈ 10.5dp。 -->
+    <dimen name="control_status_padding">10.5dp</dimen>
     <fraction name="controls_toggle_bg_intensity">5%</fraction>
     <fraction name="controls_dimmed_alpha">40%</fraction>
     <dimen name="controls_setup_top_margin">16dp</dimen>
