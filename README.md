@@ -25,6 +25,13 @@ Classic Power Menu is a Power Menu Replacement for Android 11+, with the main ai
 - **編輯標題 (Manage Account & Loyalty Cards)**
   - 每張卡片的顯示 / 隱藏開關右側多了一個鉛筆按鈕，可以修改主標題（發卡商名稱）和副標題。
   - 修改後永久保存在獨立的設定檔，從 Google 伺服器同步新資料也不會被覆蓋；清空欄位或按「還原」就回到原本的名稱。
+- **手動新增會員卡 (Manage Account & Loyalty Cards → 標題列「+」)**
+  - 輸入會員卡名稱、副標題（選填）、會員卡號與條碼類型，視窗內即時預覽條碼；卡號不符合所選格式時無法存檔。
+  - 支援 Code 128、Code 39、QR Code、EAN-13、EAN-8、UPC-A、UPC-E、ITF-14、Codabar、PDF417、Aztec、Data Matrix。
+  - 存在獨立的加密設定檔，與 Google 同步的資料分開：重新整理、Google 端刪卡、登出都不會移除。
+  - 與 Google 會員卡一樣可以顯示 / 隱藏、排序；按鉛筆可修改名稱、卡號與條碼類型。
+  - 只有手動新增的卡片可以左右滑動刪除，刪除後可按「Undo」復原。
+  - 電源選單中點手動卡片一律開啟條碼預覽（不受「Show Loyalty Card Preview」影響），預覽畫面不顯示「在錢包中開啟」。
 - **條碼預覽**
   - 卡片底色一律是純白、文字是黑色，掃描器比較容易讀取。
   - 「在錢包中開啟」上方新增 Material 3 Expressive 風格的螢幕亮度調整條。它只調整預覽視窗本身的亮度，不會動到系統亮度設定，關閉預覽後螢幕就回到原本的亮度。

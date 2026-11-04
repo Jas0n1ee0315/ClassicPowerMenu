@@ -38,7 +38,13 @@ class SettingsQuickAccessWalletManageAdapter(context: Context, var cards: List<S
         val card = item.info.getLoyaltyCard()
         with(holder.binding){
             walletRearrangeCardTitle.text = card.issuerName
-            walletRearrangeCardText.text = card.title
+            // 手動新增的卡片：第二行顯示副標題；沒有副標題時顯示「Added manually · 條碼類型」以便辨識
+            walletRearrangeCardText.text = if (item.isManual && card.title.isBlank()) {
+                walletRearrangeCardText.context.getString(
+                    R.string.settings_quick_access_wallet_manage_add_manual,
+                    ManualBarcodeTypes.forType(card.redemptionInfo.type).label
+                )
+            } else card.title
             walletRearrangeCardVisibilityToggle.imageTintList = ColorStateList.valueOf(monet.getAccentColor(walletRearrangeCardVisibilityToggle.context))
             walletRearrangeCardDragHandle.imageTintList = ColorStateList.valueOf(monet.getAccentColor(walletRearrangeCardDragHandle.context))
             if(item.visible){

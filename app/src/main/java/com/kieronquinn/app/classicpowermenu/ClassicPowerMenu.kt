@@ -161,7 +161,9 @@ class ClassicPowerMenu: LifecycleApplication() {
         single<AutoSwitchServicesRepository> { AutoSwitchServicesRepositoryImpl(get(), get()) }
         // 會員卡自訂標題（獨立儲存，同步不覆蓋）
         single<LoyaltyCardOverridesRepository> { LoyaltyCardOverridesRepositoryImpl(get()) }
-        single<GoogleWalletRepository> { GoogleWalletRepositoryImpl(get(), get(), get(), get(), get(), get()) }
+        // 手動新增的會員卡（加密 SharedPreferences，與 Google 同步資料庫分開）
+        single<com.kieronquinn.app.classicpowermenu.components.quickaccesswallet.loyaltycards.ManualLoyaltyCardRepository> { com.kieronquinn.app.classicpowermenu.components.quickaccesswallet.loyaltycards.ManualLoyaltyCardRepositoryImpl(get()) }
+        single<GoogleWalletRepository> { GoogleWalletRepositoryImpl(get(), get(), get(), get(), get(), get(), get()) }
         single<GoogleApiRepository> { GoogleApiRepositoryImpl(get(), get()) }
     }
     
@@ -189,7 +191,7 @@ class ClassicPowerMenu: LifecycleApplication() {
             viewModel<SettingsPowerOptionsRearrangeViewModel> { SettingsPowerOptionsRearrangeViewModelImpl(get(), get()) }
             viewModel<SettingsQuickAccessWalletViewModel> { SettingsQuickAccessWalletViewModelImpl(get(), get(), get(), get(), get(), get(), get()) }
             viewModel<SettingsDeviceControlsViewModel> { SettingsDeviceControlsViewModelImpl(get(), get()) }
-            viewModel<SettingsQuickAccessWalletManageViewModel> { SettingsQuickAccessWalletManageViewModelImpl(get(), get(), get(), get(), get()) }
+            viewModel<SettingsQuickAccessWalletManageViewModel> { SettingsQuickAccessWalletManageViewModelImpl(get(), get(), get(), get(), get(), get()) }
             viewModel<SettingsQuickAccessWalletAutoSwitchServiceViewModel> { SettingsQuickAccessWalletAutoSwitchServiceViewModelImpl(get(), get(), get()) }
             viewModel<SettingsPaymentCardsViewModel> { SettingsPaymentCardsViewModelImpl(get(), get()) }
             viewModel<SignInWithGoogleViewModel> { SignInWithGoogleViewModelImpl(get(), get(), get()) }

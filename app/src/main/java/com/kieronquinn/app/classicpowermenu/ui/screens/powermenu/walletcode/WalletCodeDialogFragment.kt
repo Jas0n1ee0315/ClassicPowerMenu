@@ -182,6 +182,12 @@ class WalletCodeDialogFragment: BaseDialogFragment<FragmentDialogWalletCodeBindi
     }
 
     private fun setupFab() = with(binding.walletCodeOpenInPay) {
+        // 手動新增的會員卡在 Google 錢包中不存在，隱藏「在錢包中開啟」
+        if (com.kieronquinn.app.classicpowermenu.components.quickaccesswallet.loyaltycards
+                .ManualLoyaltyCardRepository.isManualId(card.valuableId)) {
+            visibility = View.GONE
+            return@with
+        }
         backgroundTintList = ColorStateList.valueOf(card.backgroundColor)
         setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW).apply {

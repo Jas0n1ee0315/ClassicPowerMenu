@@ -84,7 +84,9 @@ class GoogleWalletRepositoryImpl(
     private val encryptedSettings: EncryptedSettings,
     private val googleApiRepository: GoogleApiRepository,
     private val valuablesDatabaseRepository: ValuablesDatabaseRepository,
-    private val loyaltyCardOverridesRepository: LoyaltyCardOverridesRepository
+    private val loyaltyCardOverridesRepository: LoyaltyCardOverridesRepository,
+    /** 手動新增的會員卡（獨立存放，不受 Google 同步影響） */
+    private val manualLoyaltyCardRepository: ManualLoyaltyCardRepository
 ): GoogleWalletRepository {
 
     companion object {
@@ -120,7 +122,11 @@ class GoogleWalletRepositoryImpl(
         // 鎖定中且不允許鎖定時存取 → 仍顯示原本的 logo 卡面，避免繞過「需先解鎖」的保護。
         val showCodeDirectly = settings.quickAccessWalletShowCodeDirectly &&
             (settings.quickAccessWalletAccessWhileLocked || !isDeviceLocked())
-        return getValuables().first().map {
+        // Google 同步的會員卡 + 手動新增的會員卡（顯示 / 隱藏、排序之後由呼叫端依卡片 ID 套用）
+        val manualCards = withContext(Dispatchers.IO) {
+            manualLoyaltyCardRepository.getCards().map { it.toLoyaltyCard() }
+        }
+        return (getValuables().first() + manualCards).map {
             WalletLoyaltyCardViewInfo(
                 context, it, googleSansMedium, onCardClicked,
                 showCodeDirectly = showCodeDirectly,

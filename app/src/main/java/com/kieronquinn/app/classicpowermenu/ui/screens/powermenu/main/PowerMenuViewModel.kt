@@ -196,7 +196,10 @@ class PowerMenuViewModelImpl(context: Context, private val service: CPMServiceCo
                 val order = settings.quickAccessWalletLoyaltyCardsOrder
                 filterNot { hidden.contains(it.getLoyaltyIdOrNull()) }.sortedBy {
                     val loyaltyId = it.getLoyaltyIdOrNull() ?: return@sortedBy 0
-                    order.indexOf(loyaltyId)
+                    val index = order.indexOf(loyaltyId)
+                    // 尚未排序過的手動新增卡片放在最後（Google 新卡維持原本行為）
+                    if (index == -1 && com.kieronquinn.app.classicpowermenu.components.quickaccesswallet.loyaltycards
+                            .ManualLoyaltyCardRepository.isManualId(loyaltyId)) Int.MAX_VALUE else index
                 }
             }
             list.addAll(loyaltyCards ?: emptyList())
@@ -210,12 +213,16 @@ class PowerMenuViewModelImpl(context: Context, private val service: CPMServiceCo
                 navigation.navigate(PowerMenuFragmentDirections.actionPowerMenuFragmentToWalletCodeDialogFragment(loyaltyCard))
             }
         }
+        // 手動新增的會員卡在 Google 錢包中不存在：一律開啟條碼預覽（不受「Show Loyalty Card Preview」影響）
+        val isManual = com.kieronquinn.app.classicpowermenu.components.quickaccesswallet.loyaltycards
+            .ManualLoyaltyCardRepository.isManualId(loyaltyCard.valuableId)
+        val showPreview = settings.quickAccessWalletShowPreview || isManual
         //Launch Google Pay when unlocked or if the user wants to
-        if(!isLocked() && !settings.quickAccessWalletShowPreview) return false
+        if(!isLocked() && !showPreview) return false
         //Check if the user has disabled show while locked
         if(!settings.quickAccessWalletAccessWhileLocked && isLocked()){
             //Check if the user has opted to show a preview rather than Google Pay
-            if(settings.quickAccessWalletShowPreview) {
+            if(showPreview) {
                 activityStarter.dismissKeyguardThenExecute({
                     launchPreview()
                     true

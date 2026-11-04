@@ -128,6 +128,18 @@
     <string name="settings_quick_access_wallet_manage_edit_title">Subtitle</string>
     <string name="settings_quick_access_wallet_manage_edit_original">Original: %1$s (leave empty to use it)</string>
     <string name="settings_quick_access_wallet_manage_edit_reset">Restore</string>
+    <!-- 手動新增會員卡 -->
+    <string name="settings_quick_access_wallet_manage_add">Add loyalty card</string>
+    <string name="settings_quick_access_wallet_manage_add_edit">Edit loyalty card</string>
+    <string name="settings_quick_access_wallet_manage_add_name">Card name</string>
+    <string name="settings_quick_access_wallet_manage_add_subtitle">Subtitle (optional)</string>
+    <string name="settings_quick_access_wallet_manage_add_number">Card number</string>
+    <string name="settings_quick_access_wallet_manage_add_type">Barcode type</string>
+    <string name="settings_quick_access_wallet_manage_add_required">Required</string>
+    <string name="settings_quick_access_wallet_manage_add_invalid">This number cannot be encoded as %1$s</string>
+    <string name="settings_quick_access_wallet_manage_add_deleted">Deleted %1$s</string>
+    <string name="settings_quick_access_wallet_manage_add_undo">Undo</string>
+    <string name="settings_quick_access_wallet_manage_add_manual">Added manually · %1$s</string>
     <!-- 付款卡自訂（Customize / Visibility） -->
     <string name="settings_quick_access_wallet_payment_customize">Customize</string>
     <string name="settings_quick_access_wallet_payment_customize_desc">Replace the artwork of your Payment Cards with your own images</string>
