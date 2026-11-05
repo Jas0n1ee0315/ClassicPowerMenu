@@ -11,7 +11,7 @@ Classic Power Menu is a Power Menu Replacement for Android 11+, with the main ai
 
 ## 下載 / Download
 
-[release/CPM-1.9.3-cardart-zhTW.apk](release/CPM-1.9.3-cardart-zhTW.apk)（debug 簽章；若已安裝官方版本，需先解除安裝才能安裝）
+請到 [Releases 頁面](https://github.com/Jas0n1ee0315/ClassicPowerMenu/releases/latest) 下載最新的 APK（debug 簽章；若已安裝官方版本，需先解除安裝才能安裝）。
 
 ## 本 Fork 新增功能 / Fork Additions
 
