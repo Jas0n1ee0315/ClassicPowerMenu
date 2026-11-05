@@ -75,6 +75,12 @@ Classic Power Menu is a Power Menu Replacement for Android 11+, with the main ai
 - 新增 / 排序裝置頁：勾選框固定靠右、上下置中，空白的狀態與副標題不佔高度。
 - **狀態載入失敗時自動重新連線**（設定 → 裝置控制，預設關閉）：開啟電源選單後 3 秒與 8 秒各檢查一次，若同一個 App（例如 Home Assistant）至少 2 個且超過一半的控制項顯示「無法載入狀態」，就透過 Root 結束該 App 的程序（非強制停止，排程與鬧鐘會保留）並重新載入，解決切換網路後 App 與伺服器連線卡住的問題；60 秒內最多觸發一次。
 
+### 更新檢查 (Update Check)
+
+- App 啟動時與每天中午會檢查**本 fork** 的 [Releases](https://github.com/Jas0n1ee0315/ClassicPowerMenu/releases)（原本檢查原作者的 repo），有新版時跳出提示，可直接下載並覆蓋安裝。
+- 以 `app/build.gradle` 的 `releaseTag`（例如 `v1.9.3-cardart-r3`）與最新 Release 標籤比較：兩者都有 `-rN` 時，只有編號較大才視為更新，不會提示降版。
+- **發布新版前，務必先把 `releaseTag` 改成新的 Release 標籤再建置 APK。**
+
 ### 建置 (Build)
 
 - 新增 Jetpack Compose（Kotlin Compose plugin 2.3.20、Compose BOM 2026.09.00），用於裁切編輯器和亮度調整條。
