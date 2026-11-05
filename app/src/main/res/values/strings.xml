@@ -1,180 +1,188 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <!--
+        介面文字：全部為台灣用語的繁體中文，並放在預設的 values/（不是 values-zh-rTW），
+        因此不論手機系統語言為何（例如英文）都會強制顯示中文。
+        其他語系的 strings.xml 已移除，避免切換語言時被覆蓋。
+    -->
 
     <string name="app_name">Classic Power Menu</string>
-    <string name="strapline">Power Menu Replacement</string>
+    <string name="strapline">電源選單替代工具</string>
 
-    <string name="accessibility_service_description">Required Accessibility Service to intercept long press power events. This service requests the minimum permissions required, and does not track or control your screen other than to show Classic Power Menu.</string>
-    <string name="xposed_description">Intercepts the Power Menu to show Classic Power Menu, without needing the Accessibility Service.</string>
+    <string name="accessibility_service_description">用來偵測長按電源鍵的無障礙服務。此服務只要求最低限度的權限，除了顯示 Classic Power Menu 之外，不會追蹤或控制你的螢幕。</string>
+    <string name="xposed_description">攔截系統電源選單並改為顯示 Classic Power Menu，不需要啟用無障礙服務。</string>
 
-    <string name="root_check_checking_root">Checking for Root…</string>
-    <string name="root_check_checking_root_desc">Please grant permission if asked</string>
-    <string name="root_check_failed_bottom_sheet_title">No Root</string>
-    <string name="root_check_failed_bottom_sheet_content">Classic Power Menu requires root access, please root your device to continue</string>
-    <string name="root_check_failed_bottom_sheet_close">Close</string>
+    <string name="root_check_checking_root">正在檢查 Root 權限…</string>
+    <string name="root_check_checking_root_desc">如果出現要求，請授予權限</string>
+    <string name="root_check_failed_bottom_sheet_title">沒有 Root 權限</string>
+    <string name="root_check_failed_bottom_sheet_content">Classic Power Menu 需要 Root 權限才能運作，請先 Root 你的裝置再繼續</string>
+    <string name="root_check_failed_bottom_sheet_close">關閉</string>
 
-    <string name="setup_landing_get_started">Get Started</string>
-    <string name="setup_accessibility_title">Enable Accessibility Service</string>
-    <string name="setup_accessibility_content">Classic Power Menu requires an Accessibility Service to react to Power Button events, please enable it to continue. Alternatively, if you have Xposed, you can enable the Xposed module and reboot. If you are using the Xposed module and still see this message, <a href="cpm://accessibiilityskip">tap here to skip.</a></string>
-    <string name="setup_accessibility_button">Enable Accessibility Service</string>
-    <string name="setup_wallet_switch">Enable Quick Access Wallet</string>
-    <string name="setup_wallet_content">The Quick Access Wallet gives you access to your cards and passes, from your default payment app. You can switch between NFC enabled payment cards or access compatible passes, right from the power menu.\n\nAdditionally, Classic Power Menu supports Loyalty Cards, enable this later in the settings.</string>
-    <string name="setup_wallet_button">Next</string>
-    <string name="setup_controls_switch">Enable Device Controls</string>
-    <string name="setup_controls_content">Device Controls allow you to control Smart Home devices via compatible apps, right from the power menu.\n\nAdditional apps are required to support this feature, such as Google Home.</string>
-    <string name="setup_controls_button">Next</string>
-    <string name="setup_complete_title">Setup Complete</string>
-    <string name="setup_complete_content">One last thing: The first time you attempt to launch Classic Power Menu after installing or a reboot, the normal power menu may appear in front of Classic Power Menu, or Classic Power Menu may not launch at all. <b>This is normal.</b> Simply close the normal power menu and long press power again, and this time Classic Power Menu will launch as normal. This is due to Android System restrictions.\n\nEnjoy the app!</string>
-    <string name="setup_complete_button">Finish</string>
+    <string name="setup_landing_get_started">開始使用</string>
+    <string name="setup_accessibility_title">啟用無障礙服務</string>
+    <string name="setup_accessibility_content">Classic Power Menu 需要無障礙服務來偵測電源鍵事件，請啟用後繼續。如果你有 Xposed，也可以改為啟用 Xposed 模組並重新啟動。如果你已經在使用 Xposed 模組卻仍看到這則訊息，<a href="cpm://accessibiilityskip">請輕觸這裡略過。</a></string>
+    <string name="setup_accessibility_button">啟用無障礙服務</string>
+    <string name="setup_wallet_switch">啟用快速存取錢包</string>
+    <string name="setup_wallet_content">快速存取錢包可讓你從預設付款應用程式使用卡片與票證。你可以直接在電源選單中切換支援 NFC 的信用卡，或使用相容的票證。\n\n此外，Classic Power Menu 也支援會員卡，之後可在設定中啟用。</string>
+    <string name="setup_wallet_button">下一步</string>
+    <string name="setup_controls_switch">啟用裝置控制</string>
+    <string name="setup_controls_content">裝置控制可讓你直接在電源選單中，透過相容的應用程式控制智慧家庭裝置。\n\n此功能需要搭配其他應用程式，例如 Google Home。</string>
+    <string name="setup_controls_button">下一步</string>
+    <string name="setup_complete_title">設定完成</string>
+    <string name="setup_complete_content">最後提醒：安裝完成或重新開機後第一次開啟 Classic Power Menu 時，系統原本的電源選單可能會出現在 Classic Power Menu 前面，或 Classic Power Menu 根本沒有開啟。<b>這是正常現象。</b>只要關閉原本的電源選單，再長按一次電源鍵，Classic Power Menu 就會正常開啟。這是 Android 系統限制造成的。\n\n祝你使用愉快！</string>
+    <string name="setup_complete_button">完成</string>
 
-    <string name="power_menu_button_power_off">關機</string> <!-- 強制繁中（不隨系統語言切換） -->
-    <string name="power_menu_button_reboot">重啟</string> <!-- 強制繁中（不隨系統語言切換） -->
-    <string name="power_menu_button_reboot_recovery">Reboot Recovery</string>
-    <string name="power_menu_button_reboot_bootloader">Reboot Bootloader</string>
-    <string name="power_menu_button_restart_systemui">重啟SysUI</string> <!-- 強制繁中（不隨系統語言切換） -->
-    <string name="power_menu_button_emergency">Emergency</string>
-    <string name="power_menu_button_lockdown">Lockdown</string>
-    <string name="power_menu_button_screenshot">Screenshot</string>
+    <string name="power_menu_button_power_off">關機</string>
+    <string name="power_menu_button_reboot">重啟</string>
+    <string name="power_menu_button_reboot_recovery">重啟至 Recovery</string>
+    <string name="power_menu_button_reboot_bootloader">重啟至 Bootloader</string>
+    <string name="power_menu_button_restart_systemui">重啟SysUI</string>
+    <string name="power_menu_button_emergency">緊急求助</string>
+    <string name="power_menu_button_lockdown">鎖定</string>
+    <string name="power_menu_button_screenshot">螢幕截圖</string>
     <string name="power_menu_button_fastbootd">Fastbootd</string>
-    <string name="power_menu_button_download">Download</string>
+    <string name="power_menu_button_download">下載模式</string>
 
-    <string name="wallet_loyalty_instructions">• Tap to show</string>
-    <string name="content_creator_mode_warning">Content Creator Mode enabled</string>
+    <string name="wallet_loyalty_instructions">• 輕觸即可顯示</string>
+    <string name="content_creator_mode_warning">已啟用內容創作者模式</string>
 
-    <string name="reboot_safemode_title">Reboot to safe mode</string>
-    <string name="reboot_safemode_confirm">Do you want to reboot into safe mode?
-         This will disable all third party applications you have installed.
-         They will be restored when you reboot again.</string>
-    <string name="wallet_code_open_in_pay">在錢包中開啟</string> <!-- 強制繁中（不隨系統語言切換） -->
+    <string name="reboot_safemode_title">重新啟動至安全模式</string>
+    <string name="reboot_safemode_confirm">要重新啟動至安全模式嗎？
+         這會停用你安裝的所有第三方應用程式，
+         再次重新啟動後就會恢復。</string>
+    <string name="wallet_code_open_in_pay">在錢包中開啟</string>
 
-    <string name="settings_main_switch">Enable Classic Power Menu</string>
-    <string name="settings_header_configuration">Configuration</string>
-    <string name="settings_power_options">Power Options</string>
-    <string name="settings_power_options_desc">Configure and re-arrange the Power Options buttons</string>
-    <string name="settings_quick_access_wallet">Quick Access Wallet</string>
-    <string name="settings_quick_access_wallet_desc">Change settings for how the Wallet shows, including showing loyalty cards</string>
-    <string name="settings_controls">Device Controls</string>
-    <string name="settings_controls_desc">Change settings for how Device Controls show, including using while locked</string>
-    <string name="settings_developer_options">Developer Options</string>
-    <string name="settings_theme_configuration">Theme</string>
-    <string name="settings_monet">Material You Colors</string>
-    <string name="settings_monet_desc">Use Material You / Monet colors in the power menu</string>
-    <string name="settings_monet_color_picker">Wallpaper Color</string>
-    <string name="settings_monet_color_picker_desc">Select the color to use, extracted from your wallpaper</string>
-    <string name="settings_solid_color">Use Solid Color</string>
-    <string name="settings_solid_color_desc">Use a solid Material You background rather than a dimmed-blur background</string>
-    <string name="settings_power_options_rearrange">Edit Power Options</string>
-    <string name="settings_power_options_rearrange_desc">Add, remove and re-arrange the Power Options</string>
-    <string name="settings_power_options_hide_when_locked">Hide power-related options when locked</string>
-    <string name="settings_power_options_hide_when_locked_desc">Hides Power Off, Reboot, Reboot Recovery and Reboot Bootloader options while locked.\n<b>Important: This is not intended as a theft-deterrent, a thief can still hold down power for 10 seconds or remove the SIM card!</b></string>
-    <string name="settings_power_options_open_collapsed">Open collapsed</string>
-    <string name="settings_power_options_open_collapsed_desc">When Classic Power Menu opens, start with the Power Options panel collapsed, if there is more than one row of items</string>
-    <string name="settings_power_options_drag_to_rearrange">Tap &amp; hold to drag to add, remove or re-arrange</string>
-    <string name="settings_power_options_cannot_remove">You must have at least one Power Option in the Power Menu</string>
-    <string name="settings_power_options_rearrange_no_items">No more buttons to add</string>
-    <string name="settings_power_options_allow_rotate">Allow Rotation</string>
-    <string name="settings_power_options_allow_rotate_desc">Allows the screen to be orientated in either portrait or landscape</string>
-    <string name="settings_power_options_allow_rotate_full">Allow Full Rotation</string>
-    <string name="settings_power_options_allow_rotate_full_desc">Allows full rotation, including reverse portrait (upside down)</string>
+    <string name="settings_main_switch">啟用 Classic Power Menu</string>
+    <string name="settings_header_configuration">設定</string>
+    <string name="settings_power_options">電源選項</string>
+    <string name="settings_power_options_desc">設定電源選項按鈕並調整順序</string>
+    <string name="settings_quick_access_wallet">快速存取錢包</string>
+    <string name="settings_quick_access_wallet_desc">變更錢包的顯示方式，包括顯示會員卡</string>
+    <string name="settings_controls">裝置控制</string>
+    <string name="settings_controls_desc">變更裝置控制的顯示方式，包括鎖定時是否可使用</string>
+    <string name="settings_developer_options">開發人員選項</string>
+    <string name="settings_theme_configuration">主題</string>
+    <string name="settings_monet">Material You 色彩</string>
+    <string name="settings_monet_desc">在電源選單中使用 Material You／Monet 色彩</string>
+    <string name="settings_monet_color_picker">桌布色彩</string>
+    <string name="settings_monet_color_picker_desc">選擇要使用的顏色（從桌布擷取）</string>
+    <string name="settings_solid_color">使用純色背景</string>
+    <string name="settings_solid_color_desc">改用 Material You 純色背景，而不是調暗的模糊背景</string>
+    <string name="settings_power_options_rearrange">編輯電源選項</string>
+    <string name="settings_power_options_rearrange_desc">新增、移除電源選項並調整順序</string>
+    <string name="settings_power_options_hide_when_locked">鎖定時隱藏電源相關選項</string>
+    <string name="settings_power_options_hide_when_locked_desc">鎖定時隱藏關機、重啟、重啟至 Recovery 及重啟至 Bootloader 選項。\n<b>注意：這並非防盜功能，小偷仍可長按電源鍵 10 秒或拔出 SIM 卡！</b></string>
+    <string name="settings_power_options_open_collapsed">開啟時收合</string>
+    <string name="settings_power_options_open_collapsed_desc">開啟 Classic Power Menu 時，如果電源選項超過一列，預設先收合電源選項面板</string>
+    <string name="settings_power_options_drag_to_rearrange">按住並拖曳即可新增、移除或調整順序</string>
+    <string name="settings_power_options_cannot_remove">電源選單中至少要保留一個電源選項</string>
+    <string name="settings_power_options_rearrange_no_items">沒有其他可新增的按鈕</string>
+    <string name="settings_power_options_allow_rotate">允許旋轉</string>
+    <string name="settings_power_options_allow_rotate_desc">允許螢幕以直向或橫向顯示</string>
+    <string name="settings_power_options_allow_rotate_full">允許完整旋轉</string>
+    <string name="settings_power_options_allow_rotate_full_desc">允許所有方向旋轉，包括上下顛倒的直向</string>
 
-    <string name="settings_quick_access_wallet_switch">Show Quick Access Wallet</string>
-    <string name="settings_quick_access_wallet_header_payment">Payment Cards</string>
-    <string name="settings_quick_access_wallet_loyalty_cards">Loyalty Cards</string>
-    <string name="settings_quick_access_wallet_change_settings_in_pay">Change settings in Google Wallet</string>
-    <string name="settings_quick_access_wallet_change_settings_in_pay_desc">Change settings such as Payment Card order, default card and behaviour</string>
-    <string name="settings_quick_access_wallet_access_while_locked_desc">Show the Loyalty Card preview while locked. If disabled, you will be prompted to unlock first before the preview or Google Wallet opens</string>
-    <string name="settings_quick_access_wallet_hide_card_number_when_locked">Blur Payment Card Number when locked</string>
-    <string name="settings_quick_access_wallet_auto_switch_service">Auto switch default payment method</string>
-    <string name="settings_quick_access_wallet_auto_switch_service_desc">When CPM is opened auto switch the default payment method to the selected service. <b>Note: This is only needed if your wallet app is not the "Default Contactless Payment"</b></string>
-    <string name="settings_quick_access_wallet_auto_switch_service_select">Select service for auto switch</string>
-    <string name="settings_quick_access_wallet_auto_switch_service_loading">Loading NFC emulation services…</string>
-    <string name="settings_quick_access_wallet_auto_switch_service_error_no_services">No NFC emulation services found</string>
-    <string name="settings_quick_access_wallet_show_loyalty_cards">Show Loyalty Cards</string>
-    <string name="settings_quick_access_wallet_show_loyalty_cards_desc">Load and show your Loyalty Cards from Google Wallet in the Quick Access Wallet</string>
-    <string name="settings_quick_access_wallet_manage">Manage Account &amp; Loyalty Cards</string>
-    <string name="settings_quick_access_wallet_manage_desc">Login, re-order and show/hide Loyalty Cards in the Quick Access Wallet</string>
+    <string name="settings_quick_access_wallet_switch">顯示快速存取錢包</string>
+    <string name="settings_quick_access_wallet_header_payment">信用卡</string>
+    <string name="settings_quick_access_wallet_loyalty_cards">會員卡</string>
+    <string name="settings_quick_access_wallet_change_settings_in_pay">在 Google 錢包中變更設定</string>
+    <string name="settings_quick_access_wallet_change_settings_in_pay_desc">變更信用卡順序、預設卡片及付款行為等設定</string>
+    <string name="settings_quick_access_wallet_access_while_locked_desc">鎖定時也能顯示會員卡預覽。關閉後，開啟預覽或 Google 錢包前會先要求解鎖</string>
+    <string name="settings_quick_access_wallet_hide_card_number_when_locked">鎖定時模糊信用卡卡號</string>
+    <string name="settings_quick_access_wallet_auto_switch_service">自動切換預設付款方式</string>
+    <string name="settings_quick_access_wallet_auto_switch_service_desc">開啟 CPM 時自動將預設付款方式切換為所選的服務。<b>注意：只有在你的錢包應用程式不是「預設感應付款」應用程式時才需要開啟</b></string>
+    <string name="settings_quick_access_wallet_auto_switch_service_select">選擇要自動切換的服務</string>
+    <string name="settings_quick_access_wallet_auto_switch_service_loading">正在載入 NFC 模擬服務…</string>
+    <string name="settings_quick_access_wallet_auto_switch_service_error_no_services">找不到 NFC 模擬服務</string>
+    <string name="settings_quick_access_wallet_show_loyalty_cards">顯示會員卡</string>
+    <string name="settings_quick_access_wallet_show_loyalty_cards_desc">從 Google 錢包載入會員卡，並顯示在快速存取錢包中</string>
+    <string name="settings_quick_access_wallet_manage">管理帳號與會員卡</string>
+    <string name="settings_quick_access_wallet_manage_desc">登入帳號，並調整會員卡在快速存取錢包中的順序與顯示／隱藏</string>
 
-    <string name="settings_quick_access_wallet_manage_logout">Logout of account</string>
-    <string name="settings_quick_access_wallet_manage_logout_desc">Delete stored Loyalty Cards data and current account</string>
-    <string name="settings_quick_access_wallet_manage_sign_in">Sign in required</string>
-    <string name="settings_quick_access_wallet_manage_sign_in_desc">To use Loyalty Cards you need to log into your Google Account using the regular account flow to use Google Wallet integration. This is required as the API is not accessible using the regular android account sign in.\n\n<b>Your Wallet data is kept encrypted on your device and never transmitted, nor is it included in backups, for your privacy and security.</b></string>
+    <string name="settings_quick_access_wallet_manage_logout">登出帳號</string>
+    <string name="settings_quick_access_wallet_manage_logout_desc">刪除已儲存的會員卡資料及目前的帳號</string>
+    <string name="settings_quick_access_wallet_manage_sign_in">需要登入</string>
+    <string name="settings_quick_access_wallet_manage_sign_in_desc">如要使用會員卡，你必須透過一般的帳號登入流程登入 Google 帳戶，才能整合 Google 錢包。這是因為使用 Android 系統內建的帳號登入無法存取相關 API。\n\n<b>為了保護你的隱私與安全，錢包資料會加密保存在你的裝置上，絕不會傳送出去，也不會包含在備份中。</b></string>
 
-    <string name="settings_quick_access_wallet_show_preview">Show Loyalty Card Preview</string>
-    <string name="settings_quick_access_wallet_show_preview_desc">Show a preview of the Loyalty Card to be scanned or viewed in store without opening Google Wallet</string>
-    <string name="settings_quick_access_wallet_show_code_directly">Display Card Code Directly</string>
-    <string name="settings_quick_access_wallet_show_code_directly_desc">(Experimental) Show the Loyalty Card\'s barcode or QR code directly on the card in the Power Menu instead of its logo, without changing screen brightness. Tapping the card still opens the preview or Google Wallet. If access while locked is disabled, the normal card is shown while locked</string>
-    <string name="settings_quick_access_wallet_access_while_locked">Allow Loyalty Card access while locked</string>
-    <string name="settings_quick_access_wallet_hide_card_number_when_locked_desc">Applies a blur to your Payment Card when the Quick Access Wallet is open and the device is locked. <b>Note: This may not work for all cards or Wallet providers.</b></string>
-    <string name="settings_quick_access_wallet_loyalty_cards_not_supported">Loyalty Cards not Supported</string>
-    <string name="settings_quick_access_wallet_loyalty_cards_not_supported_desc">Unfortunately, Loyalty Cards are currently only supported on the original Google Wallet app, not the unified "GPay" app. Install and set up Google Wallet to use Loyalty Cards in the Quick Access Wallet.</string>
-    <string name="settings_device_controls_switch">Show Device Controls</string>
-    <string name="settings_device_controls_access_while_locked">Allow while locked</string>
-    <string name="settings_device_controls_access_while_locked_desc">Allow interaction with Device Controls while locked. This does <b>not</b> allow adding or editing controls while locked</string>
-    <string name="color_picker_unavailable">Wallpaper Color Picker unavailable for the currently selected wallpaper</string>
-    <string name="settings_quick_access_wallet_loading">Loading Loyalty Cards…</string>
-    <string name="settings_quick_access_wallet_manage_error_no_cards">No Loyalty Cards loaded. \n Press the sync button to load Loyalty Cards from Google Wallet!</string>
-    <string name="settings_quick_access_wallet_manage_error_generic">Error loading Loyalty Cards</string>
-    <string name="settings_developer_options_content_creator_mode">Content Creator Mode</string>
-    <string name="settings_developer_options_content_creator_mode_desc">Enable this to always blur your Payment Card numbers, and show dummy codes for Loyalty Cards <b>in the preview</b> (enable that separately if you want it always on). This is useful for taking screenshots or videos without accidentally exposing your card info.\n<b>Warning: Don\'t try to use a Loyalty Card with this mode enabled, it may cause errors on stores\' systems.</b></string>
-    <string name="settings_accessibility_warning">Accessibility Service Not Enabled</string>
-    <string name="settings_accessibility_warning_desc">Classic Power Menu requires an Accessibility Service to intercept power button long press events. Tap to enable.</string>
-    <string name="settings_about_header">About</string>
-    <string name="settings_about_faq">Frequently Asked Questions</string>
+    <string name="settings_quick_access_wallet_show_preview">顯示會員卡預覽</string>
+    <string name="settings_quick_access_wallet_show_preview_desc">不必開啟 Google 錢包，就能顯示會員卡預覽，方便在店內掃描或查看</string>
+    <string name="settings_quick_access_wallet_show_code_directly">直接顯示條碼</string>
+    <string name="settings_quick_access_wallet_show_code_directly_desc">（實驗性功能）在電源選單的會員卡上直接顯示條碼或 QR 碼，取代原本的標誌，且不會調整螢幕亮度。輕觸卡片仍會開啟預覽或 Google 錢包。若關閉「允許鎖定時使用會員卡」，鎖定時會顯示原本的卡面</string>
+    <string name="settings_quick_access_wallet_access_while_locked">允許鎖定時使用會員卡</string>
+    <string name="settings_quick_access_wallet_hide_card_number_when_locked_desc">開啟快速存取錢包且裝置處於鎖定狀態時，將信用卡卡號模糊處理。<b>注意：不一定適用於所有卡片或錢包服務。</b></string>
+    <string name="settings_quick_access_wallet_loyalty_cards_not_supported">不支援會員卡</string>
+    <string name="settings_quick_access_wallet_loyalty_cards_not_supported_desc">很抱歉，目前只有原版 Google 錢包應用程式支援會員卡，整合後的「GPay」應用程式不支援。請安裝並設定 Google 錢包，才能在快速存取錢包中使用會員卡。</string>
+    <string name="settings_device_controls_switch">顯示裝置控制</string>
+    <string name="settings_device_controls_access_while_locked">允許鎖定時使用</string>
+    <string name="settings_device_controls_access_while_locked_desc">允許在鎖定時操作裝置控制。這<b>不會</b>允許在鎖定時新增或編輯控制項</string>
+    <string name="color_picker_unavailable">目前的桌布無法使用桌布色彩選擇器</string>
+    <string name="settings_quick_access_wallet_loading">正在載入會員卡…</string>
+    <string name="settings_quick_access_wallet_manage_error_no_cards">尚未載入任何會員卡。\n請按同步按鈕，從 Google 錢包載入會員卡！</string>
+    <string name="settings_quick_access_wallet_manage_error_generic">載入會員卡時發生錯誤</string>
+    <string name="settings_developer_options_content_creator_mode">內容創作者模式</string>
+    <string name="settings_developer_options_content_creator_mode_desc">開啟後一律模糊信用卡卡號，並在<b>預覽中</b>將會員卡顯示為假的條碼（如需一律開啟預覽，請另外啟用）。適合拍攝螢幕截圖或影片，避免不小心洩漏卡片資訊。\n<b>警告：開啟此模式時請勿實際使用會員卡，可能會造成店家系統錯誤。</b></string>
+    <string name="settings_accessibility_warning">尚未啟用無障礙服務</string>
+    <string name="settings_accessibility_warning_desc">Classic Power Menu 需要無障礙服務來偵測長按電源鍵事件。輕觸即可啟用。</string>
+    <string name="settings_about_header">關於</string>
+    <string name="settings_about_faq">常見問題</string>
     <string name="settings_about_faq_file">faq.md</string>
     <string name="settings_about">Classic Power Menu v%1s</string>
-    <string name="settings_about_desc">Created by Kieron Quinn / Quinny899 @ XDA\nAdditional images by Rohith R Krishnan and Austin Andrews\nLoyalty Card integration &amp; payment method switching by Philip Magyar\nPayment Card artwork customization based on ZetaCard by hxfuxyy (github.com/hxfuxyy/ZetaCard), modified and not endorsed by hxfuxyy\n%1s</string>
+    <string name="settings_about_desc">由 Kieron Quinn／Quinny899 @ XDA 開發\n其他圖片：Rohith R Krishnan 與 Austin Andrews\n會員卡整合與付款方式切換：Philip Magyar\n信用卡卡面自訂功能以 hxfuxyy 的 ZetaCard（github.com/hxfuxyy/ZetaCard）為基礎修改，非 hxfuxyy 官方版本，亦未經其背書\n%1s</string>
     <!-- 會員卡標題編輯 -->
-    <string name="settings_quick_access_wallet_manage_edit">Edit card name</string>
-    <string name="settings_quick_access_wallet_manage_edit_issuer_name">Title</string>
-    <string name="settings_quick_access_wallet_manage_edit_title">Subtitle</string>
-    <string name="settings_quick_access_wallet_manage_edit_original">Original: %1$s (leave empty to use it)</string>
-    <string name="settings_quick_access_wallet_manage_edit_reset">Restore</string>
+    <string name="settings_quick_access_wallet_manage_edit">編輯卡片名稱</string>
+    <string name="settings_quick_access_wallet_manage_edit_issuer_name">主標題</string>
+    <string name="settings_quick_access_wallet_manage_edit_title">副標題</string>
+    <string name="settings_quick_access_wallet_manage_edit_original">原始名稱：%1$s（留空則使用原始名稱）</string>
+    <string name="settings_quick_access_wallet_manage_edit_reset">還原</string>
     <!-- 手動新增會員卡 -->
-    <string name="settings_quick_access_wallet_manage_add">Add loyalty card</string>
-    <string name="settings_quick_access_wallet_manage_add_edit">Edit loyalty card</string>
-    <string name="settings_quick_access_wallet_manage_add_name">Card name</string>
-    <string name="settings_quick_access_wallet_manage_add_subtitle">Subtitle (optional)</string>
-    <string name="settings_quick_access_wallet_manage_add_number">Card number</string>
-    <string name="settings_quick_access_wallet_manage_add_type">Barcode type</string>
-    <string name="settings_quick_access_wallet_manage_add_required">Required</string>
-    <string name="settings_quick_access_wallet_manage_add_invalid">This number cannot be encoded as %1$s</string>
-    <string name="settings_quick_access_wallet_manage_add_deleted">Deleted %1$s</string>
-    <string name="settings_quick_access_wallet_manage_add_undo">Undo</string>
-    <string name="settings_quick_access_wallet_manage_add_manual">Added manually · %1$s</string>
-    <!-- 付款卡自訂（Customize / Visibility） -->
-    <string name="settings_quick_access_wallet_payment_customize">Customize</string>
-    <string name="settings_quick_access_wallet_payment_customize_desc">Replace the artwork of your Payment Cards with your own images</string>
-    <string name="settings_quick_access_wallet_payment_visibility">Visibility</string>
-    <string name="settings_quick_access_wallet_payment_visibility_desc">Show or hide individual Payment Cards in the Quick Access Wallet</string>
-    <string name="settings_quick_access_wallet_payment_loading">Loading Payment Cards…</string>
-    <string name="settings_quick_access_wallet_payment_error_no_cards">No Payment Cards found</string>
-    <string name="settings_quick_access_wallet_payment_error_unavailable">The Quick Access Wallet service is not available. Make sure Google Wallet is set as your default payment app.</string>
-    <string name="settings_quick_access_wallet_payment_error_generic">Error loading Payment Cards</string>
-    <string name="settings_quick_access_wallet_payment_custom_artwork">Custom artwork</string>
-    <string name="settings_quick_access_wallet_payment_original_artwork">Original artwork</string>
-    <string name="settings_quick_access_wallet_payment_customize_choose">Choose image</string>
-    <string name="settings_quick_access_wallet_payment_customize_reset">Restore original artwork</string>
-    <string name="settings_quick_access_wallet_payment_customize_credit">Payment Card artwork customization is based on ZetaCard by hxfuxyy: https://github.com/hxfuxyy/ZetaCard\nThis is a modified, unofficial integration and is not endorsed by hxfuxyy.</string>
-    <string name="settings_about_translators">Translators:\nJapanese: C0unt-zero\nItalian: Vladi69\nChinese: wushidi and Ketal\nPolish: Chefski</string>
+    <string name="settings_quick_access_wallet_manage_add">新增會員卡</string>
+    <string name="settings_quick_access_wallet_manage_add_edit">編輯會員卡</string>
+    <string name="settings_quick_access_wallet_manage_add_name">會員卡名稱</string>
+    <string name="settings_quick_access_wallet_manage_add_subtitle">副標題（選填）</string>
+    <string name="settings_quick_access_wallet_manage_add_number">會員卡號</string>
+    <string name="settings_quick_access_wallet_manage_add_type">條碼類型</string>
+    <string name="settings_quick_access_wallet_manage_add_required">必填</string>
+    <string name="settings_quick_access_wallet_manage_add_invalid">此卡號無法產生為 %1$s 條碼</string>
+    <string name="settings_quick_access_wallet_manage_add_deleted">已刪除「%1$s」</string>
+    <string name="settings_quick_access_wallet_manage_add_undo">復原</string>
+    <string name="settings_quick_access_wallet_manage_add_manual">手動新增 · %1$s</string>
+    <!-- 信用卡自訂（自訂卡面 / 顯示或隱藏） -->
+    <string name="settings_quick_access_wallet_payment_customize">自訂卡面</string>
+    <string name="settings_quick_access_wallet_payment_customize_desc">用自己的圖片取代信用卡卡面</string>
+    <string name="settings_quick_access_wallet_payment_visibility">顯示／隱藏</string>
+    <string name="settings_quick_access_wallet_payment_visibility_desc">個別設定每張信用卡是否顯示在快速存取錢包中</string>
+    <string name="settings_quick_access_wallet_payment_loading">正在載入信用卡…</string>
+    <string name="settings_quick_access_wallet_payment_error_no_cards">找不到信用卡</string>
+    <string name="settings_quick_access_wallet_payment_error_unavailable">無法使用快速存取錢包服務。請確認已將 Google 錢包設為預設付款應用程式。</string>
+    <string name="settings_quick_access_wallet_payment_error_generic">載入信用卡時發生錯誤</string>
+    <string name="settings_quick_access_wallet_payment_custom_artwork">自訂卡面</string>
+    <string name="settings_quick_access_wallet_payment_original_artwork">原始卡面</string>
+    <string name="settings_quick_access_wallet_payment_customize_choose">選擇圖片</string>
+    <string name="settings_quick_access_wallet_payment_customize_reset">還原原始卡面</string>
+    <string name="settings_quick_access_wallet_payment_customize_credit">信用卡卡面自訂功能以 hxfuxyy 的 ZetaCard 為基礎：https://github.com/hxfuxyy/ZetaCard\n此為修改後的非官方整合版本，未經 hxfuxyy 背書。</string>
+    <string name="settings_about_translators">翻譯貢獻者：\n日文：C0unt-zero\n義大利文：Vladi69\n中文：wushidi、Ketal\n波蘭文：Chefski</string>
 
-    <string name="chip_donate">Donate</string>
-    <string name="chip_twitter">Follow me on Twitter</string>
+    <string name="chip_donate">贊助</string>
+    <string name="chip_twitter">在 Twitter 上追蹤我</string>
     <string name="chip_github">GitHub</string>
-    <string name="chip_xda">XDA Thread</string>
+    <string name="chip_xda">XDA 討論串</string>
 
-    <string name="sign_in_with_google">Sign in with Google</string>
-    <string name="menu_open_source_libraries">Open source libraries</string>
-    <string name="menu_rerun_setup">Re-run setup</string>
+    <string name="sign_in_with_google">使用 Google 帳戶登入</string>
+    <string name="menu_open_source_libraries">開放原始碼程式庫</string>
+    <string name="menu_rerun_setup">重新執行設定精靈</string>
 
-    <string name="bottom_sheet_update_available_title">Update Available</string>
-    <string name="bottom_sheet_update_available_positive">Download</string>
-    <string name="bottom_sheet_update_available_negative">Close</string>
-    <string name="bottom_sheet_update_available_neutral">View on GitHub</string>
-    <string name="download_manager_description">Downloading update…</string>
-    <string name="bs_update_download_failed">Download failed</string>
-    <string name="update_notification_channel_title">Update notifications</string>
-    <string name="update_notification_channel_description">Notifications shown when the app checks for updates once a day</string>
-    <string name="update_notification_title">Classic Power Menu update available</string>
-    <string name="update_notification_content">An update is available for Classic Power Menu (%1s to %1s)</string>
-    <string name="shortcut_show_power_menu">Power Menu</string>
+    <string name="bottom_sheet_update_available_title">有可用的更新</string>
+    <string name="bottom_sheet_update_available_positive">下載</string>
+    <string name="bottom_sheet_update_available_negative">關閉</string>
+    <string name="bottom_sheet_update_available_neutral">在 GitHub 上查看</string>
+    <string name="download_manager_description">正在下載更新…</string>
+    <string name="bs_update_download_failed">下載失敗</string>
+    <string name="update_notification_channel_title">更新通知</string>
+    <string name="update_notification_channel_description">每天檢查一次更新時顯示的通知</string>
+    <string name="update_notification_title">Classic Power Menu 有可用的更新</string>
+    <string name="update_notification_content">Classic Power Menu 有可用的更新（%1s → %1s）</string>
+    <string name="shortcut_show_power_menu">電源選單</string>
+    <!-- 強制繁中的確定 / 取消（取代會跟隨系統語言的 android.R.string.ok / cancel） -->
+    <string name="dialog_ok">確定</string>
+    <string name="dialog_cancel">取消</string>
 
 </resources>

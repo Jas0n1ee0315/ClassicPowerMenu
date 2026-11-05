@@ -1,40 +1,40 @@
-## Can Classic Power Menu work without root?
+## Classic Power Menu 可以在沒有 Root 的情況下使用嗎？
 
-Unfortunately not. Root is required to access the Quick Access Wallet and Device Controls APIs, so even with ADB/`shell` permissions, it would not be possible, therefore root is required.
+很抱歉，不行。存取快速存取錢包與裝置控制的 API 需要 Root 權限，即使擁有 ADB／`shell` 權限也無法做到，因此必須 Root。
 
-## Why does the Accessibility Service require permissions to view & control my screen?
+## 為什麼無障礙服務需要「查看及控制螢幕」的權限？
 
-The "View & Control screen" permission is automatically granted to all Accessibility Services, even when not required. Classic Power Menu only uses Accessibility Service to react to the power button being long pressed (by tracking when the original power menu opens), it does not track any other device or app usage.
+所有無障礙服務都會自動取得「查看及控制螢幕」權限，即使用不到也一樣。Classic Power Menu 只用無障礙服務來偵測長按電源鍵（透過偵測原本的電源選單何時開啟），不會追蹤任何其他裝置或應用程式的使用情形。
 
-## There's a delay when opening Classic Power Menu / I can see the normal power menu briefly before Classic Power Menu opens
+## 開啟 Classic Power Menu 時會延遲一下／會先短暫看到原本的電源選單
 
-This is normal, when using the Accessibility Service. It's because the original power menu has to fire *before* Classic Power Menu can open, and therefore there is a slight delay and a brief moment where you can see the stock power menu.
+使用無障礙服務時，這是正常現象。因為原本的電源選單必須*先*觸發，Classic Power Menu 才能開啟，所以會有些微延遲，也會短暫看到系統原本的電源選單。
 
-For a faster experience, the optional Xposed module does not have this issue.
+如果想要更快的體驗，可以改用選用的 Xposed 模組，就不會有這個問題。
 
-## Why do I need classic Google Pay rather than the new Pay ("GPay") for Loyalty Cards to work?
+## 為什麼會員卡需要使用舊版 Google Pay，而不是新版 Pay（「GPay」）？
 
-Currently, only the format for reading Loyalty Cards from the classic Google Pay app is supported, due to region restrictions preventing testing on the new version. This may change in the future if/when Google roll out the new app worldwide.
+由於地區限制，無法在新版應用程式上測試，目前只支援從舊版 Google Pay 應用程式讀取會員卡的格式。如果 Google 日後在全球推出新版應用程式，這點可能會改變。
 
-## Which apps work with Quick Access Wallet?
+## 哪些應用程式可以搭配快速存取錢包使用？
 
-Google Pay is the only known service that works with Quick Access Wallet. You don't actually *need* Google Pay or GPay installed for it to work (Google Play Services provides it), but it allows configuration if you do.
+目前已知只有 Google Pay 支援快速存取錢包。其實不一定*需要*安裝 Google Pay 或 GPay 才能使用（功能由 Google Play 服務提供），但安裝後可以進行相關設定。
 
-## Which apps work with Device Controls?
+## 哪些應用程式可以搭配裝置控制使用？
 
-There are numerous apps that work with Device Controls. The feature is designed for controlling Smart Home devices, so apps like Google Home have support.
+有許多應用程式支援裝置控制。這項功能是為了控制智慧家庭裝置而設計，因此像 Google Home 等應用程式都有支援。
 
-If you do not have Smart Home devices, or prefer to use the space for controlling your phone instead, there are some apps on Google Play that add Quick Settings-esque toggles and controls to the menu (search "Device Controls").
+如果你沒有智慧家庭裝置，或想把這個空間拿來控制手機本身，Google Play 上也有一些應用程式可以在選單中加入類似快速設定的開關與控制項（搜尋「Device Controls」）。
 
-For power users, Tasker also supports running tasks via the feature.
+進階使用者也可以透過這項功能執行 Tasker 的工作。
 
-## Can you add (x) button to the Power Options?
+## 可以在電源選項中加入（某個）按鈕嗎？
 
-Probably not. The Power Options are intentionally minimal, use a Device Controls app (such as those mentioned above) for more options including Airplane Mode, Sound Mode etc.
+應該不會。電源選項刻意保持精簡，如需更多選項（例如飛航模式、音效模式等），請使用裝置控制應用程式（例如上面提到的那些）。
 
-## Background Blur isn't working on my device
+## 我的裝置無法使用背景模糊
 
-On some devices you will have to enable the system background blurs for Classic Power Menu's background blur to work. This can be done easily in a terminal with root, or ADB shell with root. The following commands assume you are using Magisk.
+在部分裝置上，必須先啟用系統的背景模糊，Classic Power Menu 的背景模糊才能運作。只要在具有 Root 權限的終端機或 ADB shell 中執行指令即可輕鬆啟用。以下指令假設你使用的是 Magisk。
 
 ```
 su
@@ -42,11 +42,10 @@ resetprop ro.surface_flinger.supports_background_blur 1
 pkill -TERM -f com. android.systemui
 ```
 
-Your device will reboot and blurs will be enabled. Please note that this has some other side effects of where blur is enabled, such as when the notification shade is open. To disable it, run the same commands, but with `0` rather than `1`.
+裝置會重新啟動，並啟用模糊效果。請注意，這也會影響其他使用模糊效果的地方，例如拉下通知欄時。如要停用，請執行相同的指令，但把 `1` 改成 `0`。
 
-## How do I keep Classic Power Menu up to date, is it on the Play Store?
+## 要如何讓 Classic Power Menu 保持最新版本？Play 商店有上架嗎？
 
-Classic Power Menu is not on the Play Store as it would not meet the Terms of Service, due to its use of Accessibility Service (for non-accessibility uses) and using root to bypass permissions (for Quick Access Wallet & Device Controls).
+Classic Power Menu 沒有上架 Play 商店，因為它使用無障礙服務（用於非無障礙用途），並使用 Root 權限略過權限限制（用於快速存取錢包與裝置控制），不符合服務條款。
 
-Instead, Classic Power Menu will check for updates periodically and on launch, and notify you if an update is available.
-
+因此，Classic Power Menu 會定期及在開啟時檢查更新，有可用的更新時會通知你。

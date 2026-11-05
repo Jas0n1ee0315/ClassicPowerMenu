@@ -110,10 +110,10 @@ class CardArtCropActivity: ComponentActivity() {
             }
             cropRequest = CropRequest(cardId, bitmap)
         } catch (e: ImageTooLargeException) {
-            showErrorAndFinish("This image is too large")
+            showErrorAndFinish("這張圖片太大了")
         } catch (e: Exception) {
             Log.e(TAG, "Failed to decode image", e)
-            showErrorAndFinish("Could not open this image")
+            showErrorAndFinish("無法開啟這張圖片")
         }
     }
 
@@ -137,7 +137,7 @@ class CardArtCropActivity: ComponentActivity() {
                 finish()
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to save card art", e)
-                showErrorAndFinish("Could not save the card art")
+                showErrorAndFinish("無法儲存卡面")
             }
         }
     }

@@ -67,7 +67,7 @@ class SettingsQuickAccessWalletManageFragment: BoundFragment<FragmentSettingsQui
         com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.settings_quick_access_wallet_manage_edit)
             .setView(dialogBinding.root)
-            .setPositiveButton(android.R.string.ok) { _, _ ->
+            .setPositiveButton(R.string.dialog_ok) { _, _ ->
                 viewModel.onCardEdited(
                     item,
                     dialogBinding.loyaltyCardEditIssuerName.text?.toString(),
@@ -77,7 +77,7 @@ class SettingsQuickAccessWalletManageFragment: BoundFragment<FragmentSettingsQui
             .setNeutralButton(R.string.settings_quick_access_wallet_manage_edit_reset) { _, _ ->
                 viewModel.onCardEdited(item, null, null)
             }
-            .setNegativeButton(android.R.string.cancel, null)
+            .setNegativeButton(R.string.dialog_cancel, null)
             .show()
             .apply {
                 // 按鈕文字原本是很暗的 colorPrimary，在深色對話框上幾乎看不見，改用 Monet 強調色
@@ -136,8 +136,8 @@ class SettingsQuickAccessWalletManageFragment: BoundFragment<FragmentSettingsQui
             .setTitle(title)
             .setView(dialogBinding.root)
             // 先不給 listener：改在 show() 後覆寫，驗證失敗時不關閉視窗
-            .setPositiveButton(android.R.string.ok, null)
-            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.dialog_ok, null)
+            .setNegativeButton(R.string.dialog_cancel, null)
             .show()
         val accent = monet.getAccentColor(requireContext())
         listOf(android.content.DialogInterface.BUTTON_POSITIVE, android.content.DialogInterface.BUTTON_NEGATIVE)

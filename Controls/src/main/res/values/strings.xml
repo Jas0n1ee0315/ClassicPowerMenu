@@ -1,140 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!--
+        裝置控制介面文字：台灣用語繁體中文，放在預設 values/ 強制顯示（不隨系統語言切換）。
+        其他語系的 strings.xml 已移除，避免切換語言時被覆蓋。
+    -->
     <!-- Device Controls strings -->
     <!-- Device Controls empty state, title [CHAR LIMIT=30] -->
-    <string name="quick_controls_title">Device controls</string>
+    <string name="quick_controls_title">裝置控制</string>
     <!-- Device Controls empty state, subtitle [CHAR LIMIT=100] -->
-    <string name="quick_controls_subtitle">Add controls for your connected devices</string>
+    <string name="quick_controls_subtitle">為連線的裝置新增控制項</string>
 
     <!-- Device Controls setup, title [CHAR LIMIT=50] -->
-    <string name="quick_controls_setup_title">Set up device controls</string>
+    <string name="quick_controls_setup_title">設定裝置控制</string>
     <!-- Device Controls setup, subtitle [CHAR LIMIT=100] -->
-    <string name="quick_controls_setup_subtitle">Hold the Power button to access your controls</string>
+    <string name="quick_controls_setup_subtitle">按住電源鍵即可使用控制項</string>
 
     <!-- Controls management providers screen title [CHAR LIMIT=60]-->
-    <string name="controls_providers_title">Choose app to add controls</string>
+    <string name="controls_providers_title">選擇要新增控制項的應用程式</string>
     <!-- Number of favorites for controls management screen [CHAR LIMIT=NONE]-->
     <plurals name="controls_number_of_favorites">
-        <item quantity="one"><xliff:g id="number" example="1">%s</xliff:g> control added.</item>
-        <item quantity="other"><xliff:g id="number" example="3">%s</xliff:g> controls added.</item>
+        <item quantity="one">已新增 <xliff:g id="number" example="1">%s</xliff:g> 個控制項。</item>
+        <item quantity="other">已新增 <xliff:g id="number" example="3">%s</xliff:g> 個控制項。</item>
     </plurals>
 
     <!-- Removed control in management screen [CHAR LIMIT=20] -->
-    <string name="controls_removed">Removed</string>
+    <string name="controls_removed">已移除</string>
 
     <!-- a11y state description for a control that is currently favorited [CHAR LIMIT=NONE] -->
-    <string name="accessibility_control_favorite">Favorited</string>
+    <string name="accessibility_control_favorite">已加入常用</string>
     <!-- a11y state description for a control that is currently favorited with its position [CHAR LIMIT=NONE] -->
-    <string name="accessibility_control_favorite_position">Favorited, position <xliff:g id="number" example="1">%d</xliff:g></string>
+    <string name="accessibility_control_favorite_position">已加入常用，位置 <xliff:g id="number" example="1">%d</xliff:g></string>
     <!-- a11y state description for a control that is currently not favorited [CHAR LIMIT=NONE] -->
-    <string name="accessibility_control_not_favorite">Unfavorited</string>
+    <string name="accessibility_control_not_favorite">已從常用移除</string>
     <!-- a11y action to favorite a control. It will read as "Double-tap to favorite" in screen readers [CHAR LIMIT=NONE] -->
-    <string name="accessibility_control_change_favorite">favorite</string>
+    <string name="accessibility_control_change_favorite">加入常用</string>
     <!-- a11y action to unfavorite a control. It will read as "Double-tap to unfavorite" in screen readers [CHAR LIMIT=NONE] -->
-    <string name="accessibility_control_change_unfavorite">unfavorite</string>
+    <string name="accessibility_control_change_unfavorite">從常用移除</string>
     <!-- a11y action to move a control to the position specified by the parameter [CHAR LIMIT=NONE] -->
-    <string name="accessibility_control_move">Move to position <xliff:g id="number" example="1">%d</xliff:g></string>
+    <string name="accessibility_control_move">移至位置 <xliff:g id="number" example="1">%d</xliff:g></string>
 
     <!-- Controls management controls screen default title [CHAR LIMIT=30] -->
-    <string name="controls_favorite_default_title">Controls</string>
+    <string name="controls_favorite_default_title">控制項</string>
     <!-- Controls management controls screen subtitle [CHAR LIMIT=NONE] -->
-    <string name="controls_favorite_subtitle">Choose controls to access from the power menu</string>
+    <string name="controls_favorite_subtitle">選擇要在電源選單中使用的控制項</string>
     <!-- Controls management editing screen, user direction for rearranging controls [CHAR LIMIT=NONE] -->
-    <string name="controls_favorite_rearrange">Hold &amp; drag to rearrange controls</string>
+    <string name="controls_favorite_rearrange">按住並拖曳即可調整控制項順序</string>
 
     <!-- Controls management editing screen, text to indicate that all the favorites have been removed [CHAR LIMIT=NONE] -->
-    <string name="controls_favorite_removed">All controls removed</string>
+    <string name="controls_favorite_removed">已移除所有控制項</string>
 
     <!-- Controls management favorites screen, See other apps with changes made [CHAR LIMIT=NONE] -->
-    <string name="controls_favorite_toast_no_changes">Changes not saved</string>
+    <string name="controls_favorite_toast_no_changes">變更未儲存</string>
 
     <!-- Controls management favorites screen. See other apps button [CHAR LIMIT=30] -->
-    <string name="controls_favorite_see_other_apps">See other apps</string>
+    <string name="controls_favorite_see_other_apps">查看其他應用程式</string>
 
     <!-- Controls management controls screen error on load message [CHAR LIMIT=NONE] -->
-    <string name="controls_favorite_load_error">Controls could not be loaded. Check the <xliff:g id="app" example="System UI">%s</xliff:g> app to make sure that the app settings haven\u2019t changed.</string>
+    <string name="controls_favorite_load_error">無法載入控制項。請檢查「<xliff:g id="app" example="System UI">%s</xliff:g>」應用程式，確認應用程式設定沒有變更。</string>
     <!-- Controls management controls screen no controls found on load message [CHAR LIMIT=NONE] -->
-    <string name="controls_favorite_load_none">Compatible controls unavailable</string>
+    <string name="controls_favorite_load_none">沒有相容的控制項</string>
     <!-- Controls management controls screen header for Other zone [CHAR LIMIT=60] -->
-    <string name="controls_favorite_other_zone_header">Other</string>
+    <string name="controls_favorite_other_zone_header">其他</string>
 
     <!-- Controls dialog title [CHAR LIMIT=40] -->
-    <string name="controls_dialog_title">Add to device controls</string>
+    <string name="controls_dialog_title">新增至裝置控制</string>
     <!-- Controls dialog add to favorites [CHAR LIMIT=40] -->
-    <string name="controls_dialog_ok">Add</string>
+    <string name="controls_dialog_ok">新增</string>
     <!-- Controls dialog message. Indicates app that suggested this control [CHAR LIMIT=NONE] -->
-    <string name="controls_dialog_message">Suggested by <xliff:g id="app" example="System UI">%s</xliff:g></string>
+    <string name="controls_dialog_message">由「<xliff:g id="app" example="System UI">%s</xliff:g>」建議</string>
     <!-- Controls dialog confirmation [CHAR LIMIT=30] -->
-    <string name="controls_dialog_confirmation">Controls updated</string>
+    <string name="controls_dialog_confirmation">已更新控制項</string>
 
     <!-- Controls PIN entry dialog, switch to alphanumeric keyboard [CHAR LIMIT=100] -->
-    <string name="controls_pin_use_alphanumeric">PIN contains letters or symbols</string>
+    <string name="controls_pin_use_alphanumeric">PIN 碼包含英文字母或符號</string>
     <!-- Controls PIN entry dialog, title [CHAR LIMIT=30] -->
-    <string name="controls_pin_verify">Verify <xliff:g id="device" example="Backdoor lock">%s</xliff:g></string>
+    <string name="controls_pin_verify">驗證「<xliff:g id="device" example="Backdoor lock">%s</xliff:g>」</string>
     <!-- Controls PIN entry dialog, title when 1st attempt failed [CHAR LIMIT=30] -->
-    <string name="controls_pin_wrong">Wrong PIN</string>
+    <string name="controls_pin_wrong">PIN 碼錯誤</string>
     <!-- Controls PIN entry dialog, waiting to verify [CHAR LIMIT=30] -->
-    <string name="controls_pin_verifying">Verifying\u2026</string>
+    <string name="controls_pin_verifying">驗證中…</string>
     <!-- Controls PIN entry dialog, text hint [CHAR LIMIT=30] -->
-    <string name="controls_pin_instructions">Enter PIN</string>
+    <string name="controls_pin_instructions">輸入 PIN 碼</string>
     <!-- Controls PIN entry dialog, text hint, retry [CHAR LIMIT=30] -->
-    <string name="controls_pin_instructions_retry">Try another PIN</string>
+    <string name="controls_pin_instructions_retry">請改用其他 PIN 碼</string>
     <!-- Controls confirmation dialog, waiting to confirm [CHAR LIMIT=30] -->
-    <string name="controls_confirmation_confirming">Confirming\u2026</string>
+    <string name="controls_confirmation_confirming">確認中…</string>
     <!-- Controls confirmation dialog, user prompt [CHAR LIMIT=NONE] -->
-    <string name="controls_confirmation_message">Confirm change for <xliff:g id="device" example="Backdoor lock">%s</xliff:g></string>
+    <string name="controls_confirmation_message">確認變更「<xliff:g id="device" example="Backdoor lock">%s</xliff:g>」</string>
 
     <!-- Tooltip to show in management screen when there are multiple structures [CHAR_LIMIT=50] -->
-    <string name="controls_structure_tooltip">Swipe to see more</string>
+    <string name="controls_structure_tooltip">滑動即可查看更多</string>
 
     <!-- Message to tell the user to wait while systemui attempts to load a set of
          recommended controls [CHAR_LIMIT=60] -->
-    <string name="controls_seeding_in_progress">Loading recommendations</string>
+    <string name="controls_seeding_in_progress">正在載入建議項目</string>
 
     <!-- Title for media controls [CHAR_LIMIT=50] -->
-    <string name="controls_media_title">Media</string>
+    <string name="controls_media_title">媒體</string>
     <!-- Explanation for closing controls associated with a specific media session [CHAR_LIMIT=NONE] -->
-    <string name="controls_media_close_session">Hide the current session.</string>
+    <string name="controls_media_close_session">隱藏目前的工作階段。</string>
     <!-- Explanation that controls associated with a specific media session are active [CHAR_LIMIT=NONE] -->
-    <string name="controls_media_active_session">Current session cannot be hidden.</string>
+    <string name="controls_media_active_session">無法隱藏目前的工作階段。</string>
     <!-- Label for a button that will hide media controls [CHAR_LIMIT=30] -->
-    <string name="controls_media_dismiss_button">Dismiss</string>
+    <string name="controls_media_dismiss_button">關閉</string>
     <!-- Label for button to resume media playback [CHAR_LIMIT=NONE] -->
-    <string name="controls_media_resume">Resume</string>
+    <string name="controls_media_resume">繼續播放</string>
     <!-- Label for button to go to media control settings screen [CHAR_LIMIT=30] -->
-    <string name="controls_media_settings_button">Settings</string>
+    <string name="controls_media_settings_button">設定</string>
 
     <!-- Error message indicating that a control timed out while waiting for an update [CHAR_LIMIT=30] -->
-    <string name="controls_error_timeout">Inactive, check app</string>
+    <string name="controls_error_timeout">未啟用，請檢查應用程式</string>
     <!-- Error message indicating that an unspecified error occurred while getting the status, and
          a retry will be attempted [CHAR LIMIT=30] -->
-    <string name="controls_error_retryable">Error, retrying\u2026</string>
+    <string name="controls_error_retryable">發生錯誤，正在重試…</string>
     <!-- Error message indicating that the control is no longer available in the application [CHAR LIMIT=30] -->
-    <string name="controls_error_removed">Not found</string>
+    <string name="controls_error_removed">找不到</string>
     <!-- Title for dialog indicating that the control is no longer available in the application [CHAR LIMIT=30] -->
-    <string name="controls_error_removed_title">Control is unavailable</string>
+    <string name="controls_error_removed_title">無法使用控制項</string>
     <!-- Message body for dialog indicating that the control is no longer available in the application [CHAR LIMIT=NONE] -->
-    <string name="controls_error_removed_message">Couldn\u2019t access <xliff:g id="device" example="Backdoor lock">%1$s</xliff:g>. Check the <xliff:g id="application" example="Google Home">%2$s</xliff:g> app to make sure the control is still available and that the app settings haven\u2019t changed.</string>
+    <string name="controls_error_removed_message">無法存取「<xliff:g id="device" example="Backdoor lock">%1$s</xliff:g>」。請檢查「<xliff:g id="application" example="Google Home">%2$s</xliff:g>」應用程式，確認控制項仍可使用，且應用程式設定沒有變更。</string>
     <!-- Text for button to open the corresponding application [CHAR_LIMIT=20] -->
-    <string name="controls_open_app">Open app</string>
+    <string name="controls_open_app">開啟應用程式</string>
     <!-- Error message indicating that an unspecified error occurred while getting the status [CHAR LIMIT=30] -->
-    <string name="controls_error_generic">Can\u2019t load status</string>
+    <string name="controls_error_generic">無法載入狀態</string>
     <!-- Error message indicating that a control action failed [CHAR_LIMIT=30] -->
-    <string name="controls_error_failed">Error, try again</string>
+    <string name="controls_error_failed">發生錯誤，請再試一次</string>
     <!-- Stateless control message informing the user that a routine has started [CHAR_LIMIT=30] -->
-    <string name="controls_in_progress">In progress</string>
+    <string name="controls_in_progress">處理中</string>
     <!-- Tooltip informing user where the recently added controls are [CHAR_LIMIT=100] -->
-    <string name="controls_added_tooltip">Hold Power button to see new controls</string>
+    <string name="controls_added_tooltip">按住電源鍵即可查看新的控制項</string>
 
     <!-- Controls menu, add [CHAR_LIMIT=30] -->
-    <string name="controls_menu_add">Add controls</string>
+    <string name="controls_menu_add">新增控制項</string>
     <!-- Controls menu, edit [CHAR_LIMIT=30] -->
-    <string name="controls_menu_edit">Edit controls</string>
-    <string name="save">Save</string>
-    <string name="loading">Loading…</string>
+    <string name="controls_menu_edit">編輯控制項</string>
+    <!-- 強制繁中的確定 / 取消（取代會跟隨系統語言的 android.R.string.ok / cancel） -->
+    <string name="controls_ok">確定</string>
+    <string name="controls_cancel">取消</string>
+    <string name="save">儲存</string>
+    <string name="loading">載入中…</string>
 
     <!-- accessibility label for paging indicator in quick settings [CHAR LIMITi=NONE] -->
-    <string name="accessibility_quick_settings_page">Page <xliff:g name="current_page" example="1">%1$d</xliff:g> of <xliff:g name="num_pages" example="2">%2$d</xliff:g></string>
-    <string name="accessibility_menu">Menu</string>
-    <string name="accessibility_desc_close">Close</string>
+    <string name="accessibility_quick_settings_page">第 <xliff:g name="current_page" example="1">%1$d</xliff:g> 頁，共 <xliff:g name="num_pages" example="2">%2$d</xliff:g> 頁</string>
+    <string name="accessibility_menu">選單</string>
+    <string name="accessibility_desc_close">關閉</string>
 </resources>

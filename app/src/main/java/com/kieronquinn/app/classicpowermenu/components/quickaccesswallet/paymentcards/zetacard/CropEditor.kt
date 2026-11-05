@@ -81,17 +81,17 @@ fun CropEditor(request: CropRequest, onCancel: () -> Unit, onSave: (PhotoFit, Fl
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             Column(Modifier.fillMaxSize().padding(20.dp), verticalArrangement = Arrangement.spacedBy(18.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = onCancel) { Icon(Icons.Outlined.Close, contentDescription = "Cancel") }
+                    IconButton(onClick = onCancel) { Icon(Icons.Outlined.Close, contentDescription = "取消") }
                     Text(
-                        "Fit your photo",
+                        "調整相片",
                         modifier = Modifier.weight(1f),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.SemiBold,
                     )
                 }
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    FitButton("Crop", selected = cropping, modifier = Modifier.weight(1f)) { fit = PhotoFit.CROP }
-                    FitButton("Stretch", selected = !cropping, modifier = Modifier.weight(1f)) { fit = PhotoFit.STRETCH }
+                    FitButton("裁切", selected = cropping, modifier = Modifier.weight(1f)) { fit = PhotoFit.CROP }
+                    FitButton("延展", selected = !cropping, modifier = Modifier.weight(1f)) { fit = PhotoFit.STRETCH }
                 }
                 Text(
                     if (cropping) {
@@ -133,7 +133,7 @@ fun CropEditor(request: CropRequest, onCancel: () -> Unit, onSave: (PhotoFit, Fl
                     if (cropping) {
                         Image(
                             image,
-                            contentDescription = "Full photo under the card crop frame",
+                            contentDescription = "卡片裁切框下方的完整相片",
                             modifier = Modifier.fillMaxSize().graphicsLayer {
                                 scaleX = zoom
                                 scaleY = zoom
@@ -146,7 +146,7 @@ fun CropEditor(request: CropRequest, onCancel: () -> Unit, onSave: (PhotoFit, Fl
                     } else {
                         Image(
                             image,
-                            contentDescription = "Full photo stretched to card shape",
+                            contentDescription = "延展成卡片比例的完整相片",
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.FillBounds,
                         )
@@ -173,7 +173,7 @@ fun CropEditor(request: CropRequest, onCancel: () -> Unit, onSave: (PhotoFit, Fl
                             pan = Pan.Zero
                         },
                         modifier = Modifier.fillMaxWidth(),
-                    ) { Text("Reset position") }
+                    ) { Text("重設位置") }
                 }
                 Button(
                     onClick = { onSave(fit, zoom, pan, viewport) },
@@ -181,7 +181,7 @@ fun CropEditor(request: CropRequest, onCancel: () -> Unit, onSave: (PhotoFit, Fl
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
                 ) {
-                    Text(if (cropping) "Apply crop" else "Use stretched photo")
+                    Text(if (cropping) "套用裁切" else "使用延展後的相片")
                 }
             }
         }

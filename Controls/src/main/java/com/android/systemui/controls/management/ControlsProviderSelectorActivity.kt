@@ -100,7 +100,7 @@ class ControlsProviderSelectorActivity : LifecycleActivity() {
         requireViewById<Button>(R.id.other_apps).apply {
             monet.applyMonetToView(this, true)
             visibility = View.VISIBLE
-            setText(android.R.string.cancel)
+            setText(R.string.controls_cancel)
             setOnClickListener {
                 onBackPressed()
             }

@@ -79,7 +79,7 @@ class StatusBehavior : Behavior {
                     dialog.dismiss()
             })
             setNegativeButton(
-                android.R.string.cancel,
+                R.string.controls_cancel,
                 DialogInterface.OnClickListener { dialog, _ ->
                     dialog.cancel()
                 }

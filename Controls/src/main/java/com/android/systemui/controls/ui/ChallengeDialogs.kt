@@ -70,7 +70,7 @@ object ChallengeDialogs {
             setTitle(title)
             setView(R.layout.controls_dialog_pin)
             setPositiveButton(
-                android.R.string.ok,
+                R.string.controls_ok,
                 DialogInterface.OnClickListener { dialog, _ ->
                     if (dialog is Dialog) {
                         dialog.requireViewById<EditText>(R.id.controls_pin_input)
@@ -81,7 +81,7 @@ object ChallengeDialogs {
                     }
             })
             setNegativeButton(
-                android.R.string.cancel,
+                R.string.controls_cancel,
                 DialogInterface.OnClickListener { dialog, _ ->
                     onCancel.invoke()
                     dialog.cancel()
@@ -122,13 +122,13 @@ object ChallengeDialogs {
             setTitle(res.getString(
                 R.string.controls_confirmation_message, cvh.title.getText()))
             setPositiveButton(
-                android.R.string.ok,
+                R.string.controls_ok,
                 DialogInterface.OnClickListener { dialog, _ ->
                     cvh.action(addChallengeValue(lastAction, "true"))
                     dialog.dismiss()
             })
             setNegativeButton(
-                android.R.string.cancel,
+                R.string.controls_cancel,
                 DialogInterface.OnClickListener { dialog, _ ->
                     onCancel.invoke()
                     dialog.cancel()

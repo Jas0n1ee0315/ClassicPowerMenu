@@ -72,7 +72,7 @@ fun BrightnessSlider(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
-            .semantics { contentDescription = "Screen brightness" },
+            .semantics { contentDescription = "螢幕亮度" },
         thumb = {
             Box(
                 Modifier

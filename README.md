@@ -9,7 +9,16 @@ Classic Power Menu is a Power Menu Replacement for Android 11+, with the main ai
 >
 > **Payment card artwork customization is based on [ZetaCard](https://github.com/hxfuxyy/ZetaCard) by hxfuxyy.** The ported code has been modified and is not endorsed by hxfuxyy. It stays under the ZetaCard Source License 2.0 ([license text](app/src/main/java/com/kieronquinn/app/classicpowermenu/components/quickaccesswallet/paymentcards/zetacard/LICENSE-ZetaCard.txt)).
 
+## 下載 / Download
+
+[release/CPM-1.9.3-cardart-zhTW.apk](release/CPM-1.9.3-cardart-zhTW.apk)（debug 簽章；若已安裝官方版本，需先解除安裝才能安裝）
+
 ## 本 Fork 新增功能 / Fork Additions
+
+### 全介面繁體中文 (Traditional Chinese UI)
+
+- 所有介面文字（設定、初次設定精靈、電源選單、錢包、裝置控制、常見問題、對話框按鈕）皆翻譯為台灣用語的繁體中文。
+- 翻譯寫在預設的 `values/strings.xml`，並移除其他語系的翻譯檔，因此**不論手機系統語言為何都會強制顯示繁體中文**。
 
 ### 付款卡片 (Payment Cards)
 

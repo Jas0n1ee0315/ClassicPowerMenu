@@ -155,7 +155,7 @@ open class ControlsRequestDialog: LifecycleActivity(), DialogInterface.OnClickLi
                 .setTitle(getString(R.string.controls_dialog_title))
                 .setMessage(getString(R.string.controls_dialog_message, label))
                 .setPositiveButton(R.string.controls_dialog_ok, this)
-                .setNegativeButton(android.R.string.cancel, this)
+                .setNegativeButton(R.string.controls_cancel, this)
                 .setOnCancelListener(this)
                 .setView(frame)
                 .create()
