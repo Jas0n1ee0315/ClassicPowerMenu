@@ -114,6 +114,8 @@
     <string name="settings_device_controls_switch">顯示裝置控制</string>
     <string name="settings_device_controls_access_while_locked">允許鎖定時使用</string>
     <string name="settings_device_controls_access_while_locked_desc">允許在鎖定時操作裝置控制。這<b>不會</b>允許在鎖定時新增或編輯控制項</string>
+    <string name="settings_device_controls_auto_reconnect">狀態載入失敗時自動重新連線</string>
+    <string name="settings_device_controls_auto_reconnect_desc">開啟電源選單後，如果同一個應用程式（例如 Home Assistant）有一半以上的控制項顯示「無法載入狀態」，就自動重新啟動該應用程式並重新載入，通常幾秒內就會恢復。適用於切換網路後應用程式與伺服器的連線卡住的情況。<b>注意：重新啟動時，該應用程式的背景功能（例如位置回報）會中斷幾秒；60 秒內最多觸發一次。</b></string>
     <string name="color_picker_unavailable">目前的桌布無法使用桌布色彩選擇器</string>
     <string name="settings_quick_access_wallet_loading">正在載入會員卡…</string>
     <string name="settings_quick_access_wallet_manage_error_no_cards">尚未載入任何會員卡。\n請按同步按鈕，從 Google 錢包載入會員卡！</string>

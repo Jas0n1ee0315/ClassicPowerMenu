@@ -45,4 +45,7 @@ interface IClassicPowerMenu {
     //Bypass 5 second rule
     void resumeAppSwitches();
 
+    //Device Controls auto-reconnect: kill all processes of a package (not force-stop, so alarms/jobs are kept)
+    void killPackageProcesses(String packageName);
+
 }

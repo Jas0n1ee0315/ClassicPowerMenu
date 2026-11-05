@@ -137,6 +137,8 @@
     <!-- 強制繁中的確定 / 取消（取代會跟隨系統語言的 android.R.string.ok / cancel） -->
     <string name="controls_ok">確定</string>
     <string name="controls_cancel">取消</string>
+    <!-- 狀態載入失敗時自動重新連線，期間控制項顯示的狀態 -->
+    <string name="controls_reconnecting">正在重新連線…</string>
     <string name="save">儲存</string>
     <string name="loading">載入中…</string>
 

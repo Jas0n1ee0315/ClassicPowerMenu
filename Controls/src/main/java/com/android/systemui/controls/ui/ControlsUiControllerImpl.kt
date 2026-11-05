@@ -27,6 +27,7 @@ import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.service.controls.Control
+import android.os.SystemClock
 import android.util.Log
 import android.util.TypedValue
 import android.view.ContextThemeWrapper
@@ -75,9 +76,28 @@ class ControlsUiControllerImpl constructor (
 
     private val controlsActivityStarter by inject<ControlsActivityStarter>()
 
+    // ---- 狀態載入失敗時自動重新連線 ----
+    private val providerRecovery by inject<com.android.systemui.util.extensions.ControlsProviderRecovery>()
+    /** 每次 show() 遞增；延遲檢查時比對，避免舊的檢查作用在已關閉 / 重新顯示的畫面上 */
+    private var showSession = 0
+    /** 是否正在重新連線（期間不重複觸發） */
+    private var recovering = false
+
     companion object {
         private const val PREF_COMPONENT = "controls_component"
         private const val PREF_STRUCTURE = "controls_structure"
+
+        /** 開啟後先等這麼久才判斷，避免把剛連上、還在載入中的狀態誤判成錯誤 */
+        private val RECOVERY_CHECK_DELAYS_MS = longArrayOf(3_000L, 8_000L)
+        /** 結束 App 程序後等待多久再重新訂閱（讓系統把控制項服務重新帶起來） */
+        private const val RECOVERY_RESUBSCRIBE_DELAY_MS = 800L
+        /** 冷卻時間：觸發後這段時間內不再觸發（伺服器真的連不上時避免反覆重啟 App） */
+        private const val RECOVERY_COOLDOWN_MS = 60_000L
+        /** 至少要有幾個控制項「無法載入狀態」才觸發（只有一兩台離線不會誤殺 App） */
+        private const val RECOVERY_MIN_ERRORS = 2
+
+        /** 上次自動重新連線的時間（跨電源選單開啟次數共用，用於冷卻） */
+        @Volatile private var lastRecoveryAt = 0L
 
         private const val FADE_IN_MILLIS = 200L
 
@@ -163,9 +183,65 @@ class ControlsUiControllerImpl constructor (
             }
             listingCallback = createCallback(::showControlsView)
             controlsController.get().subscribeToFavorites(selectedStructure)
+            scheduleRecoveryChecks()
         }
 
         controlsListingController.get().addCallback(listingCallback)
+    }
+
+    /**
+     *  排程「狀態載入失敗」檢查：開啟後 3 秒與 8 秒各檢查一次。
+     *  （有些 App 會先回報載入中，稍後才回報錯誤，所以檢查兩次）
+     */
+    private fun scheduleRecoveryChecks() {
+        val session = ++showSession
+        recovering = false
+        RECOVERY_CHECK_DELAYS_MS.forEach { delay ->
+            uiExecutor.executeDelayed({
+                if (session == showSession) checkForProviderErrors()
+            }, delay)
+        }
+    }
+
+    /**
+     *  檢查目前顯示的控制項：同一個 App 至少 [RECOVERY_MIN_ERRORS] 個、且超過一半是
+     *  STATUS_ERROR（畫面顯示「無法載入狀態」）時，判定為該 App 與伺服器的連線卡住，自動重新連線。
+     */
+    private fun checkForProviderErrors() {
+        if (hidden || recovering || !providerRecovery.isEnabled) return
+        if (SystemClock.elapsedRealtime() - lastRecoveryAt < RECOVERY_COOLDOWN_MS && lastRecoveryAt != 0L) return
+        val component = selectedStructure.componentName
+        if (component == EMPTY_COMPONENT) return
+        val controls = controlsById.filterKeys { it.componentName == component }.values
+        if (controls.isEmpty()) return
+        val errors = controls.count { it.control?.status == Control.STATUS_ERROR }
+        if (errors < RECOVERY_MIN_ERRORS || errors * 2 <= controls.size) return
+        Log.d(ControlsUiController.TAG, "Auto reconnect: $errors/${controls.size} controls in error for ${component.packageName}")
+        startProviderRecovery(component.packageName)
+    }
+
+    /**
+     *  自動重新連線：
+     *  1. 控制項顯示「正在重新連線…」
+     *  2. 取消訂閱
+     *  3. 透過 Root 結束 App 程序（丟掉卡住的伺服器連線）
+     *  4. 稍等後重新載入（reload 會重新訂閱，系統會重新啟動 App，App 建立新的連線）
+     */
+    private fun startProviderRecovery(packageName: String) {
+        recovering = true
+        lastRecoveryAt = SystemClock.elapsedRealtime()
+        val session = showSession
+        val reconnecting = context.getString(R.string.controls_reconnecting)
+        controlViewsById.values.forEach { it.setStatusText(reconnecting, true) }
+        controlsController.get().unsubscribe()
+        providerRecovery.killProviderProcesses(packageName) {
+            uiExecutor.executeDelayed({
+                // 期間電源選單已關閉或重新顯示過，就不再重新載入
+                if (session == showSession && !hidden && this::parent.isInitialized) {
+                    reload(parent)
+                }
+            }, RECOVERY_RESUBSCRIBE_DELAY_MS)
+        }
     }
 
     private fun reload(parent: ViewGroup) {

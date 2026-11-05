@@ -144,6 +144,22 @@ class CPMRootServiceImpl: IClassicPowerMenu.Stub() {
         Runtime.getRuntime().exec("pkill systemui")
     }
 
+    /**
+     *  裝置控制「自動重新連線」用：結束指定 App 的所有程序（主程序與 :xxx 子程序）。
+     *  使用 kill（SIGKILL）而不是 am force-stop：不會讓 App 進入「已停止」狀態，
+     *  排程的鬧鐘 / 背景工作都會保留；重新綁定控制項服務時系統會自動重新啟動 App。
+     */
+    override fun killPackageProcesses(packageName: String) {
+        // 只接受合法套件名稱，避免把參數當成指令或正規表示式注入
+        if (!packageName.matches(Regex("^[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z0-9_]+)+$"))) return
+        // 不允許結束自己或系統關鍵程序
+        if (packageName == BuildConfig.APPLICATION_ID || packageName == "android" ||
+            packageName == "com.android.systemui") return
+        val escaped = packageName.replace(".", "\\.")
+        // pkill -f 比對完整程序名稱：「套件名稱」或「套件名稱:子程序」
+        Runtime.getRuntime().exec(arrayOf("pkill", "-9", "-f", "^$escaped(:.*)?$")).waitFor()
+    }
+
     override fun takeScreenshot() {
         //Wait for app to close
         Handler(Looper.getMainLooper()).postDelayed({

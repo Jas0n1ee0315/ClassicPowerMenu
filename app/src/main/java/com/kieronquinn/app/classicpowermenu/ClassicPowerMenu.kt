@@ -236,6 +236,8 @@ class ClassicPowerMenu: LifecycleApplication() {
         val backgroundExecutor = ExecutorImpl(backgroundLooper)
         val sharedPreferences = getSharedPreferences("controls", Context.MODE_PRIVATE)
         single<ControlsActivityStarter> { ControlsActivityStarterImpl(get(), lifecycleScope, get()) }
+        // 裝置控制：狀態載入失敗時自動重新連線（結束控制項 App 程序）
+        single<com.android.systemui.util.extensions.ControlsProviderRecovery> { com.kieronquinn.app.classicpowermenu.components.controls.ControlsProviderRecoveryImpl(get(), get(), lifecycleScope) }
         single<ControlsController> { ControlsControllerImpl(context, foregroundExecutor, get(), get(), get(), get(), Optional.ofNullable(null), get()) }
         single<ControlsBindingController> { ControlsBindingControllerImpl(context, backgroundExecutor, getAsLazy(), get()) }
         single<ControlsListingController> { ControlsListingControllerImpl(context, backgroundExecutor) }

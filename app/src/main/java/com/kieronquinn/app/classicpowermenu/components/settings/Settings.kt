@@ -42,6 +42,8 @@ abstract class Settings {
     abstract var deviceControlsShow: Boolean
     abstract val deviceControlsShowFlow: Flow<Boolean>
     abstract var deviceControlsAllowWhileLocked: Boolean
+    /** 裝置控制狀態載入失敗時自動重新連線（結束控制項 App 程序後重新訂閱） */
+    abstract var deviceControlsAutoReconnect: Boolean
     abstract var developerOptionsEnabled: Boolean
     abstract val developerOptionsEnabledFlow: Flow<Boolean>
     abstract var developerContentCreatorMode: Boolean
@@ -120,6 +122,9 @@ class SettingsImpl(context: Context): Settings() {
         private const val KEY_DEVICE_CONTROLS_ALLOW_WHILE_LOCKED = "device_controls_allow_while_locked"
         private const val DEFAULT_DEVICE_CONTROLS_ALLOW_WHILE_LOCKED = true
 
+        private const val KEY_DEVICE_CONTROLS_AUTO_RECONNECT = "device_controls_auto_reconnect"
+        private const val DEFAULT_DEVICE_CONTROLS_AUTO_RECONNECT = false
+
         //Developer Options
         private const val KEY_DEVELOPER_OPTIONS_ENABLED = "developer_options_enabled"
         private const val DEFAULT_DEVELOPER_OPTIONS_ENABLED = false
@@ -171,6 +176,7 @@ class SettingsImpl(context: Context): Settings() {
 
     override var deviceControlsShow by shared(KEY_DEVICE_CONTROLS_SHOW, DEFAULT_DEVICE_CONTROLS_SHOW)
     override var deviceControlsAllowWhileLocked by shared(KEY_DEVICE_CONTROLS_ALLOW_WHILE_LOCKED, DEFAULT_DEVICE_CONTROLS_ALLOW_WHILE_LOCKED)
+    override var deviceControlsAutoReconnect by shared(KEY_DEVICE_CONTROLS_AUTO_RECONNECT, DEFAULT_DEVICE_CONTROLS_AUTO_RECONNECT)
 
     override val deviceControlsShowFlow by lazy {
         sharedPreferences.getPreferenceAsFlow(KEY_DEVICE_CONTROLS_SHOW, ::deviceControlsShow)

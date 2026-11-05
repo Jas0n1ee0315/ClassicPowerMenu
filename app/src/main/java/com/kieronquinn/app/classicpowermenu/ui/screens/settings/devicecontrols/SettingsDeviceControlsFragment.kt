@@ -46,6 +46,13 @@ class SettingsDeviceControlsFragment: SettingsSwitchedFragment(), BackAvailable,
                 getString(R.string.settings_device_controls_access_while_locked),
                 getText(R.string.settings_device_controls_access_while_locked_desc),
                 viewModel::allowWhileLocked
+            ),
+            // 狀態載入失敗時自動重新連線（結束控制項 App 程序後重新訂閱）
+            SettingsItem.SwitchSetting(
+                R.drawable.ic_reboot,
+                getString(R.string.settings_device_controls_auto_reconnect),
+                getText(R.string.settings_device_controls_auto_reconnect_desc),
+                viewModel::autoReconnect
             )
         )
     }
