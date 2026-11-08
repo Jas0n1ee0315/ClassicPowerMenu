@@ -70,6 +70,13 @@ class SettingsQuickAccessWalletFragment: SettingsSwitchedFragment(), BackAvailab
                 getString(R.string.settings_quick_access_wallet_payment_visibility_desc),
                 tapAction = viewModel::onPaymentCardsVisibilityClicked
             ),
+            // 新增：記住上次選取的卡片（關閉後每次都從排序第一張卡開始）
+            SettingsItem.SwitchSetting(
+                R.drawable.ic_settings_quick_access_wallet,
+                getString(R.string.settings_quick_access_wallet_remember_last_card),
+                getString(R.string.settings_quick_access_wallet_remember_last_card_desc),
+                viewModel::rememberLastCard
+            ),
             SettingsItem.SwitchSetting(
                 R.drawable.ic_quick_access_wallet_hide_card_number,
                 getString(R.string.settings_quick_access_wallet_hide_card_number_when_locked),

@@ -97,6 +97,12 @@ class SettingsPowerOptionsRearrangeViewModelImpl(private val settings: Settings,
             context.getString(R.string.power_menu_button_download),
             this::emptyClick
         )
+        PowerMenuButtonId.INTEGRITY_CHECK -> PowerMenuButton.Button(
+            PowerMenuButtonId.INTEGRITY_CHECK,
+            R.drawable.ic_integrity,
+            context.getString(R.string.power_menu_button_integrity),
+            this::emptyClick
+        )
     }
 
     override fun onBackPressed() {

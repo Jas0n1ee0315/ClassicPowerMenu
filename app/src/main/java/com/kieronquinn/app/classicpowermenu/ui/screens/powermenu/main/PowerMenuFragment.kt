@@ -192,6 +192,8 @@ class PowerMenuFragment :
             isMeasurementCacheEnabled = false
         }
         adapter = contentAdapter
+        // 切換大卡片 / 列表模式會改變卡匣高度；關閉變更動畫，避免快速重複切換時動畫重疊造成跑版
+        (itemAnimator as? androidx.recyclerview.widget.SimpleItemAnimator)?.supportsChangeAnimations = false
         val bottomPadding = resources.getDimension(R.dimen.margin_16)
         ViewCompat.setOnApplyWindowInsetsListener(this){ view, insets ->
             val bottomNavInset = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom

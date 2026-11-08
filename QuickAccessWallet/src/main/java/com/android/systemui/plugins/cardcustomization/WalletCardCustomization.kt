@@ -28,6 +28,13 @@ interface WalletCardCustomizationProvider {
      */
     fun hasCustomCardArt(cardId: String): Boolean
 
+    /**
+     *  是否記住上次選取的信用卡。
+     *  true（預設）：開啟電源選單時自動選取 Google Pay 目前的預設卡。
+     *  false：每次都從排序的第一張卡開始。
+     */
+    fun shouldRememberLastSelectedCard(): Boolean
+
 }
 
 object WalletCardCustomization: KoinComponent {

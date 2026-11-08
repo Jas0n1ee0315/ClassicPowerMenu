@@ -24,6 +24,7 @@ abstract class SettingsQuickAccessWalletViewModel: ViewModel() {
     abstract var showPreview: Boolean
     abstract var showCodeDirectly: Boolean
     abstract var accessWhileLocked: Boolean
+    abstract var rememberLastCard: Boolean
     abstract var hideCardNumber: Boolean
     abstract var autoSwitchService: Boolean
     abstract val selectedAutoSwitchService: String
@@ -52,6 +53,7 @@ class SettingsQuickAccessWalletViewModelImpl(context: Context, private val setti
     override var showPreview by settings::quickAccessWalletShowPreview
     override var showCodeDirectly by settings::quickAccessWalletShowCodeDirectly
     override var accessWhileLocked by settings::quickAccessWalletAccessWhileLocked
+    override var rememberLastCard by settings::quickAccessWalletRememberLastCard
     override var hideCardNumber by settings::quickAccessWalletHideCardNumberWhenLocked
     override var autoSwitchService by settings::quickAccessWalletAutoSwitchService
     override var selectedAutoSwitchService by settings::quickAccessWalletSelectedAutoSwitchService

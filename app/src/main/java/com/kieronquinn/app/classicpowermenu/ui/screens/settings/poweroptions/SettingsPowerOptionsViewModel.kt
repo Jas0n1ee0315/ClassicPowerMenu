@@ -14,6 +14,7 @@ abstract class SettingsPowerOptionsViewModel: ViewModel() {
     abstract var openCollapsed: Boolean
     abstract var allowRotation: Boolean
     abstract var allowFullRotation: Boolean
+    abstract var integrityLongPressPackage: String
 
     abstract fun onRearrangeClicked()
 
@@ -25,6 +26,7 @@ class SettingsPowerOptionsViewModelImpl(settings: Settings, private val containe
     override var openCollapsed by settings::powerOptionsOpenCollapsed
     override var allowRotation by settings::allowRotation
     override var allowFullRotation by settings::allowFullRotation
+    override var integrityLongPressPackage by settings::integrityLongPressPackage
 
     override fun onRearrangeClicked() {
         viewModelScope.launch {

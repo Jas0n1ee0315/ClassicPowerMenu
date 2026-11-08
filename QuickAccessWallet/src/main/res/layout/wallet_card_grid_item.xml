@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 外層 FrameLayout 負責項目間距與放大縮放；內層 grid_item_content 負責選取發光邊框（框住卡片+卡名） -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="5dp"
+    android:layout_marginVertical="3dp"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <LinearLayout
+        android:id="@+id/grid_item_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="4dp"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/grid_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardElevation="5dp">
+
+            <ImageView
+                android:id="@+id/grid_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:contentDescription="@null"
+                android:scaleType="fitXY" />
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/grid_label"
+            style="@style/Wallet.TextAppearance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+
+</FrameLayout>

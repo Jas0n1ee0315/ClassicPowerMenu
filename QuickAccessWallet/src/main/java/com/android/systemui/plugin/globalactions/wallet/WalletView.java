@@ -36,6 +36,8 @@ import android.widget.ImageView;
 import android.widget.ListPopupWindow;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.systemui.plugin.globalactions.wallet.WalletPopupMenu.OverflowItem;
 
 import java.util.List;
@@ -70,14 +72,24 @@ class WalletView extends FrameLayout implements WalletCardCarousel.OnCardScrollL
         void onCollapseChanged(boolean collapsed);
     }
 
+    // ---- 檢視模式切換（大卡片 ↔ 列表） ----
+    /** 檢視模式變更通知，用來記錄狀態並重新量測高度 */
+    interface OnViewModeChangedListener {
+        void onViewModeChanged(boolean listMode);
+    }
+
     private static final int COLLAPSE_ANIMATION_DURATION = 250;
     /** 收起時的標題字級（與會員卡標題一致） */
     private static final float COLLAPSED_TITLE_TEXT_SIZE_SP = 18f;
-    private final ImageView mExpandButton;
+    private final ImageView mViewModeButton;
+    private final RecyclerView mCardGrid;
     private boolean mCollapsible;
     private boolean mCollapsed;
+    private boolean mListMode;
+    private boolean mViewModeEnabled;
     private CharSequence mCollapsedTitle;
     private OnCollapseChangedListener mCollapseListener;
+    private OnViewModeChangedListener mViewModeListener;
     /** 最後一次置中的卡片：展開時用來還原標題 */
     @Nullable private WalletCardViewInfo mLastCenterCard;
 
@@ -103,7 +115,8 @@ class WalletView extends FrameLayout implements WalletCardCarousel.OnCardScrollL
         mOutInterpolator =
                 AnimationUtils.loadInterpolator(context, android.R.interpolator.accelerate_cubic);
         mAnimationTranslationX = mCardCarousel.getCardWidthPx() / 4f;
-        mExpandButton = requireViewById(R.id.expand_btn);
+        mViewModeButton = requireViewById(R.id.view_mode_btn);
+        mCardGrid = requireViewById(R.id.card_grid);
     }
 
     /**
@@ -118,11 +131,63 @@ class WalletView extends FrameLayout implements WalletCardCarousel.OnCardScrollL
         mCollapsible = true;
         mCollapsedTitle = collapsedTitle;
         mCollapseListener = listener;
-        mExpandButton.setVisibility(VISIBLE);
-        OnClickListener toggle = v -> setCollapsed(!mCollapsed, true);
-        mExpandButton.setOnClickListener(toggle);
-        mCardLabel.setOnClickListener(toggle);
+        // 收合改由點擊標題觸發（原本的上下箭頭已移除）
+        mCardLabel.setOnClickListener(v -> setCollapsed(!mCollapsed, true));
         setCollapsed(collapsed, false);
+    }
+
+    /**
+     * 啟用檢視模式切換（大卡片 ↔ 列表）：標題列右側顯示切換圖示。
+     * @param listMode 初始是否為列表模式
+     */
+    void setupViewMode(boolean listMode, OnViewModeChangedListener listener) {
+        mViewModeEnabled = true;
+        mListMode = listMode;
+        mViewModeListener = listener;
+        mViewModeButton.setOnClickListener(v -> setListMode(!mListMode, true));
+        updateViewModeButton();
+        updateContentVisibility();
+        // 初始若為列表模式，標題也要顯示卡匣名稱
+        updateLabelForCollapseState();
+    }
+
+    boolean isListMode() {
+        return mListMode;
+    }
+
+    RecyclerView getCardGrid() {
+        return mCardGrid;
+    }
+
+    private void setListMode(boolean listMode, boolean notify) {
+        mListMode = listMode;
+        updateViewModeButton();
+        updateContentVisibility();
+        // 列表模式標題固定顯示卡匣名稱（非單張卡片名）
+        updateLabelForCollapseState();
+        // 切回大卡片時輪播剛從 GONE 變回 VISIBLE，需要先完成一次量測，
+        // 再通知外層重新量測高度，否則外層會沿用舊高度造成卡面被裁切 / 多出空白
+        post(() -> {
+            if (!mListMode) mCardCarousel.requestLayout();
+            forceRelayoutUpTree();
+            if (notify && mViewModeListener != null) mViewModeListener.onViewModeChanged(listMode);
+        });
+    }
+
+    private void updateViewModeButton() {
+        // 大卡片模式時顯示「切到列表」圖示；列表模式時顯示「切回大卡片」圖示
+        mViewModeButton.setImageResource(mListMode
+                ? R.drawable.ic_wallet_view_card
+                : R.drawable.ic_wallet_view_grid);
+    }
+
+    /** 依收合 / 檢視模式決定輪播、列表與切換鈕的顯示 */
+    private void updateContentVisibility() {
+        boolean showContent = !mCollapsible || !mCollapsed;
+        mCardCarousel.setVisibility(showContent && !mListMode ? VISIBLE : GONE);
+        mCardGrid.setVisibility(showContent && mListMode ? VISIBLE : GONE);
+        // 切換鈕只在展開時顯示
+        mViewModeButton.setVisibility(mViewModeEnabled && showContent ? VISIBLE : GONE);
     }
 
     private void setCollapsed(boolean collapsed, boolean animate) {
@@ -130,28 +195,18 @@ class WalletView extends FrameLayout implements WalletCardCarousel.OnCardScrollL
         mCardCarousel.animate().cancel();
         mCardCarousel.setAlpha(1f);
         mCollapsed = collapsed;
-        // 箭頭：收起時朝下（可展開），展開時朝上（可收起）
-        float rotation = collapsed ? 0f : 180f;
-        mExpandButton.setContentDescription(getResources().getText(
-                collapsed ? R.string.wallet_expand : R.string.wallet_collapse));
-        if (animate) {
-            mExpandButton.animate().rotation(rotation).setDuration(COLLAPSE_ANIMATION_DURATION).start();
-        } else {
-            mExpandButton.setRotation(rotation);
-        }
         updateLabelForCollapseState();
 
         // 第三版做法：不在卡匣內部自己做高度動畫。
         // 卡匣放在電源選單的 RecyclerView（wrap_content，位於 CoordinatorLayout 中）裡，
         // 從項目內部改高度時，RecyclerView 不一定會重新量測該項目 → 展開後高度沒長、卡片疊到下方區塊。
-        // 改成：直接切換輪播的顯示 / 隱藏，再透過 listener 通知外層 adapter 呼叫
-        // notifyItemChanged(position, payload)；這是 RecyclerView 標準的「項目大小改變」流程，
-        // 一定會重新量測，並由 ItemAnimator 讓下方區塊平滑移動。
-        mCardCarousel.setVisibility(collapsed ? GONE : VISIBLE);
+        // 改成：直接切換內容的顯示 / 隱藏，再透過 listener 通知外層 adapter 呼叫
+        // notifyItemChanged(position, payload)；這是 RecyclerView 標準的「項目大小改變」流程。
+        updateContentVisibility();
         if (!animate) {
             return;
         }
-        if (!collapsed) {
+        if (!collapsed && !mListMode) {
             // 展開：卡片淡入（下方區塊的移動由 RecyclerView 的 ItemAnimator 處理）
             mCardCarousel.setAlpha(0f);
             mCardCarousel.animate().alpha(1f).setDuration(COLLAPSE_ANIMATION_DURATION).start();
@@ -194,8 +249,9 @@ class WalletView extends FrameLayout implements WalletCardCarousel.OnCardScrollL
     /** 依收合狀態更新標題：收起 → 卡匣名稱；展開 → 目前置中卡片的文字 */
     private void updateLabelForCollapseState() {
         mCardLabel.setAlpha(1f);
-        if (mCollapsible && mCollapsed) {
-            mCenterCardText = null; // 展開後讓 onCardScroll 重新套用卡片標題
+        // 收合時或列表模式時：標題固定顯示卡匣名稱（「信用卡匣」/「會員卡匣」），不顯示單張卡片名
+        if (mCollapsible && (mCollapsed || mListMode)) {
+            mCenterCardText = null; // 回到大卡片模式後讓 onCardScroll 重新套用卡片標題
             mCardLabel.setText(mCollapsedTitle);
             mCardLabel.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, COLLAPSED_TITLE_TEXT_SIZE_SP);
             mCardLabel.setCompoundDrawablesRelative(null, null, null, null);
@@ -230,8 +286,8 @@ class WalletView extends FrameLayout implements WalletCardCarousel.OnCardScrollL
     public void onCardScroll(WalletCardViewInfo centerCard, WalletCardViewInfo nextCard,
             float percentDistanceFromCenter) {
         mLastCenterCard = centerCard;
-        // 收起時標題固定為卡匣名稱，不跟著卡片變動
-        if (mCollapsible && mCollapsed) return;
+        // 收起或列表模式時標題固定為卡匣名稱，不跟著卡片變動
+        if (mCollapsible && (mCollapsed || mListMode)) return;
         CharSequence centerCardText = centerCard.getText();
         applyCenterCardLabel(centerCard);
         if (TextUtils.equals(centerCardText, nextCard.getText())) {
@@ -248,6 +304,8 @@ class WalletView extends FrameLayout implements WalletCardCarousel.OnCardScrollL
         mOverflowButton.setVisibility(menuItems.length == 0 ? GONE : VISIBLE);
         mCardCarouselContainer.setVisibility(VISIBLE);
         mErrorView.setVisibility(GONE);
+        // 依目前檢視模式顯示輪播或列表
+        updateContentVisibility();
         if (shouldAnimate) {
             // If the empty state is visible, animate it away and delay the card carousel animation
             int emptyStateAnimDelay = 0;

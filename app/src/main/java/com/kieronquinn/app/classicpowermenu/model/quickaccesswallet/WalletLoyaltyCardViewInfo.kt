@@ -81,6 +81,20 @@ class WalletLoyaltyCardViewInfo(
         return cachedCardDrawable
     }
 
+    // 列表模式（2x2）一律顯示 logo 卡面，即使開啟「直接顯示條碼」
+    private val cachedLogoDrawable: Drawable by lazy {
+        if (showCodeDirectly) createCardDrawable(context) else cachedCardDrawable
+    }
+
+    override fun getListDrawable(): Drawable {
+        return cachedLogoDrawable
+    }
+
+    // 列表模式只顯示主標題（發卡商名稱），不顯示副標題
+    override fun getListText(): CharSequence {
+        return loyaltyCard.issuerName
+    }
+
     override fun getContentDescription(): CharSequence {
         return loyaltyCard.redemptionInfo.contentDescription
     }

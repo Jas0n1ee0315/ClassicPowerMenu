@@ -13,6 +13,9 @@ Classic Power Menu is a Power Menu Replacement for Android 11+, with the main ai
 
 請到 [Releases 頁面](https://github.com/Jas0n1ee0315/ClassicPowerMenu/releases/latest) 下載最新的 APK（debug 簽章；若已安裝官方版本，需先解除安裝才能安裝）。
 
+> [!IMPORTANT]
+> 從 `v1.9.3-cardart-r4` 起改用新的 debug 簽章，與 r3 以前的版本**簽章不同**，App 內的更新提示無法直接覆蓋安裝。請先解除安裝舊版再安裝新版（App 內資料會被清除），或以 root 管理器（例如 KernelSU 的「Bypass package signature check」）暫時略過簽章檢查後覆蓋安裝以保留資料。
+
 ## 本 Fork 新增功能 / Fork Additions
 
 ### 全介面繁體中文 (Traditional Chinese UI)
@@ -28,6 +31,9 @@ Classic Power Menu is a Power Menu Replacement for Android 11+, with the main ai
   - 使用自訂卡面的卡片不會套用「鎖定時模糊卡號」，因為自訂圖片上本來就沒有卡號。
 - **顯示 / 隱藏 (Payment Cards → Visibility)**
   - 和會員卡的管理頁一樣，每張付款卡片都可以單獨開關，關掉的卡片不會出現在電源選單。
+- **記住上次選取的卡片 (Payment Cards → Visibility 下方，預設開啟)**
+  - 開啟時維持原本行為：在電源選單滑到 / 點選某張卡會把它設為 Google Pay 的預設卡，下次開啟電源選單會自動選在這張卡（列表模式也會捲動到這張卡）。
+  - 關閉後，每次開啟電源選單都從排序的第一張卡開始。
 
 ### 會員卡 (Loyalty Cards)
 
@@ -52,10 +58,18 @@ Classic Power Menu is a Power Menu Replacement for Android 11+, with the main ai
 ### 電源選單 (Power Menu)
 
 - 卡片拆成兩個獨立區塊，順序為：電源選項 → 信用卡匣 → 會員卡匣 → 裝置控制。
-  - 兩個卡匣標題列右側都有展開 / 收起箭頭（點標題也可切換），收合狀態會記住，下次開啟沿用。
+  - 點卡匣標題可展開 / 收起，收合狀態會記住，下次開啟沿用。
   - 收起時標題為「信用卡匣」/「會員卡匣」；展開時信用卡標題只顯示卡名（去掉「Pay with」與發卡組織 + 虛擬卡末碼，例如「永豐 Sport」，字級 18sp），會員卡標題維持「主標題 • 副標題」。
   - 滑動信用卡仍會切換預設付款卡；滑動會員卡不影響付款卡。沒有卡片的卡匣會整個隱藏。
-  - 卡匣標題列原本的「⋮」選單改為箭頭。
+  - 卡匣標題列右側原本的「⋮」選單改為「大卡片 / 列表」檢視切換按鈕（見下方）。
+- **大卡片 / 列表模式**：兩個卡匣各自可切換，選擇會記住。
+  - 大卡片模式：原本的單張大卡輪播。
+  - 列表模式：兩列、可左右捲動的小卡片，卡面下方顯示卡名；卡片少到一個畫面放得下時會自動置中。標題固定顯示「信用卡匣」/「會員卡匣」。
+  - 信用卡：點選即設為預設付款卡，選中的卡以藍色外框框住（卡片 + 卡名）。
+  - 會員卡：卡面一律顯示 logo（即使開啟「直接顯示條碼」），只顯示主標題；點選開啟條碼預覽（可調亮度）。
+- **IntegrityAPI 按鈕**（設定 → 電源選項 → 編輯電源選項，名稱為「Integrity 檢測」）
+  - 點擊開啟 [Play Integrity API Checker](https://play.google.com/store/apps/details?id=gr.nikolasspyr.integritycheck)，由使用者自行檢測與判讀。
+  - 長按開啟指定 App：在「設定 → 電源選項 → 長按 IntegrityAPI 按鈕開啟的 App」填入套件名稱（例如 KernelSU Next 的 `com.rifsxd.ksunext`），留空則長按不做任何事。
 - 會員卡標題字體放大、移除前面的條碼小圖示，原本的「Tap to show」改成顯示「主標題 • 副標題」。
 - 卡片縮小 10%，改用一般捲動（不再一次只能滑一張），可以快速瀏覽多張卡片，滑動動畫也加快。
 - 以下按鈕文字固定顯示繁體中文，不隨手機語言改變：

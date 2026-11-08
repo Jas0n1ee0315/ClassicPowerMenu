@@ -156,7 +156,7 @@ class ClassicPowerMenu: LifecycleApplication() {
         single<WalletActivityStarter> { WalletActivityStarterImpl(get(), get()) }
         single<WalletCardBlurProvider> { WalletCardBlurProviderImpl(get(), get()) }
         // 付款卡自訂（Customize / Visibility）：同一個實例同時提供給設定頁與 QuickAccessWallet 模組
-        single<PaymentCardCustomizationRepository> { PaymentCardCustomizationRepositoryImpl(get(), get()) }
+        single<PaymentCardCustomizationRepository> { PaymentCardCustomizationRepositoryImpl(get(), get(), get()) }
         single<WalletCardCustomizationProvider> { get<PaymentCardCustomizationRepository>() }
         single<AutoSwitchServicesRepository> { AutoSwitchServicesRepositoryImpl(get(), get()) }
         // 會員卡自訂標題（獨立儲存，同步不覆蓋）

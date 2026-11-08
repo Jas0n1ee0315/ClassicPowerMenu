@@ -39,6 +39,9 @@ abstract class PowerMenuViewModel: ViewModel() {
     abstract fun onLockdownClicked()
     abstract fun onScreenshotClicked()
 
+    abstract fun onIntegrityClicked(context: Context)
+    abstract fun onIntegrityLongClicked(context: Context)
+
     abstract fun addLoyaltyCardsToWallet(list: ArrayList<WalletCardViewInfo>, callback: Runnable)
 
     abstract fun loadPowerMenuButtons(context: Context): List<PowerMenuButton>
@@ -54,6 +57,11 @@ abstract class PowerMenuViewModel: ViewModel() {
 }
 
 class PowerMenuViewModelImpl(context: Context, private val service: CPMServiceContainer, private val navigation: PowerMenuNavigation, private val settings: Settings, private val googleWalletRepository: GoogleWalletRepository, private val activityStarter: ActivityStarter): PowerMenuViewModel() {
+
+    companion object {
+        /** IntegrityAPI 按鈕要開啟的 Play Integrity API Checker */
+        private const val INTEGRITY_CHECKER_PACKAGE = "gr.nikolasspyr.integritycheck"
+    }
 
     private val telecomManager by lazy {
         context.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
@@ -189,6 +197,44 @@ class PowerMenuViewModelImpl(context: Context, private val service: CPMServiceCo
         }
     }
 
+    /** 開啟 Play Integrity API Checker，由使用者自行按下檢測並判讀結果 */
+    override fun onIntegrityClicked(context: Context) {
+        val intent = context.packageManager.getLaunchIntentForPackage(INTEGRITY_CHECKER_PACKAGE)
+        if (intent == null) {
+            android.widget.Toast.makeText(
+                context, R.string.power_menu_integrity_checker_not_installed, android.widget.Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+        launchAndClose(context, intent)
+    }
+
+    /** 長按：開啟設定中指定的 App（未設定則不做任何事） */
+    override fun onIntegrityLongClicked(context: Context) {
+        val pkg = settings.integrityLongPressPackage.trim()
+        if (pkg.isEmpty()) return
+        val intent = context.packageManager.getLaunchIntentForPackage(pkg)
+        if (intent == null) {
+            android.widget.Toast.makeText(
+                context,
+                context.getString(R.string.power_menu_integrity_long_press_not_found, pkg),
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+        launchAndClose(context, intent)
+    }
+
+    private fun launchAndClose(context: Context, intent: Intent) {
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        viewModelScope.launch {
+            service.runWithService {
+                it.startActivity(context, intent, omitThread = true)
+            }
+            navigation.closePowerMenu()
+        }
+    }
+
     override fun addLoyaltyCardsToWallet(list: ArrayList<WalletCardViewInfo>, callback: Runnable) {
         viewModelScope.launch {
             val loyaltyCards = googleWalletRepository.getLoyaltyCards(this@PowerMenuViewModelImpl::onCardClicked)?.run {
@@ -308,6 +354,13 @@ class PowerMenuViewModelImpl(context: Context, private val service: CPMServiceCo
             context.getString(R.string.power_menu_button_download),
             ::onRebootDownloadClicked,
             shouldShow = ::shouldShowPowerOption
+        )
+        PowerMenuButtonId.INTEGRITY_CHECK -> PowerMenuButton.Button(
+            PowerMenuButtonId.INTEGRITY_CHECK,
+            R.drawable.ic_integrity,
+            context.getString(R.string.power_menu_button_integrity_api),
+            { onIntegrityClicked(context) },
+            { onIntegrityLongClicked(context) }
         )
     }
 

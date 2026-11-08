@@ -69,7 +69,8 @@ interface PaymentCardCustomizationRepository: WalletCardCustomizationProvider {
 
 class PaymentCardCustomizationRepositoryImpl(
     private val context: Context,
-    private val serviceContainer: CPMServiceContainer
+    private val serviceContainer: CPMServiceContainer,
+    private val settings: com.kieronquinn.app.classicpowermenu.components.settings.Settings
 ): PaymentCardCustomizationRepository {
 
     companion object {
@@ -109,6 +110,10 @@ class PaymentCardCustomizationRepositoryImpl(
 
     override fun hasCustomCardArt(cardId: String): Boolean {
         return getArtFile(cardId).isFile
+    }
+
+    override fun shouldRememberLastSelectedCard(): Boolean {
+        return settings.quickAccessWalletRememberLastCard
     }
 
     override fun getCustomCardDrawable(cardId: String): Drawable? {

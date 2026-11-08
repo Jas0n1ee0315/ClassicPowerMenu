@@ -24,12 +24,16 @@ abstract class Settings {
     abstract var allowRotation: Boolean
     abstract var allowFullRotation: Boolean
     abstract var powerMenuButtons: List<PowerMenuButtonId>
+    /** 長按 IntegrityAPI 按鈕時要開啟的 App 套件名稱（空字串 = 不開啟） */
+    abstract var integrityLongPressPackage: String
     abstract var quickAccessWalletShow: Boolean
     abstract val quickAccessWalletShowFlow: Flow<Boolean>
     abstract var quickAccessWalletShowLoyaltyCards: Boolean
     abstract val quickAccessWalletShowLoyaltyCardsFlow: Flow<Boolean>
     abstract var quickAccessWalletShowPreview: Boolean
     abstract var quickAccessWalletAccessWhileLocked: Boolean
+    /** 記住上次選取的信用卡：關閉後每次開電源選單都從排序第一張卡開始 */
+    abstract var quickAccessWalletRememberLastCard: Boolean
     /** 實驗性：電源選單的會員卡卡面直接顯示條碼（不顯示 logo 卡面） */
     abstract var quickAccessWalletShowCodeDirectly: Boolean
     abstract var quickAccessWalletHideCardNumberWhenLocked: Boolean
@@ -78,6 +82,8 @@ class SettingsImpl(context: Context): Settings() {
         private const val KEY_POWER_MENU_BUTTONS = "power_options"
         private val DEFAULT_POWER_MENU_BUTTONS = PowerMenuButtonId.DEFAULT
 
+        private const val KEY_INTEGRITY_LONG_PRESS_PACKAGE = "integrity_long_press_package"
+        private const val DEFAULT_INTEGRITY_LONG_PRESS_PACKAGE = ""
         private const val KEY_ALLOW_ROTATION = "allow_rotation"
         private const val DEFAULT_ALLOW_ROTATION = true
 
@@ -96,6 +102,9 @@ class SettingsImpl(context: Context): Settings() {
 
         private const val KEY_QUICK_ACCESS_WALLET_ACCESS_WHILE_LOCKED = "quick_access_wallet_access_while_locked"
         private const val DEFAULT_QUICK_ACCESS_WALLET_ACCESS_WHILE_LOCKED = true
+
+        private const val KEY_QUICK_ACCESS_WALLET_REMEMBER_LAST_CARD = "quick_access_wallet_remember_last_card"
+        private const val DEFAULT_QUICK_ACCESS_WALLET_REMEMBER_LAST_CARD = true
 
         private const val KEY_QUICK_ACCESS_WALLET_SHOW_CODE_DIRECTLY = "quick_access_wallet_show_code_directly"
         private const val DEFAULT_QUICK_ACCESS_WALLET_SHOW_CODE_DIRECTLY = false
@@ -147,6 +156,7 @@ class SettingsImpl(context: Context): Settings() {
     override var powerOptionsHideWhenLocked by shared(KEY_POWER_OPTIONS_HIDE_WHEN_LOCKED, DEFAULT_POWER_OPTIONS_HIDE_WHEN_LOCKED)
     override var powerOptionsOpenCollapsed by shared(KEY_POWER_OPTIONS_OPEN_COLLAPSED, DEFAULT_POWER_OPTIONS_OPEN_COLLAPSED)
     override var powerMenuButtons by sharedList(KEY_POWER_MENU_BUTTONS, DEFAULT_POWER_MENU_BUTTONS, this::powerMenuButtonTypeConverter, this::powerMenuButtonTypeReverseConverter)
+    override var integrityLongPressPackage by shared(KEY_INTEGRITY_LONG_PRESS_PACKAGE, DEFAULT_INTEGRITY_LONG_PRESS_PACKAGE)
     override var allowRotation by shared(KEY_ALLOW_ROTATION, DEFAULT_ALLOW_ROTATION)
     override var allowFullRotation by shared(KEY_ALLOW_FULL_ROTATION, DEFAULT_ALLOW_FULL_ROTATION)
 
@@ -154,6 +164,7 @@ class SettingsImpl(context: Context): Settings() {
     override var quickAccessWalletShowLoyaltyCards by shared(KEY_QUICK_ACCESS_WALLET_SHOW_LOYALTY_CARDS, DEFAULT_QUICK_ACCESS_WALLET_SHOW_LOYALTY_CARDS)
     override var quickAccessWalletShowPreview by shared(KEY_QUICK_ACCESS_WALLET_SHOW_PREVIEW, DEFAULT_QUICK_ACCESS_SHOW_PREVIEW)
     override var quickAccessWalletAccessWhileLocked by shared(KEY_QUICK_ACCESS_WALLET_ACCESS_WHILE_LOCKED, DEFAULT_QUICK_ACCESS_WALLET_ACCESS_WHILE_LOCKED)
+    override var quickAccessWalletRememberLastCard by shared(KEY_QUICK_ACCESS_WALLET_REMEMBER_LAST_CARD, DEFAULT_QUICK_ACCESS_WALLET_REMEMBER_LAST_CARD)
     override var quickAccessWalletShowCodeDirectly by shared(KEY_QUICK_ACCESS_WALLET_SHOW_CODE_DIRECTLY, DEFAULT_QUICK_ACCESS_WALLET_SHOW_CODE_DIRECTLY)
     override var quickAccessWalletHideCardNumberWhenLocked by shared(KEY_QUICK_ACCESS_WALLET_HIDE_CARD_NUMBER_WHEN_LOCKED, DEFAULT_QUICK_ACCESS_WALLET_HIDE_CARD_NUMBER_WHEN_LOCKED)
     override var quickAccessWalletAutoSwitchService by shared(KEY_QUICK_ACCESS_WALLET_AUTO_SWITCH_SERVICE, DEFAULT_QUICK_ACCESS_WALLET_AUTO_SWITCH_SERVICE)

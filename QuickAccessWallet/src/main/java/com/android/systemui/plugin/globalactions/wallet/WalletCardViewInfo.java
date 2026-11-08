@@ -68,4 +68,22 @@ public interface WalletCardViewInfo {
         return 14f;
     }
 
+    /**
+     * 列表模式（2x2）顯示用的卡面。預設與 {@link #getCardDrawable()} 相同；
+     * 會員卡即使開啟「直接顯示條碼」，列表模式仍覆寫為顯示 logo 卡面。
+     */
+    @NonNull
+    default Drawable getListDrawable(){
+        return getCardDrawable();
+    }
+
+    /**
+     * 列表模式（2x2）卡片下方顯示的名稱。預設與 {@link #getText()} 相同；
+     * 會員卡覆寫為只顯示主標題（不含副標題）。
+     */
+    @NonNull
+    default CharSequence getListText(){
+        return getText();
+    }
+
 }

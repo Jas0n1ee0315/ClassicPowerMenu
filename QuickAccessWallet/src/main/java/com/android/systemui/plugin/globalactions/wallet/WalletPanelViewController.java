@@ -39,6 +39,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.android.systemui.plugin.globalactions.wallet.WalletPopupMenu.OverflowItem;
 import com.android.systemui.plugins.GlobalActionsPanelPlugin;
@@ -98,6 +99,15 @@ public class WalletPanelViewController implements
     public static final int MODE_LOYALTY_ONLY = 2;
     /** 收合狀態（依模式分開記錄，下次開電源選單沿用） */
     private static final String PREFS_COLLAPSED = "collapsed";
+    /** 檢視模式（false=大卡片，true=列表；依模式分開記錄） */
+    private static final String PREFS_VIEW_MODE = "view_mode";
+    /** 列表模式選取卡片發光邊框顏色 */
+    private static final int GRID_ACCENT_COLOR = 0xFF8AB4F8;
+    private WalletCardGridAdapter mGridAdapter;
+    /** 列表模式單一項目（含內距與左右間距）的寬度，用來計算卡片少時的置中留白 */
+    private int mGridItemWidthPx;
+    /** 列表模式原本的左右內距（卡片多、需要捲動時使用） */
+    private int mGridBasePaddingH;
     /** 付款卡標題字級：與會員卡標題一致 */
     private static final float SPLIT_PAYMENT_TEXT_SIZE_SP = 18f;
     private final int mMode;
@@ -164,6 +174,8 @@ public class WalletPanelViewController implements
                 // 通知外層 RecyclerView：這個卡匣的高度變了（由 adapter 呼叫 notifyItemChanged）
                 if (mOnSectionSizeChangedListener != null) mOnSectionSizeChangedListener.run();
             });
+            // 檢視模式切換（大卡片 ↔ 列表）
+            setupGrid(mPrefs.getBoolean(prefKey(PREFS_VIEW_MODE), false));
         } else if (!mPrefs.getBoolean(PREFS_HAS_CARDS, false)) {
             // The empty state view is shown preemptively when cards were not returned last time
             // to decrease perceived latency.
@@ -176,6 +188,101 @@ public class WalletPanelViewController implements
 
     public void setOnSectionSizeChangedListener(Runnable listener) {
         mOnSectionSizeChangedListener = listener;
+    }
+
+    /** 建立列表模式（2x2 橫向捲動）的 grid，並啟用檢視模式切換 */
+    private void setupGrid(boolean listMode) {
+        int carouselW = mWalletCardCarousel.getCardWidthPx();
+        int carouselH = mWalletCardCarousel.getCardHeightPx();
+        // 列表模式一次顯示約 2 欄：卡片縮小為大卡片的 52%（較小、不擁擠）
+        int gridW = Math.round(carouselW * 0.52f);
+        int gridH = Math.round(carouselH * 0.52f);
+        float corner = gridW * 25f / 700f;
+        boolean isLoyalty = (mMode == MODE_LOYALTY_ONLY);
+        mGridAdapter = new WalletCardGridAdapter(mPluginContext, isLoyalty, gridW, gridH, corner,
+                GRID_ACCENT_COLOR, this::onGridCardTapped);
+        androidx.recyclerview.widget.RecyclerView grid = mWalletView.getCardGrid();
+        grid.setLayoutManager(
+                new GridLayoutManager(mPluginContext, 2, GridLayoutManager.HORIZONTAL, false));
+        grid.setAdapter(mGridAdapter);
+        grid.setNestedScrollingEnabled(false);
+        // 關閉項目動畫：避免重複切換模式時殘留動畫造成跑版
+        grid.setItemAnimator(null);
+        float density = mPluginContext.getResources().getDisplayMetrics().density;
+        // 上下留白讓選取卡片放大時不會被裁切
+        int vPad = Math.round(4 * density);
+        grid.setClipToPadding(false);
+        grid.setClipChildren(false);
+        grid.setPadding(grid.getPaddingLeft(), vPad, grid.getPaddingRight(), vPad);
+        // 橫向 grid 的高度不會自動 wrap：精確算出一列的高度（卡片 + 內距 + 文字），避免卡名被裁切
+        int contentPad = Math.round(4 * density) * 2;     // grid_item_content 上下 padding
+        int labelMarginTop = Math.round(2 * density);
+        int labelH = Math.round(13f * density * 1.4f) + Math.round(3 * density); // 13sp 文字行高
+        int outerMarginV = Math.round(3 * density) * 2;   // 外層 marginVertical（列間距）
+        int rowHeight = gridH + contentPad + labelMarginTop + labelH + outerMarginV;
+        android.view.ViewGroup.LayoutParams glp = grid.getLayoutParams();
+        glp.height = rowHeight * 2 + vPad * 2;
+        grid.setLayoutParams(glp);
+        // 卡片少（版面寬度放得下全部欄位）時左右置中；需要捲動時維持原本內距
+        // 項目寬度 = 卡片 + grid_item_content 左右 padding(4dp*2) + 外層左右 margin(5dp*2)
+        mGridItemWidthPx = gridW + Math.round(4 * density) * 2 + Math.round(5 * density) * 2;
+        mGridBasePaddingH = grid.getPaddingLeft();
+        // 在排版過程中改 padding / 捲動不會立即生效，所以延到這次排版結束後再處理
+        grid.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> {
+            if (r - l != or - ol) v.post(this::updateGridCentering);
+        });
+        mWalletView.setupViewMode(listMode, newListMode -> {
+            mPrefs.edit().putBoolean(prefKey(PREFS_VIEW_MODE), newListMode).apply();
+            recordHeightOnNextLayout();
+            if (mOnSectionSizeChangedListener != null) mOnSectionSizeChangedListener.run();
+        });
+    }
+
+    /**
+     * 列表模式為兩列、橫向捲動：卡片少時右側會空一塊。
+     * 若所有欄位的總寬度小於可用寬度，就在左右加上相同留白讓整組置中。
+     */
+    private void updateGridCentering() {
+        if (mGridAdapter == null) return;
+        androidx.recyclerview.widget.RecyclerView grid = mWalletView.getCardGrid();
+        int width = grid.getWidth();
+        int count = mGridAdapter.getItemCount();
+        // 版面寬度未確定或卡片尚未載入時先不處理（避免以 0 張卡算出錯誤的留白）
+        if (width == 0 || count == 0) return;
+        int columns = (count + 1) / 2;
+        int contentWidth = columns * mGridItemWidthPx;
+        boolean fits = contentWidth + mGridBasePaddingH * 2 <= width;
+        int padding = fits ? (width - contentWidth) / 2 : mGridBasePaddingH;
+        if (padding != grid.getPaddingLeft() || padding != grid.getPaddingRight()) {
+            grid.setPadding(padding, grid.getPaddingTop(), padding, grid.getPaddingBottom());
+        }
+        if (!fits) return;
+        // RecyclerView 重新排版時會讓第一張卡留在原本的螢幕位置，不會跟著新的留白移動；
+        // 檢查第一張卡實際的左緣，不在留白起點就把捲動位置重設到起點，卡片才會立刻置中
+        androidx.recyclerview.widget.RecyclerView.LayoutManager lm = grid.getLayoutManager();
+        if (!(lm instanceof GridLayoutManager)) return;
+        android.view.View first = lm.findViewByPosition(0);
+        boolean aligned = false;
+        if (first != null) {
+            android.view.ViewGroup.MarginLayoutParams flp =
+                    (android.view.ViewGroup.MarginLayoutParams) first.getLayoutParams();
+            aligned = Math.abs(lm.getDecoratedLeft(first) - flp.leftMargin - padding) <= 1;
+        }
+        if (!aligned) {
+            ((GridLayoutManager) lm).scrollToPositionWithOffset(0, 0);
+        }
+    }
+
+    /** 列表模式點選卡片：付款卡 → 設為預設卡並更新選取樣式；會員卡 → 開啟條碼預覽 */
+    private void onGridCardTapped(WalletCardViewInfo card) {
+        if (mIsDismissed) return;
+        if (mMode == MODE_LOYALTY_ONLY) {
+            onCardClicked(card);
+        } else {
+            mSelectedCardId = card.getCardId();
+            selectCard();
+            if (mGridAdapter != null) mGridAdapter.setSelectedCardId(card.getCardId());
+        }
     }
 
     /** 發卡組織名稱（只在後面接著卡號時才會被截掉，避免誤砍卡名中剛好含有的字） */
@@ -354,8 +461,10 @@ public class WalletPanelViewController implements
         }
 
         if (mMode == MODE_PAYMENT_ONLY) {
+            // 「記住上次選取的卡片」關閉時：不沿用 Google Pay 的預設卡，一律從排序第一張卡開始
+            int startIndex = customization.shouldRememberLastSelectedCard() ? finalSelectedIndex : 0;
             // 信用卡匣：不接上會員卡；沒有付款卡時 setupWalletView 會隱藏整個區塊
-            setupWalletView(data, finalSelectedIndex);
+            setupWalletView(data, startIndex);
             return;
         }
 
@@ -386,6 +495,18 @@ public class WalletPanelViewController implements
             } else {
                 if (isSplitMode()) mWalletView.show();
                 mWalletView.showCardCarousel(data, selectedIndex, getOverflowItems());
+                // 同步列表模式資料（付款卡附帶目前選取卡片）
+                if (mGridAdapter != null) {
+                    String selId = (selectedIndex >= 0 && selectedIndex < data.size())
+                            ? data.get(selectedIndex).getCardId() : null;
+                    mGridAdapter.setData(data, selId);
+                    // 卡片數量變了：重新計算置中留白（等版面寬度確定後）
+                    mWalletView.getCardGrid().post(this::updateGridCentering);
+                    // 列表模式開啟時捲動到選取（記住的）卡片
+                    if (selectedIndex >= 0 && selectedIndex < data.size()) {
+                        mWalletView.getCardGrid().scrollToPosition(selectedIndex);
+                    }
+                }
             }
             // The empty state view will not be shown preemptively next time if cards were returned
             mPrefs.edit().putBoolean(prefKey(PREFS_HAS_CARDS), !data.isEmpty()).apply();

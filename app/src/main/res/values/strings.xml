@@ -41,6 +41,13 @@
     <string name="power_menu_button_screenshot">螢幕截圖</string>
     <string name="power_menu_button_fastbootd">Fastbootd</string>
     <string name="power_menu_button_download">下載模式</string>
+    <string name="power_menu_button_integrity">Integrity 檢測</string>
+    <string name="power_menu_button_integrity_api" translatable="false">IntegrityAPI</string>
+    <string name="power_menu_integrity_checker_not_installed">尚未安裝 Play Integrity API Checker</string>
+    <string name="settings_power_options_integrity_long_press">長按 IntegrityAPI 按鈕開啟的 App</string>
+    <string name="settings_power_options_integrity_long_press_desc">設定長按「IntegrityAPI」按鈕時要開啟的 App 套件名稱。留空則長按不做任何事。</string>
+    <string name="settings_power_options_integrity_long_press_not_set">未設定</string>
+    <string name="power_menu_integrity_long_press_not_found">找不到 App：%1$s</string>
 
     <string name="wallet_loyalty_instructions">• 輕觸即可顯示</string>
     <string name="content_creator_mode_warning">已啟用內容創作者模式</string>
@@ -103,6 +110,8 @@
     <string name="settings_quick_access_wallet_manage_sign_in">需要登入</string>
     <string name="settings_quick_access_wallet_manage_sign_in_desc">如要使用會員卡，你必須透過一般的帳號登入流程登入 Google 帳戶，才能整合 Google 錢包。這是因為使用 Android 系統內建的帳號登入無法存取相關 API。\n\n<b>為了保護你的隱私與安全，錢包資料會加密保存在你的裝置上，絕不會傳送出去，也不會包含在備份中。</b></string>
 
+    <string name="settings_quick_access_wallet_remember_last_card">記住上次選取的卡片</string>
+    <string name="settings_quick_access_wallet_remember_last_card_desc">開啟時（預設），下次開啟電源選單會自動選取上次使用的信用卡（也就是目前 Google Pay 的預設卡）。關閉後，每次開啟電源選單都會從排序的第一張卡開始。</string>
     <string name="settings_quick_access_wallet_show_preview">顯示會員卡預覽</string>
     <string name="settings_quick_access_wallet_show_preview_desc">不必開啟 Google 錢包，就能顯示會員卡預覽，方便在店內掃描或查看</string>
     <string name="settings_quick_access_wallet_show_code_directly">直接顯示條碼</string>
