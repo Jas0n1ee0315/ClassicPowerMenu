@@ -12,6 +12,9 @@ import com.google.internal.tapandpay.v1.valuables.SyncValuablesRequestProto.Sync
 import com.google.internal.tapandpay.v1.valuables.SyncValuablesRequestProto.SyncValuablesRequest.SyncValuablesRequestInner.Request
 import com.google.internal.tapandpay.v1.valuables.SyncValuablesResponseProto
 import com.google.internal.tapandpay.v1.valuables.SyncValuablesResponseProto.SyncValuablesResponse.Inner.Valuables.Valuable
+import com.google.internal.tapandpay.v1.valuables.CommonProto.GroupingInfo
+import com.google.internal.tapandpay.v1.valuables.CommonProto.IssuerInfo
+import com.google.internal.tapandpay.v1.valuables.CommonProto.RedemptionInfo
 import com.google.internal.tapandpay.v1.valuables.ValuableWrapperProto
 import com.google.internal.tapandpay.v1.valuables.ValuableWrapperProto.ValuableWrapper
 import com.google.protobuf.ByteString
@@ -136,34 +139,80 @@ class GoogleWalletRepositoryImpl(
     }
 
     override fun getValuables(): Flow<List<LoyaltyCard>> {
-        return valuablesDatabaseRepository.getWalletValuables().map { it.map { it.toValuable() } }
+        return valuablesDatabaseRepository.getWalletValuables().map { it.mapNotNull { it.toValuable() } }
     }
 
-    private fun WalletValuable.toValuable(): LoyaltyCard {
-        val valuable = ValuableWrapper.parseFrom(valuable.bytes)
+    private fun WalletValuable.toValuable(): LoyaltyCard? {
+        val parts = ValuableWrapper.parseFrom(valuable.bytes).toCardParts() ?: return null
 
         val imageBytes = image?.bytes
         val bitmap = if (imageBytes != null) BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size) else null
-        // Google 伺服器給的原始標題
-        val originalTitle = valuable.loyaltyCard.issuerInfo.title
-        val originalIssuerName = valuable.loyaltyCard.issuerInfo.issuerName
+        // Google 伺服器給的原始標題（通用卡 / 優惠已換算成「主標題 + 副標題」）
+        val originalTitle = parts.title
+        val originalIssuerName = parts.issuerName
+        val redemption = parts.redemptionInfo
         // 每次讀取時才套用使用者自訂標題（存在獨立設定檔，同步不會覆蓋）
         val loyaltyCard = LoyaltyCard(
             id,
             bitmap,
-            valuable.loyaltyCard.issuerInfo.id,
+            parts.issuerInfo.id,
             loyaltyCardOverridesRepository.getTitle(id) ?: originalTitle,
             loyaltyCardOverridesRepository.getIssuerName(id) ?: originalIssuerName,
-            valuable.loyaltyCard.groupingInfo.backgroundColor.toColor(),
+            parts.backgroundColor.toColor(),
             LoyaltyCard.RedemptionInfo(
-                valuable.loyaltyCard.redemptionInfo.identifier,
-                valuable.loyaltyCard.redemptionInfo.barcode.typeValue,
-                valuable.loyaltyCard.redemptionInfo.barcode.encodedValue,
-                valuable.loyaltyCard.redemptionInfo.barcode.displayText,
-                valuable.loyaltyCard.redemptionInfo.barcode.displayText),
+                redemption.identifier,
+                redemption.barcode.typeValue,
+                redemption.barcode.encodedValue,
+                redemption.barcode.displayText,
+                redemption.barcode.displayText),
             originalTitle = originalTitle,
             originalIssuerName = originalIssuerName)
         return loyaltyCard
+    }
+
+    /**
+     *  會員卡、通用卡（例如自行拍照新增的卡）、優惠（例如小北百貨）共用的欄位。
+     *  三者在 proto 裡都是同樣的 IssuerInfo / RedemptionInfo / GroupingInfo。
+     */
+    private class CardParts(
+        val issuerInfo: IssuerInfo,
+        val redemptionInfo: RedemptionInfo,
+        val groupingInfo: GroupingInfo,
+        val isActive: Boolean,
+        /** 主標題（發卡商名稱） */
+        val issuerName: String,
+        /** 副標題 */
+        val title: String
+    ) {
+        val backgroundColor: com.google.type.Color
+            get() = if (groupingInfo.hasBackgroundColor()) groupingInfo.backgroundColor
+                else issuerInfo.backgroundColor
+        val imageUri: String
+            get() = groupingInfo.groupingImage.uri
+    }
+
+    private fun ValuableWrapper.toCardParts(): CardParts? = when (valuableCase) {
+        ValuableWrapper.ValuableCase.LOYALTY_CARD -> loyaltyCard.run {
+            CardParts(issuerInfo, redemptionInfo, groupingInfo, metadata.isActive,
+                issuerInfo.issuerName, issuerInfo.title)
+        }
+        // 通用卡：名稱放在 title、issuer_name 是空的；副標題（例如「會員卡」、持卡人姓名）在 grouping_subtitle
+        ValuableWrapper.ValuableCase.GENERIC_CARD -> genericCard.run {
+            CardParts(issuerInfo, redemptionInfo, groupingInfo, metadata.isActive,
+                issuerInfo.issuerName.ifBlank { groupingInfo.groupingTitle.ifBlank { issuerInfo.title } },
+                groupingInfo.groupingSubtitle.ifBlank { issuerInfo.title })
+        }
+        ValuableWrapper.ValuableCase.SENSITIVE_GENERIC_PASS -> sensitiveGenericPass.run {
+            CardParts(issuerInfo, redemptionInfo, groupingInfo, metadata.isActive,
+                issuerInfo.issuerName.ifBlank { groupingInfo.groupingTitle.ifBlank { issuerInfo.title } },
+                groupingInfo.groupingSubtitle.ifBlank { issuerInfo.title })
+        }
+        ValuableWrapper.ValuableCase.OFFER -> offer.run {
+            CardParts(issuerInfo, redemptionInfo, groupingInfo, metadata.isActive,
+                issuerInfo.issuerName.ifBlank { groupingInfo.groupingTitle.ifBlank { issuerInfo.title } },
+                groupingInfo.groupingSubtitle.ifBlank { issuerInfo.title.ifBlank { provider } })
+        }
+        else -> null
     }
 
     private val service = Retrofit.Builder()
@@ -267,12 +316,13 @@ class GoogleWalletRepositoryImpl(
     private suspend fun commitValuables(response: SyncValuablesResponseProto.SyncValuablesResponse) {
         val valuableList = response.inner.valuables.valuableList
         valuableList.forEach {
-            // For now we only care about loyalty cards
-            if(it.hash != 0L && it.valuable.isValidValuable()) {
+            // 會員卡 + 有效的通用卡 / 優惠（Google 錢包網頁版會把它們列在一起）
+            val parts = it.valuable.toCardParts()
+            if(it.hash != 0L && parts != null && parts.isValidCard(it.valuable.valuableCase)) {
 
                 var image: Bitmap? = null
-                if (it.valuable.loyaltyCard.groupingInfo.groupingImage.uri.isNotEmpty()) {
-                    val url = URL(it.valuable.loyaltyCard.groupingInfo.groupingImage.uri)
+                if (parts.imageUri.isNotEmpty()) {
+                    val url = URL(parts.imageUri)
                     image = BitmapFactory.decodeStream(url.openConnection().getInputStream())
                 }
 
@@ -289,10 +339,11 @@ class GoogleWalletRepositoryImpl(
         }
     }
 
-    private fun ValuableWrapper.isValidValuable(): Boolean {
-        if(loyaltyCard == null) return false
-        if(loyaltyCard.issuerInfo.issuerName.isNullOrBlank()) return false
-        return true
+    private fun CardParts.isValidCard(case: ValuableWrapper.ValuableCase): Boolean {
+        if(issuerName.isBlank()) return false
+        // 會員卡維持原本行為；通用卡 / 優惠只收有效（未封存、未過期）且有條碼的
+        if(case == ValuableWrapper.ValuableCase.LOYALTY_CARD) return true
+        return isActive && redemptionInfo.barcode.encodedValue.isNotEmpty()
     }
 
     sealed class SyncValuablesResponse {

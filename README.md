@@ -37,6 +37,9 @@ Classic Power Menu is a Power Menu Replacement for Android 11+, with the main ai
 
 ### 會員卡 (Loyalty Cards)
 
+- **支援通用卡與優惠類型的會員卡**
+  - Google 錢包裡自行拍照 / 掃描新增的卡（通用卡，例如芳療家、Focus），以及被 Google 歸類為「優惠」的卡（例如小北百貨），原本會在同步時被濾掉；現在也會同步進來，和一般會員卡一樣可以顯示 / 隱藏、排序、改名、顯示條碼。
+  - 已封存 / 失效、或沒有條碼的通用卡與優惠不會同步（與 Google 錢包網頁版一致）。
 - **編輯標題 (Manage Account & Loyalty Cards)**
   - 每張卡片的顯示 / 隱藏開關右側多了一個鉛筆按鈕，可以修改主標題（發卡商名稱）和副標題。
   - 修改後永久保存在獨立的設定檔，從 Google 伺服器同步新資料也不會被覆蓋；清空欄位或按「還原」就回到原本的名稱。

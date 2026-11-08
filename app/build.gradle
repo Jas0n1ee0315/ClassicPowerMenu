@@ -14,7 +14,7 @@ plugins {
 def version = '1.9.3-cardart'
 // 本 fork 在 GitHub Releases 的版本標籤：App 會拿它和 fork 最新 Release 的標籤比較來判斷有沒有更新。
 // 每次發布新的 Release 前要先把這裡改成新的標籤（例如 v1.9.3-cardart-r4）再建置 APK。
-def releaseTag = 'v1.9.3-cardart-r4'
+def releaseTag = 'v1.9.3-cardart-r5'
 
 android {
     // Compose BOM 2026.09.00 需要 compileSdk 37（原為 36）
