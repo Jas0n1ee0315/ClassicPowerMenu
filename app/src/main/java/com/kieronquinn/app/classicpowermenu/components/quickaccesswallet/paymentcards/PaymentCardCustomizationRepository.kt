@@ -43,6 +43,15 @@ interface PaymentCardCustomizationRepository: WalletCardCustomizationProvider {
 
     fun setCardHidden(cardId: String, hidden: Boolean)
 
+    /**
+     *  儲存付款卡順序（卡片 ID，由上到下）。
+     *  刻意不發出 [changes] 事件：拖曳中若重新整理列表會打斷拖曳動畫，列表順序由設定頁自行維護。
+     */
+    fun setCardOrder(cardIds: List<String>)
+
+    /** 依使用者設定的順序排列卡片；未排序過的卡排在最後並維持原本相對順序 */
+    fun <T> sortByCardOrder(items: List<T>, idOf: (T) -> String): List<T>
+
     /** 儲存自訂卡面（已裁切成 ZetaCard 的輸出尺寸 1400x880） */
     suspend fun saveCustomCardArt(cardId: String, bitmap: Bitmap)
 
@@ -77,12 +86,17 @@ class PaymentCardCustomizationRepositoryImpl(
         private const val TAG = "CPMPaymentCards"
         private const val PREFS_NAME = "payment_card_customization"
         private const val KEY_HIDDEN_CARDS = "hidden_payment_cards"
+        private const val KEY_CARD_ORDER = "payment_card_order"
+        // 卡片 ID 格式如「2::T1078936902357905202」，不會含換行，用換行串接成單一字串儲存
+        // （StringSet 無法保留順序，所以不用 putStringSet）
+        private const val ORDER_SEPARATOR = "\n"
         private const val ART_DIRECTORY = "payment_card_art"
 
         // 向 Google Wallet 要求的卡面尺寸（與 ZetaCard 的卡片比例 700:440 一致）
         private const val REQUEST_CARD_WIDTH = 700
         private const val REQUEST_CARD_HEIGHT = 440
         private const val REQUEST_ICON_SIZE = 64
+        // 必須與電源選單 WalletPanelViewController.MAX_CARDS 一致，否則設定頁看得到的卡在選單中可能不會出現
         private const val REQUEST_MAX_CARDS = 20
 
         // 讀取卡片的逾時（服務沒回應時避免設定頁一直轉圈）
@@ -130,7 +144,24 @@ class PaymentCardCustomizationRepositoryImpl(
         return drawable
     }
 
+    override fun getCardOrder(): List<String> {
+        val raw = sharedPreferences.getString(KEY_CARD_ORDER, null) ?: return emptyList()
+        return raw.split(ORDER_SEPARATOR).filter { it.isNotEmpty() }
+    }
+
     // ---------- 設定頁用 ----------
+
+    override fun setCardOrder(cardIds: List<String>) {
+        sharedPreferences.edit().putString(KEY_CARD_ORDER, cardIds.joinToString(ORDER_SEPARATOR)).apply()
+    }
+
+    override fun <T> sortByCardOrder(items: List<T>, idOf: (T) -> String): List<T> {
+        val order = getCardOrder()
+        if (order.isEmpty()) return items
+        val indexMap = order.withIndex().associate { it.value to it.index }
+        // sortedBy 是穩定排序：未在清單中的卡都拿 Int.MAX_VALUE，會保持 Wallet 原本的相對順序排在最後
+        return items.sortedBy { indexMap[idOf(it)] ?: Int.MAX_VALUE }
+    }
 
     override fun setCardHidden(cardId: String, hidden: Boolean) {
         val current = getHiddenCards().toMutableSet()

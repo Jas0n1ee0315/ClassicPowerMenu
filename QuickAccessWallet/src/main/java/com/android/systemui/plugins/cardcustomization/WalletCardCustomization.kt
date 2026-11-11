@@ -35,6 +35,13 @@ interface WalletCardCustomizationProvider {
      */
     fun shouldRememberLastSelectedCard(): Boolean
 
+    /**
+     *  使用者在「顯示／隱藏」頁拖曳設定的付款卡順序（卡片 ID 清單，由上到下）。
+     *  沒有設定過時回傳空清單，維持 Google Wallet 原本的順序。
+     *  不在清單中的卡（例如之後新加入 Wallet 的卡）由呼叫端排在最後，並維持 Wallet 原本的相對順序。
+     */
+    fun getCardOrder(): List<String>
+
 }
 
 object WalletCardCustomization: KoinComponent {

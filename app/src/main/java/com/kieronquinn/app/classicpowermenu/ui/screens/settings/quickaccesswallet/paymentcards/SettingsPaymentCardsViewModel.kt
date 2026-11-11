@@ -27,6 +27,9 @@ abstract class SettingsPaymentCardsViewModel: ViewModel() {
     /** Visibility：切換顯示 / 隱藏 */
     abstract fun onVisibilityToggled(item: Item)
 
+    /** Visibility：拖曳排序後呼叫，傳入目前列表（由上到下）的順序 */
+    abstract fun onCardOrderChanged(items: List<Item>)
+
     /** Customize：恢復原始卡面 */
     abstract fun onResetArtwork(item: Item)
 
@@ -84,7 +87,8 @@ class SettingsPaymentCardsViewModelImpl(
                     if (result.cards.isEmpty()) {
                         state.emit(State.Error(R.string.settings_quick_access_wallet_payment_error_no_cards))
                     } else {
-                        cards = result.cards
+                        // 依使用者設定的順序排列（自訂卡面頁也會套用同樣的順序，與電源選單一致）
+                        cards = repository.sortByCardOrder(result.cards) { it.id }
                         refreshItems()
                     }
                 }
@@ -113,6 +117,16 @@ class SettingsPaymentCardsViewModelImpl(
     override fun onVisibilityToggled(item: Item) {
         // item.visible 是切換前的狀態：目前顯示 → 改為隱藏
         repository.setCardHidden(item.id, item.visible)
+    }
+
+    override fun onCardOrderChanged(items: List<Item>) {
+        val ids = items.map { it.id }
+        // 同步更新本地快取的順序，之後切換顯示 / 隱藏重建列表時才不會跳回舊順序
+        cards = cards?.let { current ->
+            val byId = current.associateBy { it.id }
+            ids.mapNotNull { byId[it] }
+        }
+        repository.setCardOrder(ids)
     }
 
     override fun onResetArtwork(item: Item) {

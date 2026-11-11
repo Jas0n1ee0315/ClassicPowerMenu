@@ -5,7 +5,9 @@ import android.view.View
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.kieronquinn.app.classicpowermenu.R
 import com.kieronquinn.app.classicpowermenu.databinding.FragmentSettingsQuickAccessWalletPaymentCardsBinding
 import com.kieronquinn.app.classicpowermenu.ui.base.BoundFragment
@@ -14,6 +16,7 @@ import com.kieronquinn.app.classicpowermenu.utils.extensions.onApplyInsets
 import com.kieronquinn.app.classicpowermenu.utils.extensions.whenResumed
 import com.kieronquinn.monetcompat.extensions.views.applyMonet
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.Collections
 
 /**
  *  付款卡設定頁的共用基底（版面、讀取狀態、Monet 配色、Insets）。
@@ -31,10 +34,16 @@ abstract class SettingsPaymentCardsFragment: BoundFragment<FragmentSettingsQuick
         SettingsPaymentCardsAdapter(
             requireContext(),
             mode,
-            emptyList(),
+            mutableListOf(),
             viewModel::onVisibilityToggled,
-            ::onCustomizeClicked
+            ::onCustomizeClicked,
+            { itemTouchHelper.startDrag(it) }
         )
+    }
+
+    /** 拖曳排序（只在 Visibility 模式掛到 RecyclerView 上） */
+    private val itemTouchHelper by lazy {
+        ItemTouchHelper(ItemTouchCallback())
     }
 
     override val onBackPressed by lazy {
@@ -80,7 +89,7 @@ abstract class SettingsPaymentCardsFragment: BoundFragment<FragmentSettingsQuick
                 binding.paymentCardsLoading.isVisible = false
                 binding.paymentCardsError.isVisible = false
                 binding.paymentCardsRecyclerview.isVisible = true
-                adapter.items = state.items
+                adapter.items = state.items.toMutableList()
                 adapter.notifyDataSetChanged()
             }
         }
@@ -99,6 +108,37 @@ abstract class SettingsPaymentCardsFragment: BoundFragment<FragmentSettingsQuick
     private fun setupRecyclerView() = with(binding.paymentCardsRecyclerview) {
         layoutManager = LinearLayoutManager(context)
         adapter = this@SettingsPaymentCardsFragment.adapter
+        if (mode == SettingsPaymentCardsAdapter.Mode.VISIBILITY) {
+            itemTouchHelper.attachToRecyclerView(this)
+        }
+    }
+
+    /**
+     *  只能上下拖曳、不能滑動刪除；拖曳由把手長按觸發（關閉整列長按拖曳，避免誤觸）
+     */
+    private inner class ItemTouchCallback: ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0) {
+
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
+            val fromPosition = viewHolder.bindingAdapterPosition
+            val toPosition = target.bindingAdapterPosition
+            if (fromPosition !in adapter.items.indices || toPosition !in adapter.items.indices) return false
+            Collections.swap(adapter.items, fromPosition, toPosition)
+            adapter.notifyItemMoved(fromPosition, toPosition)
+            // 每次移動就存檔，離開頁面不需另外按儲存
+            viewModel.onCardOrderChanged(adapter.items)
+            return true
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            //no-op：不支援滑動
+        }
+
+        override fun isLongPressDragEnabled() = false
+
     }
 
     private fun setupMonet() {

@@ -67,7 +67,13 @@ public class WalletPanelViewController implements
         QuickAccessWalletClient.WalletServiceEventListener {
 
     private static final String TAG = "WalletPanelViewCtrl";
-    private static final int MAX_CARDS = 10;
+    /**
+     * 向 Google Wallet 要求的卡片數量上限。
+     * 原本為 10：Wallet 只會回傳前 10 張，而「顯示／隱藏」中被隱藏的卡也佔用名額，
+     * 導致排在第 10 張之後的卡在電源選單永遠不會出現（但設定頁要求 20 張所以看得到）。
+     * 必須與設定頁 PaymentCardCustomizationRepository.REQUEST_MAX_CARDS 保持一致。
+     */
+    private static final int MAX_CARDS = 20;
     private static final long SELECTION_DELAY_MILLIS = TimeUnit.SECONDS.toMillis(30);
     private static final String PREFS_WALLET_VIEW_HEIGHT = "wallet_view_height";
     private static final String PREFS_HAS_CARDS = "has_cards";
@@ -302,8 +308,9 @@ public class WalletPanelViewController implements
      *   1. 去掉開頭的「Pay with」
      *   2. 去掉結尾的「發卡組織 + 虛擬卡末碼」（Mastercard ••4952）及之後的文字
      * → 「永豐 Sport」。若截完是空字串，退回只去掉「Pay with」的結果。
+     * 設為 public：設定頁「顯示／隱藏」的卡名也共用這個邏輯，確保與電源選單列表模式顯示一致。
      */
-    static String extractCardName(String description) {
+    public static String extractCardName(String description) {
         String withoutPrefix = description.replaceFirst("(?i)^\\s*pay with\\s+", "").trim();
         String name = CARD_SUFFIX_WITH_DOTS.matcher(withoutPrefix).replaceFirst("");
         name = CARD_SUFFIX_NETWORK_DIGITS.matcher(name).replaceFirst("").trim();
@@ -438,6 +445,24 @@ public class WalletPanelViewController implements
                 return customization.isCardHidden(walletCard.getCardId());
             }
         });
+
+        // 新增：依「顯示／隱藏」頁設定的順序排列付款卡。
+        // List.sort 是穩定排序，未設定過順序的卡（例如新加入 Wallet 的卡）都排在最後並維持 Wallet 原本的相對順序。
+        // 選定卡片之後是用卡片 ID 換算索引，所以排序不影響「記住上次選取的卡片」。
+        List<String> cardOrder = customization.getCardOrder();
+        if (!cardOrder.isEmpty()) {
+            final java.util.Map<String, Integer> orderIndex = new java.util.HashMap<>();
+            for (int i = 0; i < cardOrder.size(); i++) {
+                orderIndex.put(cardOrder.get(i), i);
+            }
+            walletCards.sort((a, b) -> {
+                Integer ia = orderIndex.get(a.getCardId());
+                Integer ib = orderIndex.get(b.getCardId());
+                return Integer.compare(
+                        ia != null ? ia : Integer.MAX_VALUE,
+                        ib != null ? ib : Integer.MAX_VALUE);
+            });
+        }
 
         ArrayList<WalletCardViewInfo> data = new ArrayList<>(walletCards.size());
         for (WalletCard card : walletCards) {

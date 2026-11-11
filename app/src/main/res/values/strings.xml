@@ -160,7 +160,7 @@
     <string name="settings_quick_access_wallet_payment_customize">自訂卡面</string>
     <string name="settings_quick_access_wallet_payment_customize_desc">用自己的圖片取代信用卡卡面</string>
     <string name="settings_quick_access_wallet_payment_visibility">顯示／隱藏</string>
-    <string name="settings_quick_access_wallet_payment_visibility_desc">個別設定每張信用卡是否顯示在快速存取錢包中</string>
+    <string name="settings_quick_access_wallet_payment_visibility_desc">個別設定每張信用卡是否顯示在快速存取錢包中，並可長按拖曳把手調整順序</string>
     <string name="settings_quick_access_wallet_payment_loading">正在載入信用卡…</string>
     <string name="settings_quick_access_wallet_payment_error_no_cards">找不到信用卡</string>
     <string name="settings_quick_access_wallet_payment_error_unavailable">無法使用快速存取錢包服務。請確認已將 Google 錢包設為預設付款應用程式。</string>
@@ -187,10 +187,6 @@
     <string name="bottom_sheet_update_available_neutral">在 GitHub 上查看</string>
     <string name="download_manager_description">正在下載更新…</string>
     <string name="bs_update_download_failed">下載失敗</string>
-    <string name="update_notification_channel_title">更新通知</string>
-    <string name="update_notification_channel_description">每天檢查一次更新時顯示的通知</string>
-    <string name="update_notification_title">Classic Power Menu 有可用的更新</string>
-    <string name="update_notification_content">Classic Power Menu 有可用的更新（%1s → %1s）</string>
     <string name="shortcut_show_power_menu">電源選單</string>
     <!-- 強制繁中的確定 / 取消（取代會跟隨系統語言的 android.R.string.ok / cancel） -->
     <string name="dialog_ok">確定</string>

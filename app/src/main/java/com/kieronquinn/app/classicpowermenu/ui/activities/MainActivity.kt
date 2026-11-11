@@ -22,7 +22,7 @@ import com.kieronquinn.app.classicpowermenu.utils.TransitionUtils
 import com.kieronquinn.app.classicpowermenu.utils.extensions.broadcastReceiverAsFlow
 import com.kieronquinn.app.classicpowermenu.utils.extensions.delayPreDrawUntilFlow
 import com.kieronquinn.app.classicpowermenu.utils.extensions.whenCreated
-import com.kieronquinn.app.classicpowermenu.workers.UpdateCheckWorker
+import androidx.work.WorkManager
 import com.kieronquinn.monetcompat.app.MonetCompatActivity
 import kotlinx.coroutines.flow.collect
 import org.koin.android.ext.android.inject
@@ -42,7 +42,12 @@ class MainActivity : MonetCompatActivity() {
         setupBringToFront()
         setupInsets()
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        UpdateCheckWorker.queueCheckWorker(this)
+        // 已移除每日檢查更新功能：取消舊版本可能已排入 WorkManager 的每日檢查工作，
+        // 避免升級後殘留的排程持續觸發（或因找不到 Worker 類別而報錯）
+        WorkManager.getInstance(this).run {
+            cancelUniqueWork("update_check")
+            cancelAllWorkByTag("update_check")
+        }
         whenCreated {
             monet.awaitMonetReady()
             window.setBackgroundDrawable(ColorDrawable(monet.getBackgroundColor(this@MainActivity)))
