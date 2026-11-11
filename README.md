@@ -31,6 +31,10 @@ Classic Power Menu is a Power Menu Replacement for Android 11+, with the main ai
   - 使用自訂卡面的卡片不會套用「鎖定時模糊卡號」，因為自訂圖片上本來就沒有卡號。
 - **顯示 / 隱藏 (Payment Cards → Visibility)**
   - 和會員卡的管理頁一樣，每張付款卡片都可以單獨開關，關掉的卡片不會出現在電源選單。
+  - 列表只顯示卡片名稱（例如「玉山 Unicard」），不再顯示「Hold to reader / Pay with …」。
+  - **排序**：長按卡片右側的拖曳把手上下拖動即可調整順序，立即存檔；電源選單（輪播與列表模式）與自訂卡面頁都會照這個順序。之後新加入 Google 錢包的卡會排在最後。
+- **修正部分信用卡沒出現在電源選單**
+  - 電源選單原本只向 Google 錢包要求前 10 張卡，被隱藏的卡也佔名額，排在第 10 張之後的卡永遠不會顯示；現在與設定頁相同改為 20 張。
 - **記住上次選取的卡片 (Payment Cards → Visibility 下方，預設開啟)**
   - 開啟時維持原本行為：在電源選單滑到 / 點選某張卡會把它設為 Google Pay 的預設卡，下次開啟電源選單會自動選在這張卡（列表模式也會捲動到這張卡）。
   - 關閉後，每次開啟電源選單都從排序的第一張卡開始。
@@ -94,7 +98,7 @@ Classic Power Menu is a Power Menu Replacement for Android 11+, with the main ai
 
 ### 更新檢查 (Update Check)
 
-- App 啟動時與每天中午會檢查**本 fork** 的 [Releases](https://github.com/Jas0n1ee0315/ClassicPowerMenu/releases)（原本檢查原作者的 repo），有新版時跳出提示，可直接下載並覆蓋安裝。
+- App 啟動時會檢查**本 fork** 的 [Releases](https://github.com/Jas0n1ee0315/ClassicPowerMenu/releases)（原本檢查原作者的 repo），有新版時跳出提示，可直接下載並覆蓋安裝。
 - 以 `app/build.gradle` 的 `releaseTag`（例如 `v1.9.3-cardart-r3`）與最新 Release 標籤比較：兩者都有 `-rN` 時，只有編號較大才視為更新，不會提示降版。
 - **發布新版前，務必先把 `releaseTag` 改成新的 Release 標籤再建置 APK。**
 
